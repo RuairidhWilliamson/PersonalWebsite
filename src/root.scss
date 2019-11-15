@@ -1,0 +1,24 @@
+@import './styles/theme/variables.scss';
+@import './styles/foundation/master.scss';
+
+
+body {
+    margin: 0;
+    color: $text-colour;
+    background-color: $back;
+    font-family: 'Roboto', sans-serif;
+}
+
+.page-container {
+    display: flex;
+    min-height: 100vh;
+    height: 100vh;
+    @media (max-width: $max-mobile-width) {
+        flex-direction: column;
+    }
+}
+
+.page {
+    flex-grow: 1;
+    overflow-y: scroll;
+}

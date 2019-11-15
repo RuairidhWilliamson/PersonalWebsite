@@ -1,0 +1,52 @@
+@import '../../styles/theme/variables.scss';
+
+.nav-bar {
+    background-color: $sidebar-back;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    border-top: $highlights 0.625em solid;
+    flex-shrink: 0;
+
+    @media (max-width: $max-mobile-width) {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-evenly;
+        height: fit-content;
+    }
+}
+
+
+.nav-item, .nav-item:visited {
+    display: inline-block;
+    padding: 0.625em 1.25em 0.625em 1em;
+    color: $text-colour;
+    text-decoration: none;
+    transition: box-shadow ease 0.2s;
+    box-shadow: inset 0 0 0 0.001em $sidebar-active;
+
+    @media (max-width: $max-mobile-width) {
+        padding: 0.625em 0.625em;
+        margin-top: 0.3125em;
+    }
+
+    &:hover:not(.active) {
+        box-shadow: inset 2.75em 0 0 0.001em $sidebar-hover;
+    }
+    &.active {
+        box-shadow: inset 15em 0 0 0.001em $sidebar-active;
+    }
+
+    .material-icons {
+        position: relative;
+        top: 0.2125em;
+    }
+    
+    :not(.material-icons) {
+        display: inline-block;
+        margin-left: 0.25em;
+        @media (max-width: $max-mobile-width) {
+            display: none;
+        }
+    }
+}

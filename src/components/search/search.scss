@@ -1,0 +1,38 @@
+@import '../../styles/theme/variables.scss';
+
+.search-container {
+    box-sizing: border-box;
+    .search {
+        width: 20em;
+        max-width: 100%;
+        margin: 0.5em auto;
+        margin-right: 0.5em;
+        display: flex;
+        box-sizing: border-box;
+        background-color: $input-back;
+        border-radius: $radius;
+        align-items: center;
+
+        i {
+            padding: 0.5em;
+            cursor: default;
+            &.clear {
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity ease 0.2s, transform ease 0.2s;
+                &.visible {
+                    opacity: 1;
+                }
+            }
+        }
+
+        input {
+            background-color: transparent;
+            margin: 0;
+            padding: 0.5em 0;
+            box-sizing: border-box;
+            width: 100%;
+            font-size: 1.1em;
+        }
+    }
+}

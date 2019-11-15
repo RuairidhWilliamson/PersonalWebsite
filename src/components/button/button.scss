@@ -1,0 +1,15 @@
+@import '../../styles/theme/variables.scss';
+
+.button {
+    background-color: $highlights;
+    display: inline-block;
+    font-size: 1.5rem;
+    padding: 0.2em;
+    margin: 0 0.2em;
+    border-radius: 0.2em;
+    transition: background-color linear 0.1s;
+    cursor: pointer;
+    &:hover {
+        background-color: $highlights-hover;
+    }
+}

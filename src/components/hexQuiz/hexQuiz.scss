@@ -1,0 +1,26 @@
+.hex-quiz {
+    margin: auto;
+    font-size: 2em;
+    &__input {
+        text-align: center;
+    }
+
+    &__keypad {
+        display: flex;
+        flex-wrap: wrap;
+        width: 6em;
+        margin: auto;
+        .button {
+            margin-top: 0.2em;
+            margin-bottom: 0.2em;
+            width: 1.2em;
+        }
+    }
+
+    div {
+        &.binary {
+            font-size: 2em;
+        }
+        text-align: center;
+    }
+}

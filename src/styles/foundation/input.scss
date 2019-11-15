@@ -1,0 +1,11 @@
+@import '../theme/variables.scss';
+
+input {
+    background-color: $input-back;
+    border: unset;
+    margin: 0.25em;
+    color: $input-text-color;
+    padding: 0.5em;
+    border-radius: $radius;
+    outline: unset;
+}
