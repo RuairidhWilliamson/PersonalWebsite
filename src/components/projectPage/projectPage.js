@@ -8,10 +8,12 @@ export default class ProjectPage extends React.Component {
 
     renderPage(page) {
         return <div className='project-page'>
-            <h1 className='title'>{page.title}</h1>
-            <h4 className='date'>{page.date}</h4>
-            <div className='description'>{page.description}</div>
-            <div className='content'>{page.content}</div>
+            <div className='project'>
+                <h1 className='title'>{page.title}</h1>
+                <h4 className='date'>{page.date}</h4>
+                <div className='description'>{page.description}</div>
+                <div className='content'>{page.content}</div>
+            </div>
         </div>;
     }
 
