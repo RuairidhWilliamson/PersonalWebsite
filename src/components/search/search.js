@@ -48,7 +48,7 @@ Search.propTypes = {
 
 Search.defaultProps = {
     placeholder: 'Search...',
-    autoFocus: true,
+    autoFocus: false,
     maxLength: 160,
     value: '',
 };

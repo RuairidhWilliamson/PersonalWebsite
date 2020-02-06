@@ -2,10 +2,8 @@ import React from 'react';
 
 import Iframe from 'components/iframe/iframe';
 
-import Lichess from 'assets/images/lichess.png';
 import Planet from 'assets/images/planet.png';
 import Car from 'assets/images/car.png';
-import Site from 'assets/images/site.png';
 import WHT from 'assets/images/wht.png';
 
 const projects = [
@@ -15,7 +13,6 @@ const projects = [
         date: 'September 2019',
         description: `This website is built using React and SCSS.
         `,
-        image: Site,
         alt: 'This Website',
         tags: ['React', 'Web'],
     },
@@ -30,8 +27,7 @@ const projects = [
         I originally implemented a similar algorithm in python and tested it using the Lichess API to play against it and test it.
         Python is quite slow for this and so I turned to Rust to offer greater performance.
         It was more challenging to write it in Rust since I have never programmed using it before.
-        The result is not perferct and is not very good at chess.`,
-        image: Lichess,
+        The result is not perfect and is not very good at chess.`,
         alt: 'Online Chess Board',
         tags: ['Rust'],
     },
@@ -42,7 +38,6 @@ const projects = [
         description: `Min max algorithm implemented in python with lichess API.
         The program waits for a challenge from a player on Lichess and then plays using a Min Max algorithm looking 3 moves ahead which takes about 30 seconds to compute.
         Python is not an ideal language for doing large computations.`,
-        image: Lichess,
         alt: 'Online Chess Board',
         tags: ['Python'],
     },
@@ -74,7 +69,7 @@ const projects = [
         date: 'September 2017',
         description: `I challenged myself to write a web card game programming in different games.
         The entire project runs from a Python server which served static HTML, JavaScript, CSS and image files and also hosts websockets connections.
-        The project includes a room system where users can create private rooms and invite others. Another part of the project was adding bots to play aswell.
+        The project includes a room system where users can create private rooms and invite others. Another part of the project was adding bots to play as well.
         I came up with different algorithms for the bots and allowed users to choose them.`,
         tags: ['JavaScript', 'Python', 'WebSockets', 'Web'],
     },
