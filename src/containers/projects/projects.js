@@ -22,21 +22,21 @@ export default class Projects extends React.Component {
     render() {
         const filterBySearch = proj => proj.search.includes(this.state.search);
         return <>
-        <Helmet>
-            <title>Projects | Ruairidh Williamson</title>
-            <meta name='description' content=''/>
-        </Helmet>
-        <Search onChange={this.handleSearch.bind(this)} value={this.state.search} placeholder='Search...'/>
-        <div className='project-small-containers'>
-            {projects.map((project, index) => <ProjectSmall
-                key={project.id}
-                history={this.props.history}
-                delay={index}
-                visible={filterBySearch(project)}
-                searchTag={this.handleSearch.bind(this)}
-                {...project}
-            />)}
-        </div>
+            <Helmet>
+                <title>Projects | Ruairidh Williamson</title>
+                <meta name='description' content=''/>
+            </Helmet>
+            <Search onChange={this.handleSearch.bind(this)} value={this.state.search} placeholder='Search...'/>
+            <div className='project-small-containers'>
+                {projects.map((project, index) => <ProjectSmall
+                    key={project.id}
+                    history={this.props.history}
+                    delay={index}
+                    visible={filterBySearch(project)}
+                    searchTag={this.handleSearch.bind(this)}
+                    {...project}
+                />)}
+            </div>
         </>;
     }
 }

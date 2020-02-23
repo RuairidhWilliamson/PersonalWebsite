@@ -42,7 +42,7 @@ export default class ProjectSmall extends React.Component {
                                 onClick={() => this.props.searchTag(tag)}
                             >
                                 {tag}
-                            </Link>
+                            </Link>,
                         )}
                     </div>
                 </div>

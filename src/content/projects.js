@@ -13,6 +13,7 @@ const projects = [
         date: 'September 2019',
         description: `This website is built using React and SCSS.
         `,
+        github: 'https://github.com/RuairidhWilliamson/PersonalWebsite',
         alt: 'This Website',
         tags: ['React', 'Web'],
     },

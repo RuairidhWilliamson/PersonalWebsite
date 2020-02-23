@@ -2,13 +2,18 @@
 
 .button {
     background-color: $highlights;
-    display: inline-block;
+    display: flex;
+    align-items: center;
     font-size: 1.5rem;
-    padding: 0.2em;
-    margin: 0 0.2em;
+    width: fit-content;
+    padding: 0.1em 0.5em;
+    margin: auto;
     border-radius: 0.2em;
     transition: background-color linear 0.1s;
     cursor: pointer;
+    img {
+        margin: 0.2em;
+    }
     &:hover {
         background-color: $highlights-hover;
     }
