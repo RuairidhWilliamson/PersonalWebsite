@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './materialIcon.scss';
+
 export default function Icon(props) {
     return props.icon ? <i onClick={props.onClick} className={`material-icons ${props.className}`} style={props.style}>{props.icon}</i> : null;
 }

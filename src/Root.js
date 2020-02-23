@@ -7,8 +7,7 @@ import PreloadImage from 'components/preloadImages/PreloadImages';
 import Pages from 'content/pages';
 import Projects from 'content/projects';
 
-
-import 'root.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default class Root extends React.Component {
     render() {

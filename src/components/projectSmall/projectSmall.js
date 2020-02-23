@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Card, Button } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 
-import './projectSmall.scss';
+// import './projectSmall.scss';
 
 const overflow = (text, limit) => `${text.slice(0, limit)}${text.length > limit ? '...' : ''}`;
 
@@ -14,40 +15,23 @@ export default class ProjectSmall extends React.Component {
         if (this.props.image.type) {
             return this.props.image;
         } else {
-            return <img src={this.props.image} alt={this.props.image} className='image'/>;
+            return <Card.Img variant="top" src={this.props.image} alt={this.props.image} className='image'/>;
         }
     }
 
     render(){
-        return (
-            <Link
-                style={{ animationDelay: `${this.props.delay / 5}s`, visibility: this.props.visible ? 'visible' : 'hidden', position: this.props.visible ? 'inherit' : 'absolute' }}
-                className='project-small'
-                to={`/${this.props.id}`}
-            >
-                {this.renderPreview()}
-                <div className='right'>
-                    <div className='description-container'>
-                        <h2 className='title'>{this.props.title}</h2>
-                        <div className='date'>{this.props.date}</div>
-                        <div className='description'>{overflow(this.props.description, 150)}</div>
-                    </div>
-                    <div className='tags'>
-                        {this.props.tags.map(
-                            (tag, index) => <Link
-                                style={{animationDelay: `${index / 10 + this.props.delay / 5 + 1}s`}}
-                                key={tag}
-                                to={{ }}
-                                className='tag'
-                                onClick={() => this.props.searchTag(tag)}
-                            >
-                                {tag}
-                            </Link>,
-                        )}
-                    </div>
-                </div>
-            </Link>
-        );
+        return <Card>
+            <Card.Header>
+                {this.props.tags.join(', ')}
+            </Card.Header>
+            {this.renderPreview()}
+            <Card.Body>
+                <Card.Title>{this.props.title}</Card.Title>
+                <Card.Subtitle>{this.props.date}</Card.Subtitle>
+                <Card.Text>{overflow(this.props.description, 150)}</Card.Text>
+                <Button to={this.props.id} variant="link" as={NavLink}>View</Button>
+            </Card.Body>
+        </Card>;
     }
 }
 

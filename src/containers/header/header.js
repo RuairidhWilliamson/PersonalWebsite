@@ -1,19 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
 
 import Pages from 'content/pages';
 import Icon from 'components/materialIcon/materialIcon';
+import { Navbar, Nav } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
-import './header.scss';
 
-const Navitem = (props) => (
-    <NavLink exact className='nav-item' activeClassName='active' to={props.to} style={{paddingLeft: `${(props.indent)}em`}}>
-        <Icon icon={props.materialIcon}/> <h3>{props.label}</h3>
-    </NavLink>
+const NavItem = (props) => (
+    <LinkContainer exact to={props.to}>
+        <Nav.Link>
+            <Icon icon={props.materialIcon}/> {props.label}
+        </Nav.Link>
+    </LinkContainer>
 );
 
-Navitem.propTypes = {
+NavItem.propTypes = {
     to: PropTypes.string,
     label: PropTypes.string,
     active: PropTypes.bool,
@@ -23,8 +25,8 @@ Navitem.propTypes = {
 
 export default class Header extends React.Component {
 
-    renderNavitem(page, indent = 1) {
-        return <Navitem
+    renderNavItem(page, indent = 1) {
+        return <NavItem
             key={page.label}
             active={this.props.location.pathname === page.path}
             materialIcon={page.material_icon}
@@ -35,9 +37,14 @@ export default class Header extends React.Component {
     }
 
     render() {
-        return <div className='nav-bar'>
-            {Pages.map(page => this.renderNavitem(page))}
-        </div>;
+        return <Navbar bg="dark" variant="dark">
+            <LinkContainer to="/">
+                <Navbar.Brand>RW</Navbar.Brand>
+            </LinkContainer>
+            <Nav className="mr-auto">
+                {Pages.map(page => this.renderNavItem(page))}
+            </Nav>
+        </Navbar>;
     }
 }
 

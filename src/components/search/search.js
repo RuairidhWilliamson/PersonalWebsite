@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Icon from 'components/materialIcon/materialIcon';
 
-import './search.scss';
 
 export default class Search extends React.Component {
     constructor(props) {
