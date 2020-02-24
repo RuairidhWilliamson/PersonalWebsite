@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'components/button/button';
+import { Button } from 'react-bootstrap';
 
 import './hexQuiz.scss';
 
@@ -61,7 +61,7 @@ export default class HexQuiz extends React.Component {
     }
 
     render() {
-        const keypad = [...Array(hex.length)].map((_, i) => <div className='button' onClick={() => this.handleKey({key: hex[i]})} key={i}>{hex[i]}</div>);
+        const keypad = [...Array(hex.length)].map((_, i) => <Button className="m-1" onClick={() => this.handleKey({key: hex[i]})} key={i}>{hex[i]}</Button>);
         return <div className='hex-quiz'>
             <div className='binary'>{this.state.binary}</div>
             <div className='hex-quiz__input'>{this.state.input}</div>

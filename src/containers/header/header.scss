@@ -1,0 +1,20 @@
+.nav-bar {
+    .nav-item {
+        display: flex;
+        flex-direction: row;
+        @media screen and (max-width: 500px) {
+            flex-direction: column;
+        }
+        i {
+            margin: auto;
+            margin-right: 0.2em;
+        }
+        div {
+            overflow: hidden;
+            text-overflow: clip;
+            white-space: nowrap;
+            height: 100%;
+            width: 100%;
+        }
+    }
+}

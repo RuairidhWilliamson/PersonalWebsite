@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Iframe from 'components/iframe/iframe';
+import { ResponsiveEmbed } from 'react-bootstrap';
 
 import Planet from 'assets/images/planet.png';
 import Car from 'assets/images/car.png';
@@ -84,7 +85,7 @@ const projects = [
         It also comes with existing scenarios and arrows to show velocity and acceleration.`,
         image: Planet,
         alt: 'Planet Sim Preview',
-        content: <Iframe src={'/planetSim/'} title='planetSim'/>,
+        content: <ResponsiveEmbed><Iframe src={'/planetSim/'} title='planetSim'/></ResponsiveEmbed>,
         tags: ['JQuery', 'Physics', 'JavaScript', 'Web'],
     },
 ].map(proj => ({...proj, search: `${proj.id} ${proj.title} ${proj.tags} ${proj.description}`}));

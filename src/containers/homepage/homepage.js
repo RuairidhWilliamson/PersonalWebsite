@@ -1,6 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
+import { Alert } from 'react-bootstrap';
+
 import Button from 'components/button/button';
 
 import './homepage.scss';
@@ -13,16 +15,15 @@ export default class Homepage extends React.Component {
                 <meta name='description' content=''/>
             </Helmet>
             <div className='homepage'>
-                <div className='middle'>
-                    <h1>Ruairidh Williamson</h1>
-                    <br/>
-                    <h2>I am currently looking for a summer internship for 2020.</h2>
-                    <br/>
+                <Alert variant='primary'>
+                    <Alert.Heading>Ruairidh Williamson</Alert.Heading>
+                    <p>I am currently looking for a summer internship for 2020.</p>
+                    <hr/>
                     <div>
-                        <Button to='/projects'>Projects</Button>
-                        <Button to='/contact'>Contact</Button>
+                        <Button variant='outline-primary' to='/projects'>Projects</Button>
+                        <Button variant='outline-primary' to='/contact'>Contact</Button>
                     </div>
-                </div>
+                </Alert>
             </div>
         </>;
     }

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Card, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
-// import './projectSmall.scss';
 
 const overflow = (text, limit) => `${text.slice(0, limit)}${text.length > limit ? '...' : ''}`;
 

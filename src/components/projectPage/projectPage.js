@@ -16,7 +16,7 @@ export default class ProjectPage extends React.Component {
                 <div className='description'>{page.description}</div>
                 <div className='content'>{page.content}</div>
                 <div className='links'>
-                    <Button href={page.github}><img src={GitHub}/>View on GitHub</Button>
+                    <Button href={page.github}><img alt="GitHub" src={GitHub} className="mr-2"/>View on GitHub</Button>
                 </div>
             </div>
         </div>;

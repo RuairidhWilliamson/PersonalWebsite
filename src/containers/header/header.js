@@ -6,11 +6,12 @@ import Icon from 'components/materialIcon/materialIcon';
 import { Navbar, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+import './header.scss';
 
 const NavItem = (props) => (
     <LinkContainer exact to={props.to}>
         <Nav.Link>
-            <Icon icon={props.materialIcon}/> {props.label}
+            <div className="nav-item"><Icon icon={props.materialIcon}/> <div>{props.label}</div></div>
         </Nav.Link>
     </LinkContainer>
 );
@@ -41,7 +42,7 @@ export default class Header extends React.Component {
             <LinkContainer to="/">
                 <Navbar.Brand>RW</Navbar.Brand>
             </LinkContainer>
-            <Nav className="mr-auto">
+            <Nav className="mr-auto nav-bar">
                 {Pages.map(page => this.renderNavItem(page))}
             </Nav>
         </Navbar>;
