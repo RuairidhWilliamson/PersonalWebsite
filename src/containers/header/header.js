@@ -9,11 +9,13 @@ import { LinkContainer } from 'react-router-bootstrap';
 import './header.scss';
 
 const NavItem = (props) => (
-    <LinkContainer exact to={props.to}>
-        <Nav.Link>
-            <div className="nav-item"><Icon icon={props.materialIcon}/> <div>{props.label}</div></div>
-        </Nav.Link>
-    </LinkContainer>
+    props.hideNavbar ? null : (
+        <LinkContainer exact to={props.to}>
+            <Nav.Link>
+                <div className="nav-item"><Icon icon={props.materialIcon}/> <div>{props.label}</div></div>
+            </Nav.Link>
+        </LinkContainer>
+    )
 );
 
 NavItem.propTypes = {
@@ -33,6 +35,7 @@ export default class Header extends React.Component {
             materialIcon={page.material_icon}
             label={page.label}
             to={page.path}
+            hideNavbar={page.hide_navbar}
             indent={indent}
         />;
     }

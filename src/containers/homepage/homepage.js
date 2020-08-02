@@ -17,8 +17,6 @@ export default class Homepage extends React.Component {
             <div className='homepage'>
                 <Alert variant='primary'>
                     <Alert.Heading>Ruairidh Williamson</Alert.Heading>
-                    <p>I am currently looking for a summer internship for 2020.</p>
-                    <hr/>
                     <div>
                         <Button variant='outline-primary' to='/projects'>Projects</Button>
                         <Button variant='outline-primary' to='/contact'>Contact</Button>

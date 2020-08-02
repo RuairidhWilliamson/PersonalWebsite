@@ -7,6 +7,7 @@ const pages = [
     {
         path: '/',
         exact: true,
+        hide_navbar: true,
         label: 'Home',
         component: Homepage,
         material_icon: 'home',
