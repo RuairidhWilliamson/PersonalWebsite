@@ -6,8 +6,78 @@ import { ResponsiveEmbed } from 'react-bootstrap';
 import Planet from 'assets/images/planet.png';
 import Car from 'assets/images/car.png';
 import WHT from 'assets/images/wht.png';
+import GenieOfLight from 'assets/images/genieoflight.png';
+import TrolleyFolly from 'assets/images/trolleyfolly.png';
+import Fractal from 'assets/images/fractal.png';
 
 const projects = [
+    {
+        id: 'video-labeller',
+        title: 'Video Labeller',
+        date: 'July 2020',
+        description: `My grandfather had a cine film camera and his films were digitised however they are not in order.
+        I wrote a program that takes videos divided into scenes and allows the user to label and tag the videos.
+        The program also allows the user to search for tags and play the selected videos in sequence.
+        This is useful because relatives often only want to see videos that are relevant to them and sorting through 14 hours of video takes too long.
+        The program uses FFmpeg to convert the videos into short clips.`,
+        tags: ['C#'],
+    },
+    {
+        id: 'l-systems',
+        title: 'L-Systems',
+        date: 'July 2020',
+        description: `I was interested in L-systems which is a way of describing fractal patterns.
+        It works by having a start string e.g. "X".
+        Then having rules such as X -> XAX and A -> AB would result in the following:
+        n = 0: X
+
+        n = 1: XAX
+
+        n = 2: XAXABXAX
+
+        n = 3: XAXABXAXABBXAXABXAX
+
+        n = 4: XAXABXAXABBXAXABXAXABBBXAXABXAXABBXAXABXAX
+
+        n = 5: XAXABXAXABBXAXABXAXABBBXAXABXAXABBXAXABXAXABBBBXAXABXAXABBXAXABXAXABBBXAXABXAXABBXAXABXAX
+
+        ...
+
+        Then by creating rules based on the string for example forward, turn left and turn right we can draw images.`,
+        image: Fractal,
+        link: 'https://en.wikipedia.org/wiki/L-system',
+        linkText: 'L-Systems Wikipedia',
+        tags: ['Python'],
+    },
+    {
+        id: 'trolley-folly',
+        title: '48 Hour Game Jam: Trolley Folly',
+        date: 'July 2020',
+        description: `A friend and I participated in an online game jam where we made a game in 48 hours based on a theme.
+        The theme was announced as Out of Control. Sam and I created a game where the player is trying to control and out of control shopping trolley as you speed around a supermarket collecting as many items as possible.
+        The more items you stack in your cart the easier it is for items to fall off. The player has to balance the items, avoid crashing into things and take the items to the checkout.`,
+        image: TrolleyFolly,
+        link: 'https://wilkoco.itch.io/trolley-problems',
+        linkText: 'View Project',
+        tags: ['C#', 'Unity'],
+    },
+    {
+        id: 'the-genie-of-light',
+        title: '72 Hour Game Jam: The Genie of Light',
+        date: 'April 2020',
+        description: `2 friends and I participated in an online game jam where we made a game in 72 hours based on a theme.
+        The theme was announced as Keep it alive. Sam and I designed and programmed the game and Ben created the music.
+        The goal of the game is to traverse cave levels avoiding traps while keeping alive the light in the genie.
+        The player can control the brightness of the light however the brighter the light the faster it will deplete if the light depletes completely the game becomes nearly impossible and so the player must optimise their usage of the light to get through the levels.
+        We used Unity game engine and made 10 levels of increasing difficulty.
+        After the jam the participants voted on each other's games and we came 1000th out of 5000 entries.
+        In the end this was really good practice for completing a task over many days under time pressure in a team.`,
+        alt: '',
+        image: GenieOfLight,
+        link: 'https://ldjam.com/events/ludum-dare/46/the-genie-of-light',
+        linkText: 'View Project',
+        tags: ['C#', 'Unity'],
+    },
     {
         id: 'personal-website',
         title: 'Personal Website',
@@ -29,7 +99,8 @@ const projects = [
         Python is quite slow for this and so I turned to Rust to offer greater performance.
         It was more challenging to write it in Rust since I have never programmed using it before.
         The result is not perfect and is not very good at chess.`,
-        alt: 'Online Chess Board',
+        alt: '',
+        github: 'https://github.com/RuairidhWilliamson/chess',
         tags: ['Rust'],
     },
     {
@@ -39,7 +110,7 @@ const projects = [
         description: `Min max algorithm implemented in python with lichess API.
         The program waits for a challenge from a player on Lichess and then plays using a Min Max algorithm looking 3 moves ahead which takes about 30 seconds to compute.
         Python is not an ideal language for doing large computations.`,
-        alt: 'Online Chess Board',
+        alt: '',
         tags: ['Python'],
     },
     {
@@ -87,6 +158,9 @@ const projects = [
         content: <ResponsiveEmbed><Iframe src={'/planetSim/'} title='planetSim'/></ResponsiveEmbed>,
         tags: ['JQuery', 'Physics', 'JavaScript', 'Web'],
     },
-].map(proj => ({...proj, search: `${proj.id} ${proj.title} ${proj.tags} ${proj.description}`}));
+].map(proj => ({
+    ...proj,
+    search: `${proj.id} ${proj.title} ${proj.tags} ${proj.description}`
+}));
 
 export default projects;

@@ -4,7 +4,7 @@ import { Card, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 
-const overflow = (text, limit) => `${text.slice(0, limit)}${text.length > limit ? '...' : ''}`;
+const overflow = (text, limit) => text && `${text.slice(0, limit)}${text.length > limit ? '...' : ''}`;
 
 export default class ProjectSmall extends React.Component {
     renderPreview() {
@@ -21,7 +21,7 @@ export default class ProjectSmall extends React.Component {
     render(){
         return <Card>
             <Card.Header>
-                {this.props.tags.join(', ')}
+                {this.props.tags && this.props.tags.join(', ')}
             </Card.Header>
             {this.renderPreview()}
             <Card.Body>
