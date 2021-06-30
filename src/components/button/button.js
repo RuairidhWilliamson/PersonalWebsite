@@ -22,4 +22,5 @@ Button.propTypes = {
     onClick: PropTypes.func,
     variant: PropTypes.string,
     href: PropTypes.string,
+    className: PropTypes.string,
 };

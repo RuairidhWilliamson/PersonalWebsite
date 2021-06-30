@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 
 import { Alert, CardColumns, Container } from 'react-bootstrap';
@@ -43,3 +44,7 @@ export default class Homepage extends React.Component {
         </>;
     }
 }
+
+Homepage.propTypes = {
+    history: PropTypes.object,
+};

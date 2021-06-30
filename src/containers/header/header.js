@@ -24,6 +24,7 @@ NavItem.propTypes = {
     active: PropTypes.bool,
     materialIcon: PropTypes.string,
     indent: PropTypes.number,
+    hideNavbar: PropTypes.bool,
 };
 
 export default class Header extends React.Component {
