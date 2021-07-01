@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export default class Iframe extends React.Component {
     render() {
         return <iframe
-            style={{ width: '100%', height: '-webkit-fill-available', ...this.props.style }}
+            style={{ width: '100%', minHeight: '1000px', height: '-webkit-fill-available', ...this.props.style }}
             title={this.props.title || this.props.src}
             src={this.props.src}
             frameBorder="0"
