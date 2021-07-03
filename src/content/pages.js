@@ -1,7 +1,6 @@
 import Homepage from 'containers/homepage/homepage';
 import Projects from 'containers/projects/projects';
 import Contact from 'containers/contact/contact';
-import HexQuizContainer from 'containers/hexQuiz/hexQuiz';
 
 const pages = [
     {
@@ -18,13 +17,6 @@ const pages = [
         label: 'Projects',
         component: Projects,
         material_icon: 'list',
-    },
-    {
-        path: '/hex-quiz',
-        exact: true,
-        label: 'Hex Quiz',
-        component: HexQuizContainer,
-        material_icon: 'code',
     },
     {
         path: '/contact',
