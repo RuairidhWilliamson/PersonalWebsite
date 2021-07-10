@@ -2,11 +2,11 @@
 	export async function preload({ params }) {
 		// the `slug` parameter is available because
 		// this file is called [slug].svelte
-		const res = await this.fetch(`blog/${params.slug}.json`);
+		const res = await this.fetch(`projects/${params.slug}.json`);
 		const data = await res.json();
 
 		if (res.status === 200) {
-			return { post: data };
+			return { project: data };
 		} else {
 			this.error(res.status, data.message);
 		}
@@ -14,7 +14,7 @@
 </script>
 
 <script>
-	export let post;
+	export let project;
 </script>
 
 <style>
@@ -51,14 +51,26 @@
 	.content :global(li) {
 		margin: 0 0 0.5em 0;
 	}
+
+	.content :global(iframe) {
+		width: 100%;
+		min-height: 500px;
+		height: -webkit-fill-available;
+	}
+
+	.content :global(img) {
+		width: 100%;
+		max-width: 400px;
+	}
 </style>
 
 <svelte:head>
-	<title>{post.title}</title>
+	<title>{project.title}</title>
 </svelte:head>
 
-<h1>{post.title}</h1>
+<h1>{project.title}</h1>
+<h3>{project.date}</h3>
 
 <div class="content">
-	{@html post.html}
+	{@html project.html}
 </div>

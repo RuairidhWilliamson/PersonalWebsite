@@ -1,7 +1,7 @@
-import posts from './_posts.js';
+import projects from './_projects.js';
 
 const lookup = new Map();
-posts.forEach(post => {
+projects.forEach(post => {
 	lookup.set(post.slug, JSON.stringify(post));
 });
 

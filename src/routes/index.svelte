@@ -1,50 +1,59 @@
+<script context="module">
+	export function preload() {
+		return this.fetch(`projects.json`).then(r => r.json()).then(projects => {
+			return { projects };
+		});
+	}
+</script>
+
 <script>
-	import successkid from 'images/successkid.jpg';
+	import ProjectSmall from "../components/ProjectSmall.svelte";
+	export let projects;
+
+	const featured = [
+		'pseudo-haptic-drift-correction',
+		'l-systems',
+		'trolley-folly',
+	];
 </script>
 
 <style>
-	h1, figure, p {
+	h1 {
 		text-align: center;
 		margin: 0 auto;
-	}
-
-	h1 {
-		font-size: 2.8em;
+		font-size: 1em;
 		text-transform: uppercase;
 		font-weight: 700;
 		margin: 0 0 0.5em 0;
 	}
 
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
 	@media (min-width: 480px) {
 		h1 {
-			font-size: 4em;
+			font-size: 2em;
 		}
+	}
+
+	.projects-container {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		grid-auto-flow: dense;
+		gap: 1rem;
+		margin: 0 0 1em 0;
+		line-height: 1.5;
 	}
 </style>
 
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>Ruairidh Williamson</title>
 </svelte:head>
 
-<h1>Great success!</h1>
+<h1>Ruairidh Williamson</h1>
 
-<figure>
-	<img alt="Success Kid" src="{successkid}">
-	<figcaption>Have fun with Sapper!</figcaption>
-</figure>
+<h2>Featured Projects</h2>
 
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+
+<div class="projects-container">
+	{#each featured as project_slug}
+		<ProjectSmall project={projects.find(p => p.slug === project_slug)}/>
+	{/each}
+</div>

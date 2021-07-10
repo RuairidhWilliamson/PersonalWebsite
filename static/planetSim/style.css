@@ -1,0 +1,107 @@
+html, body {margin: 0; height: 100%; overflow: hidden}
+body{
+	margin: 0;
+	font-family: 'Roboto Condensed', sans-serif;
+	user-select: none;
+	background-color: white;
+}
+table#main{
+	width: 100%;
+}
+table tr td{
+	padding: 0;
+}
+canvas#sim{
+	border: 1px solid #9E9E9E;
+	cursor: move;
+}
+.top i{
+	position: relative;
+	top: 5;
+}
+#scenarios div{
+	margin-top: 10px;
+	margin-left: 8px;
+	margin-right: 16px;
+	margin-bottom: 8px;
+	height: 16px;
+	border-left: 16px solid #1e1e1e;
+	padding-left: 16px;
+	cursor: pointer;
+}
+#scenarios div:hover{
+	border-left: 16px solid #03A9F4;
+}
+#bodies{
+	width: 250px;
+	padding-bottom: 10px;
+}
+.body .top{
+	cursor: pointer;
+	padding-left: 10;
+	padding-bottom: 5;
+}
+.body .top span{
+	margin-left: 14px;
+}
+.body .top span.destroyed{
+	color: #F44336;
+}
+.body .top:hover{
+	background-color: #03A9F4;
+}
+table tr td{
+	vertical-align: top;
+}
+.expandable{
+	display: none;
+}
+.expandable.open{
+	display: initial;
+}
+.prop td{
+	font-size: 16px;
+	padding-left: 16px;
+}
+input.propval{
+	width: 45px;
+	margin-left: 2px;
+	text-align: right;
+}
+.focusBody{
+	float: right;
+	padding-right: 5px;
+	position: relative;
+	top: -28px;
+	cursor: pointer;
+}
+.focusBody:hover{
+	color: #03A9F4;
+	
+}
+#playpause{
+	cursor: pointer;
+	position: relative;
+	top: 5px;
+}
+#playpause:hover{
+	color: #03A9F4;
+}
+input#speed{
+	width: 40px;
+}
+.side{
+	height: 100vh;
+	overflow-y: scroll;
+}
+#settings div input{
+	width: 24px;
+}
+#addbody{
+	cursor: pointer;
+	position: relative;
+	top: 5px;
+}
+#addbody:hover{
+	color: #03A9F4;
+}

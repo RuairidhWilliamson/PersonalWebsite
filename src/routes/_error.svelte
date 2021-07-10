@@ -34,6 +34,9 @@
 <h1>{status}</h1>
 
 <p>{error.message}</p>
+{#if status === 404}
+	<p>It looks like the page you were looking for does not exist. <a href="/">Home</a></p>
+{/if}
 
 {#if dev && error.stack}
 	<pre>{error.stack}</pre>

@@ -1,20 +1,14 @@
 {
 	"background_color": "#ffffff",
 	"theme_color": "#333333",
-	"name": "TODO",
-	"short_name": "TODO",
+	"name": "ruairidh williamson",
+	"short_name": "rtaw",
 	"display": "minimal-ui",
 	"start_url": "/",
 	"icons": [
 		{
-			"src": "logo-192.png",
-			"sizes": "192x192",
-			"type": "image/png",
-			"purpose": "any maskable"
-		},
-		{
-			"src": "logo-512.png",
-			"sizes": "512x512",
+			"src": "logo-64.png",
+			"sizes": "64x64",
 			"type": "image/png",
 			"purpose": "any maskable"
 		}

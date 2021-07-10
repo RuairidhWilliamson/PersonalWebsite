@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<link href="roboto-condensed.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+	</head>
+	<body>
+		<table id='main'>
+			<tr>
+				<td rowspan="10"><canvas id='sim' width="1500" height="800"></canvas></td>
+				<td>
+					<div class='side'>
+						Controls
+						<div id='controls' class='window list'>
+							<i style='width:24px' id='playpause' class="material-icons">play_arrow</i>
+							Speed: 
+							<input id='speed'/>
+						</div>
+						Bodies <i id='addbody' class='material-icons'>add_box</i>
+						<div id='bodies' class='window viewer'></div>
+						
+						Scenarios
+						<div id='scenarios' class='window list'></div>
+						Settings
+						<div id='settings' class='window list'>
+							<div id='velocity-arrow'>Velocity Arrow Size: <input value='0'></div>
+							<div id='acceleration-arrow'>Acceleration Arrow Size: <input value='0'></div>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<script src="constants.js"></script>
+		<script src="vector.js"></script>
+		<script src="force.js"></script>
+		<script src="body.js"></script>
+		<script src="simulation.js"></script>
+		<script src="scenarios.js"></script>
+		<script src="simulator.js"></script>
+	</body>
+</html>
