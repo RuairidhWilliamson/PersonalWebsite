@@ -7,7 +7,8 @@
 </script>
 
 <script>
-	import ProjectSmall from "../components/ProjectSmall.svelte";
+	import ProjectSmall from '../components/ProjectSmall.svelte';
+
 	export let projects;
 
 	const featured = [
@@ -41,6 +42,28 @@
 		margin: 0 0 1em 0;
 		line-height: 1.5;
 	}
+
+	.socials {
+		display: flex;
+		justify-content: center;
+		margin: 2em 0;
+	}
+
+	.socials a {
+		margin: 0 10px;
+		display: block;
+		height: 40px;
+		font-size: 2em;
+		transition: color 0.1s;
+	}
+
+	.socials a:hover {
+		color: rgb(255,62,0);
+	}
+
+	h5 {
+		float: right;
+	}
 </style>
 
 <svelte:head>
@@ -49,6 +72,12 @@
 
 <h1>Ruairidh Williamson</h1>
 
+<div class="socials">
+	<a target=_blank href="https://www.linkedin.com/in/ruairidh-williamson/"><i class="fab fa-linkedin"></i></a>
+	<a target=_blank href="https://github.com/RuairidhWilliamson"><i class="fab fa-github"></i></a>
+</div>
+
+<h5><a href="/projects">View All</a></h5>
 <h2>Featured Projects</h2>
 
 
