@@ -6,6 +6,7 @@ import url from '@rollup/plugin-url';
 import svelte from 'rollup-plugin-svelte';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
+const { markdown } = require('./scripts/rollup_markdown.js');
 import config from 'sapper/config/rollup.js';
 import pkg from './package.json';
 
@@ -18,11 +19,23 @@ const onwarn = (warning, onwarn) =>
 	(warning.code === 'CIRCULAR_DEPENDENCY' && /[/\\]@sapper[/\\]/.test(warning.message)) ||
 	onwarn(warning);
 
+const client_url_plugin = url({
+	sourceDir: path.resolve(__dirname, 'src/assets/images'),
+	publicPath: '/client/'
+});
+
+const server_url_plugin = url({
+	sourceDir: path.resolve(__dirname, 'src/assets/images'),
+	publicPath: '/client/',
+	emitFiles: false // already emitted by client build
+});
+
 export default {
 	client: {
 		input: config.client.input(),
 		output: config.client.output(),
 		plugins: [
+			markdown({}),
 			replace({
 				preventAssignment: true,
 				values:{
@@ -36,10 +49,7 @@ export default {
 					hydratable: true
 				}
 			}),
-			url({
-				sourceDir: path.resolve(__dirname, 'src/assets/images'),
-				publicPath: '/client/'
-			}),
+			client_url_plugin,
 			resolve({
 				browser: true,
 				dedupe: ['svelte']
@@ -76,6 +86,7 @@ export default {
 		input: config.server.input(),
 		output: config.server.output(),
 		plugins: [
+			markdown({emit: false,}),
 			replace({
 				preventAssignment: true,
 				values:{
@@ -91,11 +102,7 @@ export default {
 				},
 				emitCss: false
 			}),
-			url({
-				sourceDir: path.resolve(__dirname, 'src/assets/images'),
-				publicPath: '/client/',
-				emitFiles: false // already emitted by client build
-			}),
+			server_url_plugin,
 			resolve({
 				dedupe: ['svelte']
 			}),

@@ -12,9 +12,9 @@
 	export let projects;
 
 	const featured = [
+		'warp-driver',
 		'pseudo-haptic-drift-correction',
 		'l-systems',
-		'trolley-folly',
 	];
 </script>
 
