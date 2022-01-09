@@ -154,8 +154,4 @@ const projects = [
     },
 ];
 
-projects.forEach(project => {
-    project.html = project.html.replace(/^\t{3}/gm, '');
-});
-
 export default projects;

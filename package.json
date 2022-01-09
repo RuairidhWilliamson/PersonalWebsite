@@ -43,7 +43,7 @@
       "svelte"
     ],
     "moduleNameMapper": {
-      "\\.(scss|less|css|sass|png)$": "<rootDir>/__mocks__/styleMock.js"
+      "\\.(scss|less|css|sass|png|md)$": "<rootDir>/__mocks__/styleMock.js"
     }
   }
 }
