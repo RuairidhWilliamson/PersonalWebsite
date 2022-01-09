@@ -1,8 +1,6 @@
-import path from 'path';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
-import url from '@rollup/plugin-url';
 import svelte from 'rollup-plugin-svelte';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
@@ -18,17 +16,6 @@ const onwarn = (warning, onwarn) =>
 	(warning.code === 'MISSING_EXPORT' && /'preload'/.test(warning.message)) ||
 	(warning.code === 'CIRCULAR_DEPENDENCY' && /[/\\]@sapper[/\\]/.test(warning.message)) ||
 	onwarn(warning);
-
-const client_url_plugin = url({
-	sourceDir: path.resolve(__dirname, 'src/assets/images'),
-	publicPath: '/client/'
-});
-
-const server_url_plugin = url({
-	sourceDir: path.resolve(__dirname, 'src/assets/images'),
-	publicPath: '/client/',
-	emitFiles: false // already emitted by client build
-});
 
 export default {
 	client: {
@@ -49,7 +36,6 @@ export default {
 					hydratable: true
 				}
 			}),
-			client_url_plugin,
 			resolve({
 				browser: true,
 				dedupe: ['svelte']
@@ -102,7 +88,6 @@ export default {
 				},
 				emitCss: false
 			}),
-			server_url_plugin,
 			resolve({
 				dedupe: ['svelte']
 			}),

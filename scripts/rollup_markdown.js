@@ -3,6 +3,7 @@ const { marked } = require('marked');
 const { resolve, extname, join } = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const sharp = require('sharp');
 
 function markdown(opts = {}) {
     const {
@@ -14,24 +15,35 @@ function markdown(opts = {}) {
     if (!include) {
         throw Error("include option should be specified");
     }
-    const filter = createFilter(include, exclude);
+    const mdFilter = createFilter(include, exclude);
+    const imgFilter = createFilter(['**/*.png', '**/*.PNG', '**/*.jpg', '**/*.gif']);
     const copies = Object.create(null);
+
+    function processImg(path) {
+        let ext = extname(path);
+        if (['.png'].includes(ext)) {
+            ext = '.jpg';
+        }
+        const hash = crypto.createHash('sha1').update(path).digest('hex').substring(0, 16);
+        const dest = `${hash}${ext}`;
+        copies[path] = dest;
+
+        return `${publicPath}${dest}`;
+    }
 
     return {
         name: "markdown",
-
+        load(id) {
+            if (!imgFilter(id)) return;
+            return `export default "${processImg(id)}"`;
+        },
         transform(code, id) {
-            if (filter(id)) {
+            if (mdFilter(id)) {
                 const md = code;
                 const replaced_md = md.replace(/!\[(.+)\]\((.+)\)/g, function(_, $1, $2) {
                     const path = resolve($2);
-
-                    const ext = extname(path);
-                    const hash = crypto.createHash('sha1').update(path).digest('hex').substring(0, 16);
-                    const dest = `${hash}${ext}`;
-                    copies[path] = dest;
-
-                    return `![${$1}](${publicPath}${dest})`;
+                    const newPath = processImg(path);
+                    return `![${$1}](${newPath})`;
                 });
                 const html = JSON.stringify(marked.parse(replaced_md));
 
@@ -49,8 +61,11 @@ function markdown(opts = {}) {
             await Promise.all(Object.keys(copies).map(async src => {
                 const dest = copies[src];
                 const output = join(base, dest);
-
-                return fs.promises.copyFile(src, output);
+                if (src.endsWith('.png')) {
+                    return sharp(src).resize(600).jpeg().toFile(output);
+                } else {
+                    return fs.promises.copyFile(src, output);
+                }
             }));
         }
     };

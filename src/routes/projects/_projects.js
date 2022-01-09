@@ -10,7 +10,7 @@ import TimeTerroristsImg from '../../assets/images/time_terrorists.png';
 import VideoLabeller from '../../projects/video-labeller.md';
 
 import LSystems from '../../projects/l-systems.md';
-import Fractal from '../../assets/images/fractal.png';
+import Fractal from '../../assets/images/fractal.PNG';
 
 import TrolleyFolly from '../../projects/trolley-folly.md';
 import TrolleyFollyImg from '../../assets/images/trolleyfolly.png';
