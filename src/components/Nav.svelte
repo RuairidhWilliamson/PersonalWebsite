@@ -1,5 +1,10 @@
 <script>
 	export let segment;
+
+	function toggleDarkMode() {
+		window.document.body.classList.toggle('dark');
+		window.localStorage.setItem('dark', window.document.body.classList.contains('dark'));
+	}
 </script>
 
 <style>
@@ -7,6 +12,10 @@
 		border-bottom: 1px solid rgba(255,62,0,0.1);
 		font-weight: 300;
 		padding: 0 1em;
+	}
+
+	:global(body.dark) nav {
+		background-color: #1e1e1e;
 	}
 
 	ul {
@@ -29,6 +38,20 @@
 
 	li:hover {
 		background-color: #eee;
+	}
+
+	:global(body.dark) li:hover {
+		background-color: #333;
+	}
+
+	span {
+		float: right;
+		padding: 1em 0.5em;
+		cursor: pointer;
+	}
+
+	span:hover {
+		color: rgb(255,62,0);
 	}
 
 	[aria-current] {
@@ -61,5 +84,6 @@
 		     the blog data when we hover over the link or tap it on a touchscreen -->
 		<li><a aria-current="{segment === 'projects' ? 'page' : undefined}" href="projects">projects</a></li>
 		<li><a aria-current="{segment === 'contact' ? 'page': undefined}" href="contact">contact</a></li>
+		<span on:click={toggleDarkMode}><i class="fas fa-moon"></i></span>
 	</ul>
 </nav>

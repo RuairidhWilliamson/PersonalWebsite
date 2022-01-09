@@ -7,6 +7,16 @@ body {
 	overflow-y: scroll;
 }
 
+body.light {
+	transition: background-color 0.5s;
+	background-color: white;
+}
+
+body.dark {
+	color: white;
+	background-color: #2e2e2e;
+}
+
 h1, h2, h3, h4, h5, h6 {
 	margin: 0 0 0.5em 0;
 	font-weight: 400;

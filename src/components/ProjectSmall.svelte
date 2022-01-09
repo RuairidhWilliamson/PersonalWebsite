@@ -19,6 +19,10 @@
         background-color: #eee;
     }
 
+	:global(body.dark) a:hover {
+		background-color: #444;
+	}
+
     div.img-container {
         height: 200px;
         margin: 0 0 1em 0;
