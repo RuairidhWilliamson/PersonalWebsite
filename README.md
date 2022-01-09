@@ -15,4 +15,4 @@ npm run export
 ```
 
 ## Structure
-Projects are defined 
+Projects are defined in `src/routes/projects/_projects.js` and often import a markdown file for the content from `src/projects`.
