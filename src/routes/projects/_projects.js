@@ -1,3 +1,9 @@
+import ClimateCrisis from '../../projects/climate-crisis.md';
+import ClimateCrisisImg from '../../assets/images/climatecrisis.png';
+
+import Crossword from '../../projects/crossword.md';
+import CrosswordImg from '../../assets/images/crossword.png';
+
 import WarpDriver from '../../projects/warp-driver.md';
 import WarpDriverImg from '../../assets/images/warpdriver.png';
 
@@ -36,12 +42,28 @@ import Planet from '../../assets/images/planet.png';
 
 const projects = [
     {
+        title: 'Climate Crisis',
+        slug: 'climate-crisis',
+        date: 'April 2022',
+        html: ClimateCrisis,
+        image: ClimateCrisisImg,
+        tags: ['C#', 'Unity', 'GameJam'],
+    },
+    {
+        title: 'Crossword',
+        slug: 'crossword',
+        date: 'February 2022',
+        html: Crossword,
+        image: CrosswordImg,
+        tags: ['Web', 'JS'],
+    },
+    {
         title: 'Warp Driver',
         slug: 'warp-driver',
         date: 'October 2021',
         html: WarpDriver,
         image: WarpDriverImg,
-        tags: ['C#', 'Unity']
+        tags: ['C#', 'Unity', 'GameJam'],
     },
     {
         title: 'Pseudo Haptic Drift Correction in VR',
@@ -49,7 +71,7 @@ const projects = [
         date: 'Sept 2020 - May 2021',
         html: PseudoHapticDrift,
         image: VRExperiment,
-        tags: ['VR', 'C#', 'Unity']
+        tags: ['VR', 'C#', 'Unity'],
     },
     {
         title: 'The Time Terrorists',
@@ -57,7 +79,7 @@ const projects = [
         date: 'October 2020',
         html: TimeTerrorists,
         image: TimeTerroristsImg,
-        tags: ['C#', 'Unity']
+        tags: ['C#', 'Unity', 'GameJam'],
     },
     {
         slug: 'video-labeller',
@@ -80,7 +102,7 @@ const projects = [
         date: 'July 2020',
         html: TrolleyFolly,
         image: TrolleyFollyImg,
-        tags: ['C#', 'Unity'],
+        tags: ['C#', 'Unity', 'GameJam'],
     },
     {
         slug: 'the-genie-of-light',
@@ -88,7 +110,7 @@ const projects = [
         date: 'April 2020',
         html: GenieOfLight,
         image: GenieOfLightImg,
-        tags: ['C#', 'Unity'],
+        tags: ['C#', 'Unity', 'GameJam'],
     },
     {
         slug: 'personal-website',

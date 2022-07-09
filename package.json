@@ -7,7 +7,7 @@
     "build": "sapper build --legacy",
     "export": "sapper export --legacy",
     "start": "node __sapper__/build",
-    "test": "jest test"
+    "test": "jest test && cspell src/**/*.md src/**/*.svelte src/**/*.js"
   },
   "dependencies": {
     "compression": "^1.7.1",
@@ -26,6 +26,7 @@
     "@rollup/plugin-replace": "^2.4.0",
     "@rollup/plugin-url": "^5.0.0",
     "babel-jest": "^27.0.6",
+    "cspell": "^6.2.3",
     "jest": "^27.0.6",
     "marked": "^4.0.10",
     "rollup": "^2.3.4",

@@ -34,10 +34,12 @@ function markdown(opts = {}) {
     return {
         name: "markdown",
         load(id) {
+            this.addWatchFile(id);
             if (!imgFilter(id)) return;
             return `export default "${processImg(id)}"`;
         },
         transform(code, id) {
+            this.addWatchFile(id);
             if (mdFilter(id)) {
                 const md = code;
                 const replaced_md = md.replace(/!\[(.+)\]\((.+)\)/g, function(_, $1, $2) {
@@ -67,7 +69,8 @@ function markdown(opts = {}) {
                     return fs.promises.copyFile(src, output);
                 }
             }));
-        }
+        },
+
     };
 }
 

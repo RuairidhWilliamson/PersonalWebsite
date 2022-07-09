@@ -4,6 +4,7 @@ It works by having a start string e.g. "X".
 
 Then having rules such as X -> XAX and A -> AB would result in the following:
 
+# spell-checker: disable
 ```
 n = 0: X
 n = 1: XAX
@@ -13,6 +14,7 @@ n = 4: XAXABXAXABBXAXABXAXABBBXAXABXAXABBXAXABXAX
 n = 5: XAXABXAXABBXAXABXAXABBBXAXABXAXABBXAXABXAXABBBBXAXABXAXABBXAXABXAXABBBXAXABXAXABBXAXABXAX
 ...
 ```
+# spell-checker: enable
         
 Then by creating rules based on the string for example forward, turn left and turn right we can draw images.
 
