@@ -73,8 +73,8 @@
 <h1>Ruairidh Williamson</h1>
 
 <div class="socials">
-	<a target=_blank href="https://www.linkedin.com/in/ruairidh-williamson/"><i class="fab fa-linkedin"></i></a>
-	<a target=_blank href="https://github.com/RuairidhWilliamson"><i class="fab fa-github"></i></a>
+	<a target=_blank rel=noreferrer href="https://www.linkedin.com/in/ruairidh-williamson/"><i class="fab fa-linkedin"></i></a>
+	<a target=_blank rel=noreferrer href="https://github.com/RuairidhWilliamson"><i class="fab fa-github"></i></a>
 </div>
 
 <h5><a href="/projects">View All</a></h5>
