@@ -29,6 +29,7 @@
         "clearfix",
         "rgba",
         "wordle",
-        "websockets"
+        "websockets",
+        "realise"
     ]
 }

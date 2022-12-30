@@ -16,13 +16,13 @@ function markdown(opts = {}) {
         throw Error("include option should be specified");
     }
     const mdFilter = createFilter(include, exclude);
-    const imgFilter = createFilter(['**/*.png', '**/*.PNG', '**/*.jpg', '**/*.gif']);
+    const imgFilter = createFilter(['**/*.png', '**/*.jpg', '**/*.gif']);
     const copies = Object.create(null);
 
     function processImg(path) {
         let ext = extname(path);
-        if (['.png'].includes(ext)) {
-            ext = '.jpg';
+        if (['.png', '.jpg', '.gif'].includes(ext)) {
+            ext = '.webp';
         }
         const hash = crypto.createHash('sha1').update(path).digest('hex').substring(0, 16);
         const dest = `${hash}${ext}`;
@@ -63,14 +63,13 @@ function markdown(opts = {}) {
             await Promise.all(Object.keys(copies).map(async src => {
                 const dest = copies[src];
                 const output = join(base, dest);
-                if (src.endsWith('.png')) {
-                    return sharp(src).resize(600).jpeg().toFile(output);
+                if (imgFilter(src)) {
+                    return sharp(src, {animated: true}).resize(600).webp().toFile(output);
                 } else {
                     return fs.promises.copyFile(src, output);
                 }
             }));
         },
-
     };
 }
 

@@ -1,6 +1,6 @@
 Another game jam! This time the Ludum Dare 50. After our last game (Warp Driver) we were feeling ambitious. We felt as though we had done well last time because the scope was well contained. A lot of our time was spent creating levels which doesn't have the greatest impact on place experience throughout the game.
 
-![Climate Crisis](src/assets/images/climatecrisis_animated.gif)
+![Climate Crisis](src/assets/images/climate_crisis_animated.gif)
 
 The theme was announced to be `Delay the inevitable`. Again Ludum Dare is a 72 hour game jam but we were limited to 48 hours on the weekend. We were inspired to create a game around climate change and weather eventually destroying the earth.
 
@@ -17,7 +17,7 @@ Population is a sort of health bar. It cannot be increased and is only diminishe
 
 Energy is consumed by all buildings that do not produce energy. If there is not enough supply to meet demand none of the energy requiring buildings will function.
 
-![Climate Crisis](src/assets/images/climatecrisis_animated2.gif)
+![Climate Crisis](src/assets/images/climate_crisis_animated2.gif)
 
 Periodically during the game random events would happen. These would be along the lines of natural disasters caused by pollution being too high, crimes because lack of police stations or natural disasters. The impact of these events can be curbed by having the correct type of emergency response buildings. The more total buildings there are the higher the requirement of emergency responders.
 

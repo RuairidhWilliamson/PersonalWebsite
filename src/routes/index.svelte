@@ -12,9 +12,9 @@
 	export let projects;
 
 	const featured = [
+        'boss-swap',
         'climate-crisis',
 		'warp-driver',
-		'pseudo-haptic-drift-correction',
 	];
 </script>
 
@@ -68,18 +68,18 @@
 
 <svelte:head>
 	<title>Ruairidh Williamson</title>
+    <meta name="description" content="Portfolio website for Ruairidh Williamson. View different projects Ruairidh has worked on and is interested in.">
 </svelte:head>
 
 <h1>Ruairidh Williamson</h1>
 
 <div class="socials">
-	<a target=_blank rel=noreferrer href="https://www.linkedin.com/in/ruairidh-williamson/"><i class="fab fa-linkedin"></i></a>
 	<a target=_blank rel=noreferrer href="https://github.com/RuairidhWilliamson"><i class="fab fa-github"></i></a>
+	<a target=_blank rel=noreferrer href="https://www.linkedin.com/in/ruairidh-williamson/"><i class="fab fa-linkedin"></i></a>
 </div>
 
 <h5><a href="/projects">View All</a></h5>
 <h2>Featured Projects</h2>
-
 
 <div class="projects-container">
 	{#each featured as project_slug}

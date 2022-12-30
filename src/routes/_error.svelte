@@ -29,6 +29,7 @@
 
 <svelte:head>
 	<title>{status}</title>
+    <meta name="description" content="The page you are looking for could not be found.">
 </svelte:head>
 
 <h1>{status}</h1>
