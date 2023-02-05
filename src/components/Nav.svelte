@@ -5,6 +5,8 @@
 		window.document.body.classList.toggle('dark');
 		window.localStorage.setItem('dark', window.document.body.classList.contains('dark'));
 	}
+
+    function onKeyPress() {}
 </script>
 
 <style>
@@ -82,6 +84,6 @@
 
 		<li><a aria-current="{segment === 'projects' ? 'page' : undefined}" href="projects">projects</a></li>
 		<li><a aria-current="{segment === 'contact' ? 'page': undefined}" href="contact">contact</a></li>
-		<span on:click={toggleDarkMode}><i class="fas fa-moon"></i></span>
+		<span on:click={toggleDarkMode} on:keypress={onKeyPress}><i class="fas fa-moon"></i></span>
 	</ul>
 </nav>
