@@ -28,7 +28,7 @@
     <meta name="description" content="List of projects by Ruairidh Williamson.">
 </svelte:head>
 
-<h1>My Projects</h1>
+<h1>Projects</h1>
 
 <div class="projects-container">
 	{#each projects as project}
