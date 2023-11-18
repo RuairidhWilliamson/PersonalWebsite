@@ -1,0 +1,14 @@
+[package]
+name = "jobber"
+version.workspace = true
+edition.workspace = true
+
+[features]
+default = ["glob"]
+glob = ["dep:glob"]
+
+[dependencies]
+anyhow = "1.0.75"
+lru = "0.12.0"
+jobber_derive = { path = "./jobber_derive" }
+glob = { version = "0.3.1", optional = true }

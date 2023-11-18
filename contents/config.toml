@@ -1,0 +1,58 @@
+pages = [
+  "posts",
+  "contact",
+]
+
+featured = [
+  "parcel-purgatory",
+  "todl",
+  "boss-swap",
+]
+
+convert_images = "Webp"
+
+# [[posts]]
+# slug = "recgit"
+# [[posts]]
+# slug = "space-inserters"
+[[posts]]
+slug = "parcel-purgatory"
+[[posts]]
+slug = "todl"
+[[posts]]
+slug = "boss-swap"
+[[posts]]
+slug = "climate-crisis"
+[[posts]]
+slug = "crossword"
+[[posts]]
+slug = "warp-driver"
+[[posts]]
+slug = "pseudo-haptic-drift"
+[[posts]]
+slug = "time-terrorists"
+# [[posts]]
+# slug = "video-labeller"
+# [[posts]]
+# slug = "l-systems"
+[[posts]]
+slug = "trolley-folly"
+[[posts]]
+slug = "genie-of-light"
+[[posts]]
+slug = "personal-website"
+# [[posts]]
+# slug = "rust-chess"
+# [[posts]]
+# slug = "python-chess"
+# [[posts]]
+# slug = "car"
+# [[posts]]
+# slug = "news-quiz"
+# [[posts]]
+# slug = "cards"
+
+[details]
+name = "Ruairidh Williamson"
+email = "williamson.ruairidh+contact@gmail.com"
+summary = "I like to program things and this is where I document some of the things I make."

@@ -1,0 +1,43 @@
+[workspace]
+members = [
+  ".",
+  "jobber",
+  "jobber/jobber_derive",
+]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2021"
+
+[package]
+name = "personal_website"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+anyhow = { version = "1.0.75", features = ["backtrace"] }
+axum = "0.6.20"
+clap = { version = "4.4.6", features = ["derive"] }
+markdown = "1.0.0-alpha.14"
+notify-debouncer-mini = { version = "0.4.1", default-features = false }
+serde = { version = "1.0.189", features = ["derive"] }
+tera = "1.19.1"
+tokio = { version = "1.33.0", features = ["full"] }
+tower-http = { version = "0.4.4", features = ["fs"] }
+futures-util = "0.3"
+tokio-stream = { version = "0.1.14", features = ["sync"] }
+tower = "0.4.13"
+walkdir = "2.4.0"
+toml = "0.8.4"
+nlprule = "0.6.4"
+lru = "0.12.0"
+minify-html = "0.11.1"
+minify-js = "0.5.6"
+css-minify = "0.3.1"
+image = { version = "0.24.7", features = ["webp-encoder"] }
+regex = "1.10.2"
+
+jobber = { path = "./jobber" }
+
+[build-dependencies]
+nlprule-build = "0.6.4"

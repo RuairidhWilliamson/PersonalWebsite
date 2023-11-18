@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock title %}
+
+{% block content %}
+  <div>
+    <h2>Contact Me</h2>
+    <p><a href="mailto:{{details.email}}"><i class="fa-solid fa-envelope"></i> {{details.email}}</a></p>
+  </div>
+{% endblock content %}
