@@ -204,26 +204,19 @@ impl Site {
     ) -> Result<()> {
         let site_config = self.site_config_loader(ctx)?;
         let mut rendered = templates.render(src, &render_ctx)?;
-        let img_regex = regex::Regex::new("<img[^>]* src=\"/([^\"]+)\"[^>]*>")?;
+        let img_regex = regex::Regex::new("<img[^>]* src=\"([^\"]+)\"[^>]*>")?;
         rendered = img_regex
             .replace_all(&rendered, |cap: &regex::Captures<'_>| {
                 let img = cap.get(0).unwrap().as_str();
-                let path = Path::new(cap.get(1).unwrap().as_str());
-                self.copyfile(ctx, path, path).unwrap();
-                if let Some(img_fmt) = &site_config.convert_images {
-                    if img_fmt.is_supported_convert_extension(path.extension()) { 
-                        let mut new_path = path.to_path_buf();
-                        new_path.set_extension(img_fmt.extension());
-                        self.convert_image(ctx, &img_fmt, path, &new_path).unwrap();
-                        let mime_type = img_fmt.mime_type();
-                        let new_path_str = new_path.display();
-                        format!("<picture><source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>{img}</picture>")
-                    } else {
-                        img.to_owned()
-                    }
-                } else {
-                    img.to_owned()
-                }
+                let path = cap.get(1).unwrap().as_str().replace("&#x2F;", "/");
+                path.strip_prefix('/')
+                    .map(Path::new)
+                    .map(|src| {
+                        self.replace_img(ctx, img, src, &site_config.convert_images)
+                            .unwrap()
+                    })
+                    .flatten()
+                    .unwrap_or_else(|| img.to_owned())
             })
             .to_string();
         let rendered_bytes = if self.config.minify {
@@ -237,6 +230,30 @@ impl Site {
         }
         std::fs::write(destination, rendered_bytes)?;
         Ok(())
+    }
+
+    fn replace_img(
+        &self,
+        ctx: &mut JobCtx<'_>,
+        img: &str,
+        src: &Path,
+        convert: &Option<ImageConvert>,
+    ) -> Result<Option<String>> {
+        self.copyfile(ctx, src, src)?;
+        let Some(img_fmt) = convert else {
+            return Ok(None);
+        };
+        if !img_fmt.is_supported_convert_extension(src.extension()) {
+            return Ok(None);
+        }
+        let mut new_src = src.to_path_buf();
+        new_src.set_extension(img_fmt.extension());
+        self.convert_image(ctx, &img_fmt, src, &new_src)?;
+        let mime_type = img_fmt.mime_type();
+        let new_path_str = new_src.display();
+        Ok(Some(format!(
+            "<picture><source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>{img}</picture>"
+        )))
     }
 
     #[jobber::job]
