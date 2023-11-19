@@ -65,7 +65,7 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
     let dir_service = tower_http::services::ServeDir::new(&serve_dir);
     println!("Listening on {:?}", &config.addr);
     let mut service = axum::Router::new();
-    if config.http_cache {
+    if !config.http_cache {
         service = service.layer(NoCacheLayer);
     }
     service = service.nest_service("/", dir_service);
