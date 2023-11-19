@@ -31,6 +31,9 @@ pub struct ServerConfig {
 
     #[arg(long)]
     pub hot_reload: bool,
+
+    #[arg(long)]
+    pub http_cache: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -64,9 +64,11 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
 
     let dir_service = tower_http::services::ServeDir::new(&serve_dir);
     println!("Listening on {:?}", &config.addr);
-    let mut service = axum::Router::new()
-        .layer(NoCacheLayer)
-        .nest_service("/", dir_service);
+    let mut service = axum::Router::new();
+    if config.http_cache {
+        service = service.layer(NoCacheLayer);
+    }
+    service = service.nest_service("/", dir_service);
     if config.hot_reload {
         service = service
             .route("/hr.js", axum::routing::get(sse_script_handler))

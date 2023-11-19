@@ -68,6 +68,7 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  margin: 10px;
 }
 
 .navbar {
@@ -110,9 +111,15 @@ a.navbar-btn {
 }
 
 .post-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  row-gap: 30px;
+  gap: 10px;
+  /*display: grid;
+  grid-gap: 30px;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fill, minmax(250px, auto));
+  grid-auto-flow: row; */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .small-post {
@@ -120,6 +127,8 @@ a.navbar-btn {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 240px;
+  height: 220px;
 }
 
 .small-post:hover {
