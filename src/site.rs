@@ -145,7 +145,7 @@ impl Site {
 
     #[jobber::job]
     fn copyfile(&self, ctx: &mut JobCtx<'_>, src: &Path, dst: &Path) -> Result<()> {
-        println!("copyfile {src:?} -> {dst:?}");
+        println!(" Copyfile {src:?} -> {dst:?}");
         let source = self.config.root_dir.join(src);
         let destination = self.config.output_dir.join(dst);
         ctx.depends_file(&source)?;
@@ -167,7 +167,7 @@ impl Site {
         let source = self.config.root_dir.join(src);
         let destination = self.config.output_dir.join(dst);
         ctx.depends_file(&source)?;
-        println!("convert to {ty:?} {src:?} {dst:?}");
+        println!(" Convert image {ty:?} {src:?} -> {dst:?}");
         if let Some(dir) = destination.parent() {
             std::fs::create_dir_all(dir)?;
         }
@@ -258,7 +258,7 @@ impl Site {
 
     #[jobber::job]
     fn render_template_html(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        println!("Render {src}");
+        println!(" Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
@@ -268,7 +268,7 @@ impl Site {
 
     #[jobber::job]
     fn render_post(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<()> {
-        println!("Render post {}", post_config.slug);
+        println!(" Render post {}", post_config.slug);
         let post = self.post_loader(ctx, post_config)?;
         let templates = self.template_loader(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(post)?;
@@ -303,7 +303,7 @@ impl Site {
 
     #[jobber::job]
     fn render_template_js(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        println!("Render {src}");
+        println!(" Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
@@ -332,7 +332,7 @@ impl Site {
 
     #[jobber::job]
     fn render_template_css(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        println!("Render {src}");
+        println!(" Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;

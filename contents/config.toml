@@ -31,26 +31,12 @@ slug = "warp-driver"
 slug = "pseudo-haptic-drift"
 [[posts]]
 slug = "time-terrorists"
-# [[posts]]
-# slug = "video-labeller"
-# [[posts]]
-# slug = "l-systems"
 [[posts]]
 slug = "trolley-folly"
 [[posts]]
 slug = "genie-of-light"
 [[posts]]
 slug = "personal-website"
-# [[posts]]
-# slug = "rust-chess"
-# [[posts]]
-# slug = "python-chess"
-# [[posts]]
-# slug = "car"
-# [[posts]]
-# slug = "news-quiz"
-# [[posts]]
-# slug = "cards"
 
 [details]
 name = "Ruairidh Williamson"

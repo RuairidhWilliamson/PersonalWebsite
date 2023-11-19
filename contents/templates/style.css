@@ -58,6 +58,7 @@ a:hover {
   max-width: 800px;
   text-align: left;
   margin: 60px auto;
+  padding: 20px;
 }
 
 .home-banner {
@@ -68,7 +69,6 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin: 10px;
 }
 
 .navbar {
