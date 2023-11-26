@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use markdown::mdast::{Heading, Image, Node, Text};
 use serde::Serialize;
 
-use crate::{config::PostConfig, grammar_check::GrammarChecker};
+use crate::config::PostConfig;
 
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct PostDetails {
@@ -35,27 +35,6 @@ impl PostDetails {
             description: String::default(),
             contents,
         })
-    }
-
-    #[allow(unused)]
-    pub fn grammar_check(&self, grammar_checker: &mut GrammarChecker) -> Vec<String> {
-        const DISALLOWED_SOURCES: &[&str] = &["TYPOGRAPHY/EN_QUOTES/1", "GRAMMAR/TO_DO_HYPHEN/2"];
-        grammar_checker
-            .suggest(&self.contents)
-            .into_iter()
-            .filter(|suggestion| !DISALLOWED_SOURCES.contains(&suggestion.source()))
-            .map(|suggestion| {
-                let range = suggestion.span().byte().to_owned();
-                format!(
-                    "{}\n{}\n{}\n{}\n{}\n\n",
-                    self.slug,
-                    suggestion.source(),
-                    suggestion.message(),
-                    &self.contents[range],
-                    &suggestion.replacements().join(","),
-                )
-            })
-            .collect()
     }
 }
 

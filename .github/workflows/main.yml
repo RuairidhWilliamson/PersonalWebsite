@@ -13,7 +13,7 @@ jobs:
       - name: Build site
         run: |
           chmod +x personal_website
-          ./personal_website build -r contents --minify
+          target/release/personal_website build -r contents --minify
       - name: Auth
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}

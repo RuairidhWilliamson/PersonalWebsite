@@ -5,7 +5,6 @@ use clap::{Parser, Subcommand};
 use site::Site;
 
 mod config;
-mod grammar_check;
 mod post;
 mod server;
 mod site;
