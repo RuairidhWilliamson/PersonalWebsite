@@ -2,17 +2,17 @@
 {% block title %}Posts{% endblock title %}
 
 {% block content %}
-  <h1>Posts</h1>
-  <div class="post-grid">
+<h1>Posts</h1>
+<div class="post-grid">
   {% for post in posts -%}
-    <a class="small-post" href="/posts/{{ post.slug }}">
-      <img src="{{ post.image }}" alt="{{ post.title }}" class="thumb" />
-      <div>
-        <h3>{{ post.title }}</h3>
-        <h5>{{ post.date }}</h5>
-        <h6>{{ post.tags | join(sep=", ") }}</h6>
-      </div>
-    </a>
+  <a class="small-post" href="/posts/{{ post.slug }}/">
+    <img src="{{ post.image }}" alt="{{ post.title }}" class="thumb" />
+    <div>
+      <h3>{{ post.title }}</h3>
+      <h5>{{ post.date }}</h5>
+      <h6>{{ post.tags | join(sep=", ") }}</h6>
+    </div>
+  </a>
   {%- endfor %}
-  </div>
+</div>
 {% endblock content %}
