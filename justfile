@@ -1,3 +1,6 @@
+_default:
+	just --list --unsorted
+
 check:
 	cat ./contents/posts/*.md | aspell list
 
