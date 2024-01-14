@@ -2,7 +2,7 @@ use std::{collections::HashMap, hash::Hash, num::NonZeroUsize};
 
 use anyhow::Result;
 
-use crate::{cache::JobCtx, Cache, JobId};
+use crate::{Cache, JobCtx, JobId, RootJobOutput};
 
 #[derive(Default)]
 struct CallCounter {
@@ -218,7 +218,7 @@ fn basic_job_macro() {
 
 #[test]
 fn root_job() {
-    fn parent_job(cache: &Cache, sys: &mut CallCounter) -> Result<((), u64)> {
+    fn parent_job(cache: &Cache, sys: &mut CallCounter) -> Result<RootJobOutput<()>> {
         cache.root_job(JobId::new("parent_job", 0), |ctx: &mut JobCtx<'_>| {
             println!("Run parent");
             sys.inc("parent_job");
@@ -230,12 +230,12 @@ fn root_job() {
     std::fs::write("test_root_job.txt", "abc").unwrap();
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
-    let h1 = parent_job(&cache, &mut sys).unwrap().1;
+    let h1 = parent_job(&cache, &mut sys).unwrap().hash;
     assert_eq!(sys.count("parent_job"), 1);
 
     std::fs::write("test_root_job.txt", "abcdef").unwrap();
 
-    let h2 = parent_job(&cache, &mut sys).unwrap().1;
+    let h2 = parent_job(&cache, &mut sys).unwrap().hash;
     assert_eq!(sys.count("parent_job"), 2);
     assert_ne!(h1, h2);
 }

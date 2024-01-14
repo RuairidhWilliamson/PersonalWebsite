@@ -71,7 +71,7 @@ impl ImageConvert {
         let exts = match self {
             ImageConvert::Webp => &["png", "jpeg"],
         };
-        exts.into_iter()
+        exts.iter()
             .any(|e| ext.to_string_lossy().eq_ignore_ascii_case(e))
     }
 

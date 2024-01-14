@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use jobber::{Cache, JobCtx, JobIdBuilder};
+use jobber::{Cache, JobCtx, JobIdBuilder, RootJobOutput};
 use serde::Serialize;
 use walkdir::WalkDir;
 
@@ -31,10 +31,10 @@ impl Site {
         }
     }
 
-    pub fn build_site(&self, cache: &Cache) -> Result<((), u64)> {
+    pub fn build_site(&self, cache: &Cache) -> Result<u64> {
         println!("Building site...");
         let start = std::time::Instant::now();
-        let ((), hash) = cache.root_job(
+        let RootJobOutput { hash, stats, .. } = cache.root_job(
             JobIdBuilder::new("build_site").build(),
             |ctx: &mut JobCtx<'_>| {
                 // self.copy_all_assets(ctx)?;
@@ -57,7 +57,9 @@ impl Site {
         let end = std::time::Instant::now();
         let elapsed = (end - start).as_secs_f32();
         println!(" 🚀 Built {hash:x} ⏲️  {elapsed:.2} s");
-        Ok(((), hash))
+        println!(" Jobs Run: {}", stats.jobs_run);
+        println!(" Jobs Cached: {}", stats.jobs_cached);
+        Ok(hash)
     }
 
     #[jobber::job]
@@ -211,11 +213,10 @@ impl Site {
                 let path = cap.get(1).unwrap().as_str().replace("&#x2F;", "/");
                 path.strip_prefix('/')
                     .map(Path::new)
-                    .map(|src| {
+                    .and_then(|src| {
                         self.replace_img(ctx, img, src, &site_config.convert_images)
                             .unwrap()
                     })
-                    .flatten()
                     .unwrap_or_else(|| img.to_owned())
             })
             .to_string();
@@ -248,7 +249,7 @@ impl Site {
         }
         let mut new_src = src.to_path_buf();
         new_src.set_extension(img_fmt.extension());
-        self.convert_image(ctx, &img_fmt, src, &new_src)?;
+        self.convert_image(ctx, img_fmt, src, &new_src)?;
         let mime_type = img_fmt.mime_type();
         let new_path_str = new_src.display();
         Ok(Some(format!(

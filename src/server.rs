@@ -31,7 +31,7 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
 
     // Initial build
     let h = match site.build_site(&cache) {
-        Ok(((), h)) => h,
+        Ok(h) => h,
         Err(err) => {
             println!("Error building: {err:#}");
             0
@@ -49,7 +49,7 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
                 .unwrap()
                 .block_on(async {
                     match site.build_site(&cache) {
-                        Ok(((), h)) => {
+                        Ok(h) => {
                             tx.send(h).unwrap();
                         }
                         Err(err) => println!("Error rebuilding: {err:#}"),
