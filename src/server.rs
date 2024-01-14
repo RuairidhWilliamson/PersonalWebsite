@@ -1,6 +1,5 @@
 use std::{
     convert::Infallible,
-    num::NonZeroUsize,
     task::{Context, Poll},
 };
 
@@ -24,7 +23,7 @@ use tower::{Layer, Service};
 use crate::{config::ServerConfig, site::Site};
 
 pub async fn serve(config: ServerConfig) -> Result<()> {
-    let cache = jobber::Cache::new(NonZeroUsize::new(1024).unwrap());
+    let cache = jobber::Cache::new(config.build_config.build_cache_size);
     let watch_dir = config.build_config.root_dir.clone();
     let serve_dir = config.build_config.output_dir.clone();
     let site = Site::new(config.build_config, config.hot_reload);

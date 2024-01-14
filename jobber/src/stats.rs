@@ -12,6 +12,14 @@ impl Stats {
     pub fn jobs_run(&self) -> usize {
         self.jobs_cache_hit_dirty + self.jobs_cache_miss
     }
+
+    pub fn total_jobs(&self) -> usize {
+        self.jobs_cache_hit + self.jobs_run()
+    }
+
+    pub fn jobs_cache_percent(&self) -> f32 {
+        self.jobs_cache_hit as f32 / self.total_jobs() as f32 * 100.0
+    }
 }
 
 #[derive(Debug, Default, Clone)]

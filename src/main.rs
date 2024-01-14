@@ -1,12 +1,9 @@
-use std::num::NonZeroUsize;
-
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use site::Site;
 
 mod config;
 mod post;
-mod progress;
 mod server;
 mod site;
 
@@ -27,8 +24,8 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.command {
         Command::Build(config) => {
+            let cache = jobber::Cache::new(config.build_cache_size);
             let s = Site::new(config, false);
-            let cache = jobber::Cache::new(NonZeroUsize::new(1024).unwrap());
             s.build_site_with_cache(&cache).unwrap();
         }
         Command::Serve(config) => {

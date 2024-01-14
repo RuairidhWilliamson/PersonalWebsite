@@ -35,17 +35,23 @@ impl Cache {
         guard.generation
     }
 
-    fn increment_generation(&self) {
+    fn increment_generation(&self) -> usize {
         let generation = &mut self.internal.lock().unwrap().generation;
         if let Some(gen) = generation {
             *gen += 1;
+            *gen
         } else {
             *generation = Some(0);
+            0
         }
     }
 
-    pub(crate) fn root_ctx<'a, P: Progress>(&'a self, progress: &'a P) -> JobCtx {
-        JobCtx::root(self, progress)
+    pub(crate) fn root_ctx<'a, P: Progress>(
+        &'a self,
+        generation: usize,
+        progress: &'a P,
+    ) -> JobCtx {
+        JobCtx::root(self, generation, progress)
     }
 
     pub fn root_job<T, F>(&self, id: JobId, f: F) -> Result<RootJobOutput<T>>
@@ -67,9 +73,9 @@ impl Cache {
         P: Progress,
         F: FnOnce(&mut JobCtx<'_>) -> Result<T>,
     {
-        self.increment_generation();
+        let generation = self.increment_generation();
         let start_time = Instant::now();
-        let mut ctx = self.root_ctx(progress);
+        let mut ctx = self.root_ctx(generation, progress);
         let output = ctx.job(id, f)?;
         let hash = ctx.leaf_hash();
         let stats = ctx.stats();
@@ -80,6 +86,7 @@ impl Cache {
             runtime_execution_time: ctx.runtime_execution_time(),
         };
         Ok(RootJobOutput {
+            generation,
             output,
             hash,
             stats,
@@ -90,6 +97,7 @@ impl Cache {
 
 #[derive(Debug)]
 pub struct RootJobOutput<T> {
+    pub generation: usize,
     pub output: T,
     pub hash: u64,
     pub stats: Stats,

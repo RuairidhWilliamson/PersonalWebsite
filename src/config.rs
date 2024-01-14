@@ -1,4 +1,4 @@
-use std::{ffi::OsStr, net::SocketAddr, path::PathBuf};
+use std::{ffi::OsStr, net::SocketAddr, num::NonZeroUsize, path::PathBuf};
 
 use clap::Parser;
 use serde::{Deserialize, Serialize};
@@ -18,6 +18,9 @@ pub struct BuildConfig {
 
     #[arg(long)]
     pub minify: bool,
+
+    #[arg(long, default_value = "1024")]
+    pub build_cache_size: NonZeroUsize,
 }
 
 #[derive(Debug, Clone, Parser)]

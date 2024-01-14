@@ -14,6 +14,7 @@ use crate::{
 };
 
 pub struct JobCtx<'a> {
+    generation: usize,
     cache: &'a Cache,
     progress: &'a dyn Progress,
     stats: Arc<Mutex<Stats>>,
@@ -28,8 +29,9 @@ impl Hash for JobCtx<'_> {
 }
 
 impl<'a> JobCtx<'a> {
-    pub(crate) fn root<P: Progress>(cache: &'a Cache, progress: &'a P) -> Self {
+    pub(crate) fn root<P: Progress>(cache: &'a Cache, generation: usize, progress: &'a P) -> Self {
         Self {
+            generation,
             cache,
             progress,
             stats: Arc::default(),
@@ -60,6 +62,7 @@ impl JobCtx<'_> {
 
     fn child_ctx(&self) -> Self {
         Self {
+            generation: self.generation,
             cache: self.cache,
             progress: self.progress,
             stats: self.stats.clone(),
@@ -121,7 +124,10 @@ impl JobCtx<'_> {
     }
 
     fn report_progress(&self, stats: &Stats) {
-        self.progress.report(ProgressReport { stats });
+        self.progress.report(ProgressReport {
+            generation: self.generation,
+            stats,
+        });
     }
 
     pub(crate) fn stats(&self) -> Stats {

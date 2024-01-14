@@ -6,6 +6,7 @@ pub trait Progress {
 
 #[derive(Debug)]
 pub struct ProgressReport<'a> {
+    pub generation: usize,
     pub stats: &'a Stats,
 }
 

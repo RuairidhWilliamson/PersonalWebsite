@@ -1,14 +1,13 @@
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use jobber::{Cache, JobCtx, JobIdBuilder, RootJobOutput};
+use jobber::{Cache, JobCtx, JobIdBuilder, Progress, ProgressReport, RootJobOutput};
 use serde::Serialize;
 use walkdir::WalkDir;
 
 use crate::{
     config::{BuildConfig, ImageConvert, PostConfig, SiteConfig},
     post::PostDetails,
-    progress::SiteBuildProgress,
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -16,6 +15,28 @@ struct Info {
     details: crate::config::Details,
     posts: Vec<PostDetails>,
     featured: Vec<PostDetails>,
+}
+
+pub struct SiteBuildProgress;
+
+impl Progress for SiteBuildProgress {
+    fn report(
+        &self,
+        ProgressReport {
+            generation, stats, ..
+        }: ProgressReport,
+    ) {
+        print!("{}c", 27 as char);
+        println!();
+        println!(" 🔨 Building...");
+        println!(" Generation = {}", generation);
+        println!(
+            " Jobs = {} / {} = {:.1}%",
+            stats.jobs_run(),
+            stats.total_jobs(),
+            stats.jobs_cache_percent()
+        );
+    }
 }
 
 #[derive(Debug)]
@@ -35,6 +56,7 @@ impl Site {
     pub fn build_site_with_cache(&self, cache: &Cache) -> Result<u64> {
         println!("Building site...");
         let RootJobOutput {
+            generation,
             hash,
             stats,
             completed_stats,
@@ -45,10 +67,16 @@ impl Site {
             |ctx| self.build_site(ctx),
         )?;
         let elapsed = completed_stats.total_time.as_secs_f32();
+        print!("{}c", 27 as char);
+        println!();
         println!(" 🚀 Built {hash:x} ⏲️  {elapsed:.2} s");
-        println!(" Generation: {}", cache.get_generation().unwrap());
-        println!("{stats:#?}");
-        println!("{completed_stats:#?}");
+        println!(" Generation = {generation}");
+        println!(
+            " Jobs = {} / {} = {:.1}%",
+            stats.jobs_run(),
+            stats.total_jobs(),
+            stats.jobs_cache_percent()
+        );
         Ok(hash)
     }
 
