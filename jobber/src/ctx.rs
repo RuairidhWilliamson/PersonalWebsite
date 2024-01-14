@@ -1,17 +1,26 @@
 use std::{
-    hash::Hash,
+    collections::HashSet,
+    hash::{BuildHasher, Hash},
     path::Path,
     sync::{Arc, Mutex},
+    time::{Duration, Instant},
 };
 
 use anyhow::Result;
 
-use crate::{cache::JobStore, stats::Stats, Cache, JobId, Leaf, LeafHash};
+use crate::{
+    cache::{JobCacheOutput, JobStore},
+    Cache, JobId, Leaf, LeafHash, Progress, ProgressReport, Stats,
+};
 
 pub struct JobCtx<'a> {
-    pub(crate) cache: &'a Cache,
-    pub(crate) stats: Arc<Mutex<Stats>>,
-    pub(crate) deps_acc: Vec<LeafHash>,
+    cache: &'a Cache,
+    progress: &'a dyn Progress,
+    stats: Arc<Mutex<Stats>>,
+    // This is really a set but we allow duplicates
+    // OPTIMISE: Remove duplicates
+    leaves: Vec<LeafHash>,
+    runtime_execution_time: Duration,
 }
 
 impl Hash for JobCtx<'_> {
@@ -19,11 +28,13 @@ impl Hash for JobCtx<'_> {
 }
 
 impl<'a> JobCtx<'a> {
-    pub(crate) fn new(cache: &'a Cache) -> Self {
+    pub(crate) fn root<P: Progress>(cache: &'a Cache, progress: &'a P) -> Self {
         Self {
             cache,
-            stats: Default::default(),
-            deps_acc: Default::default(),
+            progress,
+            stats: Arc::default(),
+            leaves: Default::default(),
+            runtime_execution_time: Duration::default(),
         }
     }
 }
@@ -36,17 +47,24 @@ impl JobCtx<'_> {
         self.depends(Leaf::File(path.as_ref().to_path_buf()))
     }
 
+    #[cfg(feature = "glob")]
+    pub fn depends_glob(&mut self, glob: &str) -> Result<()> {
+        self.depends(Leaf::Glob(glob.to_owned()))
+    }
+
     pub fn depends(&mut self, leaf: Leaf) -> Result<()> {
         let leaf_hash = leaf.into_hash(&self.cache.hasher)?;
-        self.deps_acc.push(leaf_hash);
+        self.leaves.push(leaf_hash);
         Ok(())
     }
 
     fn child_ctx(&self) -> Self {
         Self {
             cache: self.cache,
+            progress: self.progress,
             stats: self.stats.clone(),
-            deps_acc: Default::default(),
+            leaves: Default::default(),
+            runtime_execution_time: Duration::default(),
         }
     }
 
@@ -55,35 +73,76 @@ impl JobCtx<'_> {
         T: Clone + Send + Sync + 'static,
         F: FnOnce(&mut Self) -> Result<T>,
     {
+        let runtime_start_time = Instant::now();
         {
-            let mut guard = self.cache.internal.lock().unwrap();
-            if let Some(store) = guard.get_cached_job(&id, &self.cache.hasher) {
-                {
-                    let mut stats_guard = self.stats.lock().unwrap();
-                    stats_guard.jobs_cached += 1;
-                }
-                self.deps_acc.extend(store.leaf_deps.clone());
-                return Ok(store.get_output().expect("output type mismatch"));
-            }
-        }
-        {
+            let mut cache_guard = self.cache.internal.lock().unwrap();
             let mut stats_guard = self.stats.lock().unwrap();
-            stats_guard.jobs_run += 1;
+            match cache_guard.get(&id, &self.cache.hasher, &mut stats_guard.leaf_stats) {
+                JobCacheOutput::Cached(store) => {
+                    stats_guard.jobs_cache_hit += 1;
+                    self.leaves.extend(store.leaf_deps.clone());
+                    self.report_progress(&stats_guard);
+                    let output = store.get_output().expect("output type mismatch");
+                    self.runtime_execution_time += runtime_start_time.elapsed();
+                    return Ok(output);
+                }
+                JobCacheOutput::CacheDirty => {
+                    stats_guard.jobs_cache_hit_dirty += 1;
+                }
+                JobCacheOutput::NotCached => {
+                    stats_guard.jobs_cache_miss += 1;
+                }
+            }
+            self.report_progress(&stats_guard);
         }
         let mut ctx = self.child_ctx();
+        // Exclude the job itself from runtime_execution_time
+        self.runtime_execution_time += runtime_start_time.elapsed();
 
         let result = job(&mut ctx);
 
-        let leaf_deps = ctx.deps_acc;
+        // Include the runtime execution time of child jobs
+        self.runtime_execution_time += ctx.runtime_execution_time;
+        // Restart the timer after job complete
+        let jobber_start_time = Instant::now();
+
+        let leaf_deps = ctx.leaves;
         if let Ok(result) = result.as_ref() {
             let mut guard = self.cache.internal.lock().unwrap();
             let job_store = JobStore {
                 leaf_deps: leaf_deps.clone(),
                 output: Box::new(result.clone()),
             };
-            guard.cache.put(id, job_store);
+            guard.put(id, job_store);
         }
-        self.deps_acc.extend(leaf_deps.clone());
+        self.leaves.extend(leaf_deps.clone());
+        self.runtime_execution_time += jobber_start_time.elapsed();
         result
+    }
+
+    fn report_progress(&self, stats: &Stats) {
+        self.progress.report(ProgressReport { stats });
+    }
+
+    pub(crate) fn stats(&self) -> Stats {
+        self.stats.lock().unwrap().clone()
+    }
+
+    pub(crate) fn leaf_hash(&self) -> u64 {
+        self.cache.hasher.hash_one(&self.leaves)
+    }
+
+    pub(crate) fn leaf_count(&self) -> usize {
+        self.leaves.len()
+    }
+
+    /// Maybe a lot slower compared to [`Self::leaf_count`]
+    pub(crate) fn unique_leaf_count(&self) -> usize {
+        let h: HashSet<_> = self.leaves.iter().collect();
+        h.len()
+    }
+
+    pub(crate) fn runtime_execution_time(&self) -> Duration {
+        self.runtime_execution_time
     }
 }

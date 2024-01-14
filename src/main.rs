@@ -6,6 +6,7 @@ use site::Site;
 
 mod config;
 mod post;
+mod progress;
 mod server;
 mod site;
 
@@ -28,7 +29,7 @@ async fn main() -> Result<()> {
         Command::Build(config) => {
             let s = Site::new(config, false);
             let cache = jobber::Cache::new(NonZeroUsize::new(1024).unwrap());
-            s.build_site(&cache).unwrap();
+            s.build_site_with_cache(&cache).unwrap();
         }
         Command::Serve(config) => {
             server::serve(config).await?;

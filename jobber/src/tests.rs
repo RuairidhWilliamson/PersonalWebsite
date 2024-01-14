@@ -36,10 +36,10 @@ fn basic_job() {
 
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
     assert_eq!(sys.count("parent_job"), 1);
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
     assert_eq!(sys.count("parent_job"), 1);
 }
 
@@ -65,11 +65,11 @@ fn basic_child_job() {
 
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
     assert_eq!(sys.count("parent_job"), 1);
     assert_eq!(sys.count("child_job"), 1);
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
     assert_eq!(sys.count("parent_job"), 1);
     assert_eq!(sys.count("child_job"), 1);
 }
@@ -89,16 +89,16 @@ fn basic_job_deps() {
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
 
     assert_eq!(sys.count("parent_job"), 1, "parent_job called");
 
     std::fs::write("test1.txt", "abcdef").unwrap();
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
 
     assert_eq!(sys.count("parent_job"), 2, "parent_job called");
 }
@@ -127,17 +127,17 @@ fn basic_child_job_deps() {
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
 
     assert_eq!(sys.count("parent_job"), 1, "parent_job called");
     assert_eq!(sys.count("child_job"), 1, "child_job called");
 
     std::fs::write("test_basic_child_job_deps.txt", "abcdef").unwrap();
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
 
     assert_eq!(sys.count("parent_job"), 2, "parent_job called");
     assert_eq!(sys.count("child_job"), 2, "child_job called");
@@ -170,26 +170,26 @@ fn advanced_child_job_deps() {
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
 
     assert_eq!(sys.count("parent_job"), 1, "parent_job called");
     assert_eq!(sys.count("child_job"), 1, "child_job called");
 
     std::fs::write("test_advanced_child_job_deps_child.txt", "abcdef").unwrap();
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
 
     assert_eq!(sys.count("parent_job"), 2, "parent_job called");
     assert_eq!(sys.count("child_job"), 2, "child_job called");
 
     std::fs::write("test_advanced_child_job_deps_parent.txt", "abcdef").unwrap();
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
 
     assert_eq!(sys.count("parent_job"), 3, "parent_job called");
     assert_eq!(sys.count("child_job"), 2, "child_job called");
@@ -209,10 +209,10 @@ fn basic_job_macro() {
 
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
     assert_eq!(sys.count("parent_job"), 1);
 
-    parent_job(&mut cache.root_ctx(), &mut sys).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys).unwrap();
     assert_eq!(sys.count("parent_job"), 1);
 }
 
@@ -254,12 +254,12 @@ fn basic_job_args_macro() {
 
     let mut sys = CallCounter::default();
     let cache = crate::Cache::new(NonZeroUsize::new(16).unwrap());
-    parent_job(&mut cache.root_ctx(), &mut sys, 0).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys, 0).unwrap();
     assert_eq!(sys.count("parent_job"), 1);
-    parent_job(&mut cache.root_ctx(), &mut sys, 1).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys, 1).unwrap();
     assert_eq!(sys.count("parent_job"), 2);
-    parent_job(&mut cache.root_ctx(), &mut sys, 0).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys, 0).unwrap();
     assert_eq!(sys.count("parent_job"), 2);
-    parent_job(&mut cache.root_ctx(), &mut sys, 1).unwrap();
+    parent_job(&mut cache.root_ctx(&()), &mut sys, 1).unwrap();
     assert_eq!(sys.count("parent_job"), 2);
 }

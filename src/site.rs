@@ -8,6 +8,7 @@ use walkdir::WalkDir;
 use crate::{
     config::{BuildConfig, ImageConvert, PostConfig, SiteConfig},
     post::PostDetails,
+    progress::SiteBuildProgress,
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -31,35 +32,42 @@ impl Site {
         }
     }
 
-    pub fn build_site(&self, cache: &Cache) -> Result<u64> {
+    pub fn build_site_with_cache(&self, cache: &Cache) -> Result<u64> {
         println!("Building site...");
-        let start = std::time::Instant::now();
-        let RootJobOutput { hash, stats, .. } = cache.root_job(
+        let RootJobOutput {
+            hash,
+            stats,
+            completed_stats,
+            ..
+        } = cache.root_job_with_progress(
             JobIdBuilder::new("build_site").build(),
-            |ctx: &mut JobCtx<'_>| {
-                // self.copy_all_assets(ctx)?;
-                self.copyfile(
-                    ctx,
-                    Path::new("assets/favicon.ico"),
-                    Path::new("assets/favicon.ico"),
-                )?;
-                self.copyfile(ctx, Path::new("assets/robots.txt"), Path::new("robots.txt"))?;
-                self.render_template_css(ctx, "style.css", Path::new("style.css"))?;
-                self.render_template_js(ctx, "theme.js", Path::new("theme.js"))?;
-                self.render_template_js(ctx, "navbar.js", Path::new("navbar.js"))?;
-                self.render_all_posts(ctx)?;
-                self.render_template_html(ctx, "index.html", Path::new("index.html"))?;
-                self.render_template_html(ctx, "404.html", Path::new("404.html"))?;
-                self.render_all_pages(ctx)?;
-                Ok(())
-            },
+            &SiteBuildProgress,
+            |ctx| self.build_site(ctx),
         )?;
-        let end = std::time::Instant::now();
-        let elapsed = (end - start).as_secs_f32();
+        let elapsed = completed_stats.total_time.as_secs_f32();
         println!(" 🚀 Built {hash:x} ⏲️  {elapsed:.2} s");
-        println!(" Jobs Run: {}", stats.jobs_run);
-        println!(" Jobs Cached: {}", stats.jobs_cached);
+        println!(" Generation: {}", cache.get_generation().unwrap());
+        println!("{stats:#?}");
+        println!("{completed_stats:#?}");
         Ok(hash)
+    }
+
+    fn build_site(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
+        // self.copy_all_assets(ctx)?;
+        self.copyfile(
+            ctx,
+            Path::new("assets/favicon.ico"),
+            Path::new("assets/favicon.ico"),
+        )?;
+        self.copyfile(ctx, Path::new("assets/robots.txt"), Path::new("robots.txt"))?;
+        self.render_template_css(ctx, "style.css", Path::new("style.css"))?;
+        self.render_template_js(ctx, "theme.js", Path::new("theme.js"))?;
+        self.render_template_js(ctx, "navbar.js", Path::new("navbar.js"))?;
+        self.render_all_posts(ctx)?;
+        self.render_template_html(ctx, "index.html", Path::new("index.html"))?;
+        self.render_template_html(ctx, "404.html", Path::new("404.html"))?;
+        self.render_all_pages(ctx)?;
+        Ok(())
     }
 
     #[jobber::job]
@@ -147,7 +155,8 @@ impl Site {
 
     #[jobber::job]
     fn copyfile(&self, ctx: &mut JobCtx<'_>, src: &Path, dst: &Path) -> Result<()> {
-        println!(" Copyfile {src:?} -> {dst:?}");
+        #[cfg(feature = "job_print")]
+        eprintln!("Copyfile {src:?} -> {dst:?}");
         let source = self.config.root_dir.join(src);
         let destination = self.config.output_dir.join(dst);
         ctx.depends_file(&source)?;
@@ -169,7 +178,8 @@ impl Site {
         let source = self.config.root_dir.join(src);
         let destination = self.config.output_dir.join(dst);
         ctx.depends_file(&source)?;
-        println!(" Convert image {ty:?} {src:?} -> {dst:?}");
+        #[cfg(feature = "job_print")]
+        eprintln!("Convert image {ty:?} {src:?} -> {dst:?}");
         if let Some(dir) = destination.parent() {
             std::fs::create_dir_all(dir)?;
         }
@@ -259,7 +269,8 @@ impl Site {
 
     #[jobber::job]
     fn render_template_html(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        println!(" Render {src}");
+        #[cfg(feature = "job_print")]
+        eprintln!("Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
@@ -269,7 +280,8 @@ impl Site {
 
     #[jobber::job]
     fn render_post(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<()> {
-        println!(" Render post {}", post_config.slug);
+        #[cfg(feature = "job_print")]
+        eprintln!("Render post {}", post_config.slug);
         let post = self.post_loader(ctx, post_config)?;
         let templates = self.template_loader(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(post)?;
@@ -304,7 +316,8 @@ impl Site {
 
     #[jobber::job]
     fn render_template_js(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        println!(" Render {src}");
+        #[cfg(feature = "job_print")]
+        eprintln!("Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
@@ -333,7 +346,8 @@ impl Site {
 
     #[jobber::job]
     fn render_template_css(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        println!(" Render {src}");
+        #[cfg(feature = "job_print")]
+        eprintln!("Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;

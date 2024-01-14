@@ -9,6 +9,9 @@ members = [
 version = "0.0.0"
 edition = "2021"
 
+[features]
+job_print = []
+
 [package]
 name = "personal_website"
 version = "0.1.0"

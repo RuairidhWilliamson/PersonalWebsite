@@ -1,14 +1,20 @@
 use std::{
     any::Any,
     collections::hash_map::RandomState,
-    hash::BuildHasher,
     num::NonZeroUsize,
     sync::{Arc, Mutex},
+    time::Instant,
 };
 
 use anyhow::Result;
 
-use crate::{ctx::JobCtx, jobs::JobId, leaf::LeafHash, stats::Stats};
+use crate::{
+    ctx::JobCtx,
+    jobs::JobId,
+    leaf::LeafHash,
+    stats::{CompleteStats, LeafStats, Stats},
+    Progress,
+};
 
 #[derive(Debug, Clone)]
 pub struct Cache {
@@ -24,13 +30,22 @@ impl Cache {
         }
     }
 
-    pub fn get_generation(&self) -> usize {
+    pub fn get_generation(&self) -> Option<usize> {
         let guard = self.internal.lock().unwrap();
         guard.generation
     }
 
-    pub fn root_ctx(&self) -> JobCtx {
-        JobCtx::new(self)
+    fn increment_generation(&self) {
+        let generation = &mut self.internal.lock().unwrap().generation;
+        if let Some(gen) = generation {
+            *gen += 1;
+        } else {
+            *generation = Some(0);
+        }
+    }
+
+    pub(crate) fn root_ctx<'a, P: Progress>(&'a self, progress: &'a P) -> JobCtx {
+        JobCtx::root(self, progress)
     }
 
     pub fn root_job<T, F>(&self, id: JobId, f: F) -> Result<RootJobOutput<T>>
@@ -38,45 +53,89 @@ impl Cache {
         T: Clone + Send + Sync + 'static,
         F: FnOnce(&mut JobCtx<'_>) -> Result<T>,
     {
-        let mut ctx = self.root_ctx();
+        self.root_job_with_progress(id, &(), f)
+    }
+
+    pub fn root_job_with_progress<'a, T, P, F>(
+        &'a self,
+        id: JobId,
+        progress: &'a P,
+        f: F,
+    ) -> Result<RootJobOutput<T>>
+    where
+        T: Clone + Send + Sync + 'static,
+        P: Progress,
+        F: FnOnce(&mut JobCtx<'_>) -> Result<T>,
+    {
+        self.increment_generation();
+        let start_time = Instant::now();
+        let mut ctx = self.root_ctx(progress);
         let output = ctx.job(id, f)?;
-        let hash = self.hasher.hash_one(&ctx.deps_acc);
-        let stats = ctx.stats.lock().unwrap().clone();
+        let hash = ctx.leaf_hash();
+        let stats = ctx.stats();
+        let completed_stats = CompleteStats {
+            leaves: ctx.leaf_count(),
+            unique_leaves: ctx.unique_leaf_count(),
+            total_time: start_time.elapsed(),
+            runtime_execution_time: ctx.runtime_execution_time(),
+        };
         Ok(RootJobOutput {
             output,
             hash,
             stats,
+            completed_stats,
         })
     }
 }
 
+#[derive(Debug)]
 pub struct RootJobOutput<T> {
     pub output: T,
     pub hash: u64,
     pub stats: Stats,
+    pub completed_stats: CompleteStats,
 }
 
 #[derive(Debug)]
 pub(crate) struct InternalCache {
-    pub(crate) cache: lru::LruCache<JobId, JobStore>,
-    pub(crate) generation: usize,
+    cache: lru::LruCache<JobId, JobStore>,
+    generation: Option<usize>,
 }
 
 impl InternalCache {
     fn new(cache_size: NonZeroUsize) -> Self {
         Self {
             cache: lru::LruCache::new(cache_size),
-            generation: 0,
+            generation: None,
         }
     }
 
-    pub(crate) fn get_cached_job(&mut self, id: &JobId, hasher: &RandomState) -> Option<&JobStore> {
-        let store = self.cache.get(id)?;
-        if store.calc_is_dirty(hasher) {
-            return None;
+    pub(crate) fn get(
+        &mut self,
+        id: &JobId,
+        hasher: &RandomState,
+        stats: &mut LeafStats,
+    ) -> JobCacheOutput {
+        let Some(store) = self.cache.get(id) else {
+            return JobCacheOutput::NotCached;
+        };
+
+        if store.calc_is_dirty(hasher, stats) {
+            JobCacheOutput::CacheDirty
+        } else {
+            JobCacheOutput::Cached(store)
         }
-        Some(store)
     }
+
+    pub(crate) fn put(&mut self, id: JobId, store: JobStore) {
+        self.cache.put(id, store);
+    }
+}
+
+pub(crate) enum JobCacheOutput<'a> {
+    Cached(&'a JobStore),
+    CacheDirty,
+    NotCached,
 }
 
 #[derive(Debug)]
@@ -86,9 +145,13 @@ pub(crate) struct JobStore {
 }
 
 impl JobStore {
-    fn calc_is_dirty(&self, hasher: &RandomState) -> bool {
+    pub(crate) fn calc_is_dirty(&self, hasher: &RandomState, stats: &mut LeafStats) -> bool {
         self.leaf_deps
             .iter()
+            .map(|l| {
+                stats.leaves_checked += 1;
+                l
+            })
             .any(|l| !matches!(l.is_dirty(hasher), Ok(false)))
     }
 

@@ -30,7 +30,7 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
     let site = Site::new(config.build_config, config.hot_reload);
 
     // Initial build
-    let h = match site.build_site(&cache) {
+    let h = match site.build_site_with_cache(&cache) {
         Ok(h) => h,
         Err(err) => {
             println!("Error building: {err:#}");
@@ -48,7 +48,7 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
                 .build()
                 .unwrap()
                 .block_on(async {
-                    match site.build_site(&cache) {
+                    match site.build_site_with_cache(&cache) {
                         Ok(h) => {
                             tx.send(h).unwrap();
                         }
