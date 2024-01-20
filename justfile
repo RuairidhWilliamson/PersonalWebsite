@@ -2,7 +2,7 @@ _default:
 	just --list --unsorted
 
 check:
-	cat ./contents/posts/*.md | aspell list
+	cat ./contents/posts/*.md | aspell list --mode=markdown
 
 build:
 	cargo r --release -- build -r contents --minify

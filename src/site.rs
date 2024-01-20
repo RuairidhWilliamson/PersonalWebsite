@@ -19,6 +19,32 @@ struct Info {
 
 pub struct SiteBuildProgress;
 
+impl SiteBuildProgress {
+    fn report_built(
+        &self,
+        RootJobOutput {
+            generation,
+            hash,
+            stats,
+            completed_stats,
+            ..
+        }: &RootJobOutput<()>,
+    ) {
+        let elapsed = completed_stats.total_time.as_secs_f32();
+        print!("{}c", 27 as char);
+        println!();
+        println!(" 🚀 Built {hash:x} ");
+        println!(" Generation = {generation}");
+        println!(
+            " Jobs = {} / {} = {:.1}%",
+            stats.jobs_run(),
+            stats.total_jobs(),
+            stats.jobs_cache_percent()
+        );
+        println!(" ⏱️  {elapsed:.2} s");
+    }
+}
+
 impl Progress for SiteBuildProgress {
     fn report(
         &self,
@@ -54,30 +80,15 @@ impl Site {
     }
 
     pub fn build_site_with_cache(&self, cache: &Cache) -> Result<u64> {
-        println!("Building site...");
-        let RootJobOutput {
-            generation,
-            hash,
-            stats,
-            completed_stats,
-            ..
-        } = cache.root_job_with_progress(
+        let progress = SiteBuildProgress;
+        let output = cache.root_job_with_progress(
             JobIdBuilder::new("build_site").build(),
-            &SiteBuildProgress,
+            &progress,
             |ctx| self.build_site(ctx),
         )?;
-        let elapsed = completed_stats.total_time.as_secs_f32();
-        print!("{}c", 27 as char);
-        println!();
-        println!(" 🚀 Built {hash:x} ⏲️  {elapsed:.2} s");
-        println!(" Generation = {generation}");
-        println!(
-            " Jobs = {} / {} = {:.1}%",
-            stats.jobs_run(),
-            stats.total_jobs(),
-            stats.jobs_cache_percent()
-        );
-        Ok(hash)
+        progress.report_built(&output);
+
+        Ok(output.hash)
     }
 
     fn build_site(&self, ctx: &mut JobCtx<'_>) -> Result<()> {

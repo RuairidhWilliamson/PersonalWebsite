@@ -4,17 +4,17 @@ pages = [
 ]
 
 featured = [
+  "space-inserters",
   "parcel-purgatory",
   "todl",
-  "boss-swap",
 ]
 
 convert_images = "Webp"
 
 # [[posts]]
 # slug = "recgit"
-# [[posts]]
-# slug = "space-inserters"
+[[posts]]
+slug = "space-inserters"
 [[posts]]
 slug = "parcel-purgatory"
 [[posts]]

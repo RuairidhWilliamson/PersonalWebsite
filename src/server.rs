@@ -40,7 +40,7 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
     // Watch for file changes
     let (tx, rx) = tokio::sync::watch::channel(h);
     let mut debouncer = notify_debouncer_mini::new_debouncer(
-        std::time::Duration::from_millis(500),
+        std::time::Duration::from_millis(1000),
         move |_res: notify_debouncer_mini::DebounceEventResult| {
             tokio::runtime::Builder::new_current_thread()
                 .enable_all()

@@ -6,7 +6,7 @@ C#, Unity, GameJam
 
 ---
 
-Ludum Dare 51. After the quite ambitious 3D game [Climate Crisis](/posts/climate-crisis) from last time we decided to do a 2D game to allow us to focus on the gameplay and the fun aspect. There were a few internet disruptions this time which reduced our time significantly and meant we did not implement all the features we wanted.
+Ludum Dare 51. After the quite ambitious 3D game [Climate Crisis](/posts/climate-crisis/) from last time we decided to do a 2D game to allow us to focus on the gameplay and the fun aspect. There were a few internet disruptions this time which reduced our time significantly and meant we did not implement all the features we wanted.
 
 ![Boss Swap](/assets/images/boss_swap1.png)
 
