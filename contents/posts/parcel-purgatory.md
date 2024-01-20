@@ -6,13 +6,13 @@ C#, Unity, GameJam
 
 ---
 
-![Parcel Purgatory](/assets/images/parcelpurgatory.png)
-
 ## Background
 As in the past, me and a friend participated in Ludum dare 53 this time the theme was `Delivery`.
 
 Our puzzle game is inspired by a web game called bloxorz or as we later found another game called [cuboid](https://en.wikipedia.org/wiki/Cuboid_(video_game)).
 The simple concept of the game is that the player controls a cuboid with dimensions 2x1x1. They can move the cuboid in any of 4 directions rotating about the edge. The game is a challenging puzzle game because the player is on a grid with a limited number of tiles. If the player moves off the tiles they will fall and be reset.
+
+![Parcel Purgatory](/assets/images/parcelpurgatory.png)
 
 ## Mechanics
 Our game changes some rules from its inspiration. In bloxorz if the player moves their cuboid so that it is partially on a tile but partially not on a tile it will roll off. We decided to allow this situation which means that the player has more freedom to maneuver but as a side effect the levels have fewer tiles in order to constrain the puzzle.
