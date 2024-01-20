@@ -21,7 +21,7 @@ edition.workspace = true
 anyhow = { version = "1.0.75", features = ["backtrace"] }
 axum = "0.6.20"
 clap = { version = "4.4.6", features = ["derive"] }
-markdown = "1.0.0-alpha.14"
+markdown = "1.0.0-alpha.16"
 notify-debouncer-mini = { version = "0.4.1", default-features = false }
 serde = { version = "1.0.189", features = ["derive"] }
 tera = "1.19.1"

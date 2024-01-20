@@ -41,7 +41,8 @@ a:visited {
   display: inline-block;
 }
 
-a.icon {
+a.icon,
+a.email {
   text-decoration: none;
 }
 
@@ -150,4 +151,56 @@ h4,
 h5,
 h6 {
   margin: 0.5em 0;
+}
+
+.post-container {
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+.post-contents {
+  max-width: 800px;
+}
+
+.post-overview {
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .post-overview {
+    display: none;
+  }
+}
+
+.post-overview>ul {
+  position: sticky;
+  top: 20px;
+  list-style-type: none;
+}
+
+.heading-link {
+  margin: 10px 5px;
+}
+
+.heading-link>a {
+  text-decoration: none;
+}
+
+.heading2 {
+  margin-left: 10px;
+}
+
+.heading3 {
+  margin-left: 20px;
+}
+
+.heading4 {
+  margin-left: 25px;
+}
+
+.heading4 {
+  margin-left: 30px;
 }

@@ -12,7 +12,15 @@ pub struct PostDetails {
     pub date: String,
     pub tags: Vec<String>,
     pub description: String,
+    pub headings: Vec<PostHeading>,
     pub contents: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PostHeading {
+    label: String,
+    kebab_label: String,
+    depth: u8,
 }
 
 impl PostDetails {
@@ -24,7 +32,11 @@ impl PostDetails {
         let image = extract_image(&node).context("extract image")?.to_owned();
         let date = extract_date(&node).context("extract date")?.to_owned();
         let tags = extract_tags(&node).context("extract tags")?.to_owned();
-        let contents = markdown::to_html(contents);
+        let headings = extract_headings(&node).to_owned();
+        let contents = add_heading_ids(
+            markdown::to_html_with_options(contents, &markdown::Options::gfm())
+                .map_err(|err| MarkdownToHtmlError { msg: err })?,
+        );
         Ok(PostDetails {
             slug,
             title,
@@ -33,22 +45,64 @@ impl PostDetails {
             tags,
             // TODO: Extract description
             description: String::default(),
+            headings,
             contents,
         })
     }
 }
 
+#[derive(Debug)]
+struct MarkdownToHtmlError {
+    msg: String,
+}
+
+impl std::fmt::Display for MarkdownToHtmlError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.msg)
+    }
+}
+
+impl std::error::Error for MarkdownToHtmlError {}
+
 fn find_map_ast<F, O>(node: &Node, checker: F) -> Option<O>
 where
     F: Fn(&Node) -> Option<O> + Clone,
 {
-    if let Some(output) = checker(node) {
-        Some(output)
-    } else {
-        node.children()?
-            .iter()
-            .find_map(|child| find_map_ast(child, checker.clone()))
+    fn helper<F, O>(node: &Node, checker: &F) -> Option<O>
+    where
+        F: Fn(&Node) -> Option<O>,
+    {
+        if let Some(output) = checker(node) {
+            Some(output)
+        } else {
+            node.children()?
+                .iter()
+                .find_map(|child| helper(child, checker))
+        }
     }
+    helper(node, &checker)
+}
+
+fn filter_map_ast<F, O>(node: &Node, checker: F) -> Vec<O>
+where
+    F: Fn(&Node) -> Option<O>,
+{
+    let mut acc = Vec::default();
+    fn helper<F, O>(node: &Node, checker: &F, acc: &mut Vec<O>)
+    where
+        F: Fn(&Node) -> Option<O>,
+    {
+        if let Some(o) = checker(node) {
+            acc.push(o);
+        }
+        if let Some(children) = node.children() {
+            for node in children {
+                helper(node, checker, acc);
+            }
+        }
+    }
+    helper(node, &checker, &mut acc);
+    acc
 }
 
 fn extract_text(node: &Node) -> Option<String> {
@@ -116,4 +170,35 @@ fn extract_tags(node: &Node) -> Option<Vec<String>> {
             .map(|s| s.to_owned())
             .collect(),
     )
+}
+
+fn extract_headings(node: &Node) -> Vec<PostHeading> {
+    filter_map_ast(node, |node| {
+        if let Node::Heading(Heading { depth, .. }) = node {
+            let label = extract_text(node)?;
+            Some(PostHeading {
+                kebab_label: kebab(&label),
+                label,
+                depth: *depth,
+            })
+        } else {
+            None
+        }
+    })
+}
+
+fn add_heading_ids(contents: String) -> String {
+    let header_pattern = regex::Regex::new("<h([1-6])>([^<]+)</h").unwrap();
+    header_pattern
+        .replace_all(&contents, |cap: &regex::Captures<'_>| {
+            let rank = cap.get(1).unwrap().as_str();
+            let inner = cap.get(2).unwrap().as_str();
+            let kebab_inner = kebab(inner);
+            format!("<h{rank} id=\"{kebab_inner}\">{inner}</h")
+        })
+        .to_string()
+}
+
+fn kebab(s: &str) -> String {
+    s.to_lowercase().replace(" ", "-")
 }
