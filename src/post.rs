@@ -200,5 +200,5 @@ fn add_heading_ids(contents: String) -> String {
 }
 
 fn kebab(s: &str) -> String {
-    s.to_lowercase().replace(" ", "-")
+    s.to_lowercase().replace(' ', "-")
 }
