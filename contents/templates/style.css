@@ -9,7 +9,7 @@ body.theme-light {
   --theme-bg-color: #fff;
   --theme-bg-hover-color: #ddd;
   --theme-fg-color: #333;
-  --theme-accent-color: rgb(255,62,0);
+  --theme-accent-color: rgb(255, 62, 0);
   --theme-nav-bg-color: #fff;
   --theme-nav-fg-color: #222;
 }
@@ -34,10 +34,15 @@ img {
   object-fit: cover;
 }
 
-a, a:visited {
+a,
+a:visited {
   color: var(--theme-fg-color);
-  text-decoration: none;
+  text-decoration: underline;
   display: inline-block;
+}
+
+a.icon {
+  text-decoration: none;
 }
 
 a:hover {
@@ -89,6 +94,7 @@ a.navbar-btn {
   margin: 0px 0px;
   padding: 21px 20px;
   color: var(--theme-nav-fg-color);
+  text-decoration: none;
 }
 
 .navbar-btn:hover {
@@ -129,6 +135,7 @@ a.navbar-btn {
   justify-content: space-between;
   width: 240px;
   height: 220px;
+  text-decoration: none;
 }
 
 .small-post:hover {
@@ -136,6 +143,11 @@ a.navbar-btn {
   color: inherit;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0.5em 0;
 }
