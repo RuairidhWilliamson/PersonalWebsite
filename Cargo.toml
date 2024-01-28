@@ -42,10 +42,10 @@ markdown = "1.0.0-alpha.16"
 minify-html = "0.15.0"
 minify-js = { git = "https://github.com/RuairidhWilliamson/minify-js.git", rev = "bbd1fc43c8aec6e16cfd17cca276f411de23f67c" }
 
-tokio = { version = "1.33.0", features = ["rt"], optional = true }
-axum = { version = "0.6.20", optional = true }
+tokio = { version = "1.33.0", features = ["rt", "net"], optional = true }
+axum = { version = "0.7.4", optional = true }
 tower = { version = "0.4.13", optional = true }
-tower-http = { version = "0.4.4", features = ["fs"], optional = true }
+tower-http = { version = "0.5.1", features = ["fs"], optional = true }
 notify-debouncer-mini = { version = "0.4.1", default-features = false, optional = true }
 futures-util = { version = "0.3", optional = true }
 tokio-stream = { version = "0.1.14", features = ["sync"], optional = true }

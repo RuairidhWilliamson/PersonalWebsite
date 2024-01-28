@@ -72,9 +72,8 @@ pub fn serve(config: ServerConfig) -> Result<()> {
         .build()
         .unwrap()
         .block_on(async {
-            axum::Server::bind(&config.addr)
-                .serve(app.into_make_service())
-                .await?;
+            let listener = tokio::net::TcpListener::bind(&config.addr).await?;
+            axum::serve(listener, app).await?;
             Ok(())
         })
 }
