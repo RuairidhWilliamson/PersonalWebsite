@@ -4,8 +4,10 @@ use site::Site;
 
 mod config;
 mod post;
-mod server;
 mod site;
+
+#[cfg(feature = "server")]
+mod server;
 
 #[derive(Debug, Parser)]
 struct Cli {
@@ -19,8 +21,7 @@ enum Command {
     Serve(config::ServerConfig),
 }
 
-#[tokio::main]
-async fn main() -> Result<()> {
+fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.command {
         Command::Build(config) => {
@@ -29,7 +30,13 @@ async fn main() -> Result<()> {
             s.build_site_with_cache(&cache).unwrap();
         }
         Command::Serve(config) => {
-            server::serve(config).await?;
+            #[cfg(feature = "server")]
+            server::serve(config)?;
+            #[cfg(not(feature = "server"))]
+            {
+                _ = config;
+                panic!("server feature not available, add -F server when building")
+            }
         }
     }
     Ok(())

@@ -10,7 +10,17 @@ version = "0.0.0"
 edition = "2021"
 
 [features]
+default = ["server"]
 job_print = []
+server = [
+  "dep:tokio",
+  "dep:axum",
+  "dep:tower",
+  "dep:tower-http",
+  "dep:notify-debouncer-mini",
+  "dep:futures-util",
+  "dep:tokio-stream",
+]
 
 [package]
 name = "personal_website"
@@ -19,24 +29,25 @@ edition.workspace = true
 
 [dependencies]
 anyhow = { version = "1.0.75", features = ["backtrace"] }
-axum = "0.6.20"
 clap = { version = "4.4.6", features = ["derive"] }
-markdown = "1.0.0-alpha.16"
-notify-debouncer-mini = { version = "0.4.1", default-features = false }
 serde = { version = "1.0.189", features = ["derive"] }
-tera = "1.19.1"
-tokio = { version = "1.33.0", features = ["full"] }
-tower-http = { version = "0.4.4", features = ["fs"] }
-futures-util = "0.3"
-tokio-stream = { version = "0.1.14", features = ["sync"] }
-tower = "0.4.13"
-walkdir = "2.4.0"
 toml = "0.8.4"
-lru = "0.12.0"
-minify-html = "0.11.1"
-minify-js = "0.5.6"
+regex = "1.10.2"
+
+walkdir = "2.4.0"
+tera = "1.19.1"
 css-minify = "0.3.1"
 image = { version = "0.24.7", features = ["webp-encoder"] }
-regex = "1.10.2"
+markdown = "1.0.0-alpha.16"
+minify-html = "0.15.0"
+minify-js = { git = "https://github.com/RuairidhWilliamson/minify-js.git", rev = "bbd1fc43c8aec6e16cfd17cca276f411de23f67c" }
+
+tokio = { version = "1.33.0", features = ["rt"], optional = true }
+axum = { version = "0.6.20", optional = true }
+tower = { version = "0.4.13", optional = true }
+tower-http = { version = "0.4.4", features = ["fs"], optional = true }
+notify-debouncer-mini = { version = "0.4.1", default-features = false, optional = true }
+futures-util = { version = "0.3", optional = true }
+tokio-stream = { version = "0.1.14", features = ["sync"], optional = true }
 
 jobber = { path = "./jobber" }

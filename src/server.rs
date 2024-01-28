@@ -22,7 +22,7 @@ use tower::{Layer, Service};
 
 use crate::{config::ServerConfig, site::Site};
 
-pub async fn serve(config: ServerConfig) -> Result<()> {
+pub fn serve(config: ServerConfig) -> Result<()> {
     let cache = jobber::Cache::new(config.build_config.build_cache_size);
     let watch_dir = config.build_config.root_dir.clone();
     let serve_dir = config.build_config.output_dir.clone();
@@ -41,19 +41,13 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
     let (tx, rx) = tokio::sync::watch::channel(h);
     let mut debouncer = notify_debouncer_mini::new_debouncer(
         std::time::Duration::from_millis(1000),
-        move |_res: notify_debouncer_mini::DebounceEventResult| {
-            tokio::runtime::Builder::new_current_thread()
-                .enable_all()
-                .build()
-                .unwrap()
-                .block_on(async {
-                    match site.build_site_with_cache(&cache) {
-                        Ok(h) => {
-                            tx.send(h).unwrap();
-                        }
-                        Err(err) => println!("Error rebuilding: {err:#}"),
-                    }
-                });
+        move |_res: notify_debouncer_mini::DebounceEventResult| match site
+            .build_site_with_cache(&cache)
+        {
+            Ok(h) => {
+                tx.send(h).unwrap();
+            }
+            Err(err) => println!("Error rebuilding: {err:#}"),
         },
     )?;
     debouncer.watcher().watch(
@@ -61,8 +55,7 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
         notify_debouncer_mini::notify::RecursiveMode::Recursive,
     )?;
 
-    let dir_service = tower_http::services::ServeDir::new(&serve_dir);
-    // println!("Listening on {:?}", &config.addr);
+    let dir_service = tower_http::services::ServeDir::new(serve_dir);
     let mut service = axum::Router::new();
     if !config.http_cache {
         service = service.layer(NoCacheLayer);
@@ -74,10 +67,16 @@ pub async fn serve(config: ServerConfig) -> Result<()> {
             .route("/hr", axum::routing::get(sse_handler));
     }
     let app = service.with_state(rx);
-    axum::Server::bind(&config.addr)
-        .serve(app.into_make_service())
-        .await?;
-    Ok(())
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            axum::Server::bind(&config.addr)
+                .serve(app.into_make_service())
+                .await?;
+            Ok(())
+        })
 }
 
 async fn sse_script_handler(State(rx): State<Receiver<u64>>) -> impl IntoResponse {

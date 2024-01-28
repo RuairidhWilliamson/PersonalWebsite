@@ -11,7 +11,7 @@ jobs:
       - name: Lints and Tests
         run: cargo fmt --check --all && cargo clippy -q --workspace && cargo test -q --workspace
       - name: Build rust
-        run: cargo build -q --release
+        run: cargo build -q --release --no-default-features
       - name: Build site
         run: target/release/personal_website build -r contents --minify
       - name: Auth
