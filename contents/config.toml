@@ -1,3 +1,11 @@
+convert_images = "Webp"
+
+[details]
+name = "Ruairidh Williamson"
+email = "rtaw.co.uk.impromptu302@passfwd.com"
+summary = "I like to program things and this is where I document some of the things I make."
+
+[pages]
 pages = [
   "posts",
   "contact",
@@ -9,36 +17,29 @@ featured = [
   "todl",
 ]
 
-convert_images = "Webp"
-
-# [[posts]]
+# [[pages.posts]]
 # slug = "recgit"
-[[posts]]
+[[pages.posts]]
 slug = "space-inserters"
-[[posts]]
+[[pages.posts]]
 slug = "parcel-purgatory"
-[[posts]]
+[[pages.posts]]
 slug = "todl"
-[[posts]]
+[[pages.posts]]
 slug = "boss-swap"
-[[posts]]
+[[pages.posts]]
 slug = "climate-crisis"
-[[posts]]
+[[pages.posts]]
 slug = "crossword"
-[[posts]]
+[[pages.posts]]
 slug = "warp-driver"
-[[posts]]
+[[pages.posts]]
 slug = "pseudo-haptic-drift"
-[[posts]]
+[[pages.posts]]
 slug = "time-terrorists"
-[[posts]]
+[[pages.posts]]
 slug = "trolley-folly"
-[[posts]]
+[[pages.posts]]
 slug = "genie-of-light"
-[[posts]]
+[[pages.posts]]
 slug = "personal-website"
-
-[details]
-name = "Ruairidh Williamson"
-email = "williamson.ruairidh+contact@gmail.com"
-summary = "I like to program things and this is where I document some of the things I make."

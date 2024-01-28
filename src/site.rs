@@ -30,7 +30,7 @@ impl SiteBuildProgress {
             ..
         }: &RootJobOutput<()>,
     ) {
-        let elapsed = completed_stats.total_time.as_secs_f32();
+        let elapsed = completed_stats.total_time;
         print!("{}c", 27 as char);
         println!();
         println!(" 🚀 Built {hash:x} ");
@@ -41,7 +41,7 @@ impl SiteBuildProgress {
             stats.total_jobs(),
             stats.jobs_cache_percent()
         );
-        println!(" ⏱️  {elapsed:.2} s");
+        println!(" ⏱️  {elapsed:.1?}");
     }
 }
 
@@ -123,6 +123,7 @@ impl Site {
         let site_config = self.site_config_loader(ctx)?;
         let src = self.config.root_dir.join("posts");
         site_config
+            .pages
             .posts
             .iter()
             .find(|&p| p.slug == post_config.slug)
@@ -139,6 +140,7 @@ impl Site {
     fn post_loader_by_slug(&self, ctx: &mut JobCtx<'_>, slug: &str) -> Result<PostDetails> {
         let site_config = self.site_config_loader(ctx)?;
         let post_config = site_config
+            .pages
             .posts
             .iter()
             .find(|p| p.slug == slug)
@@ -150,6 +152,7 @@ impl Site {
     fn featured_posts(&self, ctx: &mut JobCtx<'_>) -> Result<Vec<PostDetails>> {
         let site_config = self.site_config_loader(ctx)?;
         site_config
+            .pages
             .featured
             .iter()
             .map(|slug| self.post_loader_by_slug(ctx, slug))
@@ -160,6 +163,7 @@ impl Site {
     fn all_posts(&self, ctx: &mut JobCtx<'_>) -> Result<Vec<PostDetails>> {
         let site_config = self.site_config_loader(ctx)?;
         site_config
+            .pages
             .posts
             .iter()
             .map(|post_config| self.post_loader(ctx, post_config))
@@ -334,7 +338,7 @@ impl Site {
     #[jobber::job]
     fn render_all_posts(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
         let site_config = self.site_config_loader(ctx)?;
-        for post_config in &site_config.posts {
+        for post_config in &site_config.pages.posts {
             self.render_post(ctx, post_config)?;
         }
         Ok(())
@@ -343,7 +347,7 @@ impl Site {
     #[jobber::job]
     fn render_all_pages(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
         let site_config = self.site_config_loader(ctx)?;
-        for page in &site_config.pages {
+        for page in &site_config.pages.pages {
             self.render_template_html(
                 ctx,
                 &format!("{page}.html"),

@@ -43,9 +43,14 @@ pub struct ServerConfig {
 pub struct SiteConfig {
     pub convert_images: Option<ImageConvert>,
     pub details: Details,
+    pub pages: PagesConfig,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PagesConfig {
+    pub featured: Vec<String>,
     pub pages: Vec<String>,
     pub posts: Vec<PostConfig>,
-    pub featured: Vec<String>,
 }
 
 #[derive(Debug, Hash, Clone, Serialize, Deserialize)]
