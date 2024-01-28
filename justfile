@@ -1,7 +1,11 @@
+alias c := check
+
 _default:
 	just --list --unsorted
 
 check:
+	cargo fmt --check
+	cargo clippy
 	cat ./contents/posts/*.md | aspell list --mode=markdown
 
 build:
