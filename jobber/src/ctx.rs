@@ -10,7 +10,8 @@ use anyhow::Result;
 
 use crate::{
     cache::{JobCacheOutput, JobStore},
-    Cache, JobId, Leaf, LeafHash, Progress, ProgressReport, Stats,
+    leaf_set::LeafSet,
+    Cache, JobId, Leaf, Progress, ProgressReport, Stats,
 };
 
 pub struct JobCtx<'a> {
@@ -18,9 +19,7 @@ pub struct JobCtx<'a> {
     cache: &'a Cache,
     progress: &'a dyn Progress,
     stats: Arc<Mutex<Stats>>,
-    // This is really a set but we allow duplicates
-    // OPTIMISE: Remove duplicates
-    leaves: Vec<LeafHash>,
+    leaves: LeafSet,
     runtime_execution_time: Duration,
 }
 
@@ -29,7 +28,7 @@ impl Hash for JobCtx<'_> {
 }
 
 impl<'a> JobCtx<'a> {
-    pub(crate) fn root<P: Progress>(cache: &'a Cache, generation: usize, progress: &'a P) -> Self {
+    pub fn root<P: Progress>(cache: &'a Cache, generation: usize, progress: &'a P) -> Self {
         Self {
             generation,
             cache,
@@ -130,25 +129,30 @@ impl JobCtx<'_> {
         });
     }
 
-    pub(crate) fn stats(&self) -> Stats {
+    pub fn stats(&self) -> Stats {
         self.stats.lock().unwrap().clone()
     }
 
-    pub(crate) fn leaf_hash(&self) -> u64 {
-        self.cache.hasher.hash_one(&self.leaves)
+    pub fn leaf_hash(&self) -> u64 {
+        use std::hash::Hasher;
+        let mut h = self.cache.hasher.build_hasher();
+        for leaf in &self.leaves {
+            h.write_u64(leaf.hash);
+        }
+        h.finish()
     }
 
-    pub(crate) fn leaf_count(&self) -> usize {
+    pub fn leaf_count(&self) -> usize {
         self.leaves.len()
     }
 
     /// Maybe a lot slower compared to [`Self::leaf_count`]
-    pub(crate) fn unique_leaf_count(&self) -> usize {
+    pub fn unique_leaf_count(&self) -> usize {
         let h: HashSet<_> = self.leaves.iter().collect();
         h.len()
     }
 
-    pub(crate) fn runtime_execution_time(&self) -> Duration {
+    pub fn runtime_execution_time(&self) -> Duration {
         self.runtime_execution_time
     }
 }

@@ -11,15 +11,15 @@ use anyhow::Result;
 use crate::{
     ctx::JobCtx,
     jobs::JobId,
-    leaf::LeafHash,
+    leaf_set::LeafSet,
     stats::{CompleteStats, LeafStats, Stats},
     Progress,
 };
 
 #[derive(Debug, Clone)]
 pub struct Cache {
-    pub(crate) internal: Arc<Mutex<InternalCache>>,
-    pub(crate) hasher: RandomState,
+    pub internal: Arc<Mutex<InternalCache>>,
+    pub hasher: RandomState,
 }
 
 impl Cache {
@@ -46,11 +46,7 @@ impl Cache {
         }
     }
 
-    pub(crate) fn root_ctx<'a, P: Progress>(
-        &'a self,
-        generation: usize,
-        progress: &'a P,
-    ) -> JobCtx {
+    pub fn root_ctx<'a, P: Progress>(&'a self, generation: usize, progress: &'a P) -> JobCtx {
         JobCtx::root(self, generation, progress)
     }
 
@@ -105,7 +101,7 @@ pub struct RootJobOutput<T> {
 }
 
 #[derive(Debug)]
-pub(crate) struct InternalCache {
+pub struct InternalCache {
     cache: lru::LruCache<JobId, JobStore>,
     generation: Option<usize>,
 }
@@ -118,7 +114,7 @@ impl InternalCache {
         }
     }
 
-    pub(crate) fn get(
+    pub fn get(
         &mut self,
         id: &JobId,
         hasher: &RandomState,
@@ -135,25 +131,25 @@ impl InternalCache {
         }
     }
 
-    pub(crate) fn put(&mut self, id: JobId, store: JobStore) {
+    pub fn put(&mut self, id: JobId, store: JobStore) {
         self.cache.put(id, store);
     }
 }
 
-pub(crate) enum JobCacheOutput<'a> {
+pub enum JobCacheOutput<'a> {
     Cached(&'a JobStore),
     CacheDirty,
     NotCached,
 }
 
 #[derive(Debug)]
-pub(crate) struct JobStore {
-    pub(crate) leaf_deps: Vec<LeafHash>,
-    pub(crate) output: Box<dyn Any + Send + Sync>,
+pub struct JobStore {
+    pub leaf_deps: LeafSet,
+    pub output: Box<dyn Any + Send + Sync>,
 }
 
 impl JobStore {
-    pub(crate) fn calc_is_dirty(&self, hasher: &RandomState, stats: &mut LeafStats) -> bool {
+    pub fn calc_is_dirty(&self, hasher: &RandomState, stats: &mut LeafStats) -> bool {
         self.leaf_deps
             .iter()
             .map(|l| {
@@ -163,7 +159,7 @@ impl JobStore {
             .any(|l| !matches!(l.is_dirty(hasher), Ok(false)))
     }
 
-    pub(crate) fn get_output<T: Clone + 'static>(&self) -> Option<T> {
+    pub fn get_output<T: Clone + 'static>(&self) -> Option<T> {
         self.output.downcast_ref::<T>().cloned()
     }
 }

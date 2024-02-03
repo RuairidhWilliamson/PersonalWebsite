@@ -5,6 +5,7 @@ mod leaf;
 mod progress;
 mod stats;
 
+mod leaf_set;
 #[cfg(test)]
 mod tests;
 
