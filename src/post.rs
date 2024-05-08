@@ -34,8 +34,11 @@ impl PostDetails {
         let tags = extract_tags(&node).context("extract tags")?.to_owned();
         let headings = extract_headings(&node).to_owned();
         let contents = add_heading_ids(
-            markdown::to_html_with_options(contents, &markdown::Options::gfm())
-                .map_err(|err| MarkdownToHtmlError { msg: err })?,
+            markdown::to_html_with_options(contents, &markdown::Options::gfm()).map_err(|err| {
+                MarkdownToHtmlError {
+                    msg: err.to_string(),
+                }
+            })?,
         );
         Ok(PostDetails {
             slug,

@@ -37,7 +37,7 @@ regex = "1.10.2"
 walkdir = "2.4.0"
 tera = "1.19.1"
 css-minify = "0.3.1"
-image = { version = "0.24.7", features = ["webp-encoder"] }
+image = "0.25.1"
 markdown = "1.0.0-alpha.16"
 minify-html = "0.15.0"
 minify-js = { git = "https://github.com/RuairidhWilliamson/minify-js.git", rev = "bbd1fc43c8aec6e16cfd17cca276f411de23f67c" }
