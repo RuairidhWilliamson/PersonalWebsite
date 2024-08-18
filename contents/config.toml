@@ -17,8 +17,6 @@ featured = [
   "todl",
 ]
 
-# [[pages.posts]]
-# slug = "recgit"
 [[pages.posts]]
 slug = "space-inserters"
 [[pages.posts]]
