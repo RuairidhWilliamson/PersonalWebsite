@@ -258,6 +258,11 @@ impl Site {
         Ok(tera::Tera::new(&path)?)
     }
 
+    #[jobber::job]
+    fn img_tag_regex(&self, ctx: &mut JobCtx<'_>) -> Result<regex::Regex> {
+        Ok(regex::Regex::new("<img[^>]* src=\"([^\"]+)\"[^>]*>")?)
+    }
+
     fn render_template_html_common(
         &self,
         ctx: &mut JobCtx<'_>,
@@ -268,7 +273,7 @@ impl Site {
     ) -> Result<()> {
         let site_config = self.site_config_loader(ctx)?;
         let mut rendered = templates.render(src, &render_ctx)?;
-        let img_regex = regex::Regex::new("<img[^>]* src=\"([^\"]+)\"[^>]*>")?;
+        let img_regex = self.img_tag_regex(ctx)?;
         rendered = img_regex
             .replace_all(&rendered, |cap: &regex::Captures<'_>| {
                 let img = cap.get(0).unwrap().as_str();
@@ -295,6 +300,11 @@ impl Site {
         Ok(())
     }
 
+    #[jobber::job]
+    fn img_class_regex(&self, ctx: &mut JobCtx<'_>) -> Result<regex::Regex> {
+        Ok(regex::Regex::new("class=\"([^\"]*)\"")?)
+    }
+
     fn replace_img(
         &self,
         ctx: &mut JobCtx<'_>,
@@ -309,7 +319,7 @@ impl Site {
         if !img_fmt.is_supported_convert_extension(src.extension()) {
             return Ok(None);
         }
-        let class_regex = regex::Regex::new("class=\"([^\"]*)\"")?;
+        let class_regex = self.img_class_regex(ctx)?;
         let mut target_cover_size = (800, 800);
 
         if let Some(class) = class_regex
