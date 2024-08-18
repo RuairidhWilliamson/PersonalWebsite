@@ -24,23 +24,23 @@ pub struct PostHeading {
 }
 
 impl PostDetails {
-    pub fn extract(post_config: &PostConfig, contents: &str) -> Result<PostDetails> {
+    pub fn extract(post_config: &PostConfig, contents: &str) -> Result<Self> {
         let node = markdown::to_mdast(contents, &markdown::ParseOptions::default())
             .expect("parse markdown");
-        let slug = post_config.slug.to_owned();
-        let title = extract_title(&node).context("extract title")?.to_owned();
-        let image = extract_image(&node).context("extract image")?.to_owned();
-        let date = extract_date(&node).context("extract date")?.to_owned();
-        let tags = extract_tags(&node).context("extract tags")?.to_owned();
-        let headings = extract_headings(&node).to_owned();
+        let slug = post_config.slug.clone();
+        let title = extract_title(&node).context("extract title")?;
+        let image = extract_image(&node).context("extract image")?;
+        let date = extract_date(&node).context("extract date")?;
+        let tags = extract_tags(&node).context("extract tags")?;
+        let headings = extract_headings(&node);
         let contents = add_heading_ids(
-            markdown::to_html_with_options(contents, &markdown::Options::gfm()).map_err(|err| {
-                MarkdownToHtmlError {
+            &markdown::to_html_with_options(contents, &markdown::Options::gfm()).map_err(
+                |err| MarkdownToHtmlError {
                     msg: err.to_string(),
-                }
-            })?,
+                },
+            )?,
         );
-        Ok(PostDetails {
+        Ok(Self {
             slug,
             title,
             image,
@@ -90,7 +90,6 @@ fn filter_map_ast<F, O>(node: &Node, checker: F) -> Vec<O>
 where
     F: Fn(&Node) -> Option<O>,
 {
-    let mut acc = Vec::default();
     fn helper<F, O>(node: &Node, checker: &F, acc: &mut Vec<O>)
     where
         F: Fn(&Node) -> Option<O>,
@@ -104,6 +103,7 @@ where
             }
         }
     }
+    let mut acc = Vec::default();
     helper(node, &checker, &mut acc);
     acc
 }
@@ -170,7 +170,7 @@ fn extract_tags(node: &Node) -> Option<Vec<String>> {
     Some(
         extract_text(node.children()?.get(2)?)?
             .split(',')
-            .map(|s| s.to_owned())
+            .map(std::borrow::ToOwned::to_owned)
             .collect(),
     )
 }
@@ -190,10 +190,11 @@ fn extract_headings(node: &Node) -> Vec<PostHeading> {
     })
 }
 
-fn add_heading_ids(contents: String) -> String {
+fn add_heading_ids(contents: &str) -> String {
+    // TODO: Build this regex once
     let header_pattern = regex::Regex::new("<h([1-6])>([^<]+)</h").unwrap();
     header_pattern
-        .replace_all(&contents, |cap: &regex::Captures<'_>| {
+        .replace_all(contents, |cap: &regex::Captures<'_>| {
             let rank = cap.get(1).unwrap().as_str();
             let inner = cap.get(2).unwrap().as_str();
             let kebab_inner = kebab(inner);

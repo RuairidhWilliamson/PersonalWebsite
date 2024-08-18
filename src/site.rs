@@ -21,7 +21,6 @@ pub struct SiteBuildProgress;
 
 impl SiteBuildProgress {
     fn report_built(
-        &self,
         RootJobOutput {
             generation,
             hash,
@@ -55,7 +54,7 @@ impl Progress for SiteBuildProgress {
         print!("{}c", 27 as char);
         println!();
         println!(" 🔨 Building...");
-        println!(" Generation = {}", generation);
+        println!(" Generation = {generation}");
         println!(
             " Jobs = {} / {} = {:.1}%",
             stats.jobs_run(),
@@ -86,7 +85,7 @@ impl Site {
             &progress,
             |ctx| self.build_site(ctx),
         )?;
-        progress.report_built(&output);
+        SiteBuildProgress::report_built(&output);
 
         Ok(output.hash)
     }
@@ -115,7 +114,6 @@ impl Site {
         ctx.depends_file(&config_path)?;
         let config_contents = std::fs::read_to_string(config_path)?;
         let cfg: SiteConfig = toml::from_str(&config_contents)?;
-        dbg!(&cfg);
         Ok(cfg)
     }
 
@@ -254,7 +252,7 @@ impl Site {
             .join("*")
             .display()
             .to_string();
-        ctx.depends(jobber::Leaf::Glob(path.to_owned()))?;
+        ctx.depends(jobber::Leaf::Glob(path.clone()))?;
         Ok(tera::Tera::new(&path)?)
     }
 
@@ -266,13 +264,13 @@ impl Site {
     fn render_template_html_common(
         &self,
         ctx: &mut JobCtx<'_>,
-        templates: tera::Tera,
-        render_ctx: tera::Context,
+        templates: &tera::Tera,
+        render_ctx: &tera::Context,
         src: &str,
         dst: &Path,
     ) -> Result<()> {
         let site_config = self.site_config_loader(ctx)?;
-        let mut rendered = templates.render(src, &render_ctx)?;
+        let mut rendered = templates.render(src, render_ctx)?;
         let img_regex = self.img_tag_regex(ctx)?;
         rendered = img_regex
             .replace_all(&rendered, |cap: &regex::Captures<'_>| {
@@ -357,7 +355,7 @@ impl Site {
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
         render_ctx.insert("hot_reload", &self.include_hot_reload);
-        self.render_template_html_common(ctx, templates, render_ctx, src, dst)
+        self.render_template_html_common(ctx, &templates, &render_ctx, src, dst)
     }
 
     #[jobber::job]
@@ -371,7 +369,7 @@ impl Site {
         let dst = Path::new("posts")
             .join(&post_config.slug)
             .join("index.html");
-        self.render_template_html_common(ctx, templates, render_ctx, "post.html", &dst)
+        self.render_template_html_common(ctx, &templates, &render_ctx, "post.html", &dst)
     }
 
     #[jobber::job]

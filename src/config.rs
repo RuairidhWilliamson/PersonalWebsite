@@ -80,7 +80,7 @@ impl ImageConvertFormat {
             return false;
         };
         let exts = match self {
-            ImageConvertFormat::Webp => &["png", "jpeg"],
+            Self::Webp => &["png", "jpeg"],
         };
         exts.iter()
             .any(|e| ext.to_string_lossy().eq_ignore_ascii_case(e))
@@ -88,13 +88,13 @@ impl ImageConvertFormat {
 
     pub fn extension(&self) -> &str {
         match self {
-            ImageConvertFormat::Webp => "webp",
+            Self::Webp => "webp",
         }
     }
 
     pub fn mime_type(&self) -> &str {
         match self {
-            ImageConvertFormat::Webp => "image/webp",
+            Self::Webp => "image/webp",
         }
     }
 }
