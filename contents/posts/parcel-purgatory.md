@@ -21,7 +21,7 @@ The backstory behind the cuboid is that a person is inside the parcel and is rol
 
 Towards the end of the game we also introduce some more puzzle concepts such as the buttons that shrink and grow the player. These effects run out after a certain number of player movements.
 
-![Parcel Purgatory Gif](/assets/images/parcel.gif)
+![Parcel Purgatory GIF](/assets/images/parcel.gif)
 
 ## Implementation
 The implementation of the player movement was the most complicated part. Correctly rotating about the player and detecting when they should fall took some iteration.

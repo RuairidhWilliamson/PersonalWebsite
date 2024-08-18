@@ -1,4 +1,4 @@
-use std::{ffi::OsStr, net::SocketAddr, num::NonZeroUsize, path::PathBuf};
+use std::{ffi::OsStr, net::SocketAddr, num::NonZeroUsize, path::PathBuf, time::Duration};
 
 use clap::Parser;
 use serde::{Deserialize, Serialize};
@@ -37,6 +37,9 @@ pub struct ServerConfig {
 
     #[arg(long)]
     pub http_cache: bool,
+
+    #[arg(long, value_parser = humantime::parse_duration, default_value = "200ms")]
+    pub debounce_time: Duration,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

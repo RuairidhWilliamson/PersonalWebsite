@@ -12,11 +12,13 @@ pages = [
 ]
 
 featured = [
+  "personal-website-rs",
   "space-inserters",
   "parcel-purgatory",
-  "todl",
 ]
 
+[[pages.posts]]
+slug = "personal-website-rs"
 [[pages.posts]]
 slug = "space-inserters"
 [[pages.posts]]
