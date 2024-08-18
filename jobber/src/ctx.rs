@@ -64,12 +64,15 @@ impl JobCtx<'_> {
             generation: self.generation,
             cache: self.cache,
             progress: self.progress,
-            stats: self.stats.clone(),
+            stats: Arc::clone(&self.stats),
             leaves: Default::default(),
             runtime_execution_time: Duration::default(),
         }
     }
 
+    /// # Panics
+    /// Can panic if the internal lock or the stats lock is poisoned.
+    /// Can panic if the output type does not match the cached type
     pub fn job<T, F>(&mut self, id: JobId, job: F) -> Result<T>
     where
         T: Clone + Send + Sync + 'static,
@@ -117,7 +120,7 @@ impl JobCtx<'_> {
             };
             guard.put(id, job_store);
         }
-        self.leaves.extend(leaf_deps.clone());
+        self.leaves.extend(leaf_deps);
         self.runtime_execution_time += jobber_start_time.elapsed();
         result
     }
@@ -129,6 +132,8 @@ impl JobCtx<'_> {
         });
     }
 
+    /// # Panics
+    /// Can panic if the stats lock is poisoned
     pub fn stats(&self) -> Stats {
         self.stats.lock().unwrap().clone()
     }

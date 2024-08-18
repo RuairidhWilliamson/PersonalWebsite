@@ -16,19 +16,18 @@ pub enum Leaf {
 impl Leaf {
     pub fn hash(&self, hasher: &RandomState) -> Result<u64> {
         match self {
-            Leaf::File(path) => {
+            Self::File(path) => {
                 let contents = std::fs::read(path)?;
                 Ok(hasher.hash_one(contents))
             }
             #[cfg(feature = "glob")]
-            Leaf::Glob(pattern) => {
+            Self::Glob(pattern) => {
                 use std::hash::Hasher;
                 let mut hasher = hasher.build_hasher();
                 for entry in glob::glob(pattern)? {
                     let p = entry?;
-                    let contents = std::fs::read(&p)?;
                     p.hash(&mut hasher);
-                    contents.hash(&mut hasher);
+                    std::fs::read(&p)?.hash(&mut hasher);
                 }
                 Ok(hasher.finish())
             }

@@ -35,6 +35,7 @@ impl JobIdBuilder {
         }
     }
 
+    #[must_use]
     pub fn arg<A>(mut self, arg: A) -> Self
     where
         A: Hash,

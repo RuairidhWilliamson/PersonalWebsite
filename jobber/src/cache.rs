@@ -30,6 +30,8 @@ impl Cache {
         }
     }
 
+    /// # Panics
+    /// Can panic if the internal lock is poisoned
     pub fn get_generation(&self) -> Option<usize> {
         let guard = self.internal.lock().unwrap();
         guard.generation

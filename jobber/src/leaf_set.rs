@@ -12,8 +12,8 @@ impl LeafSet {
         self.leaves.insert(leaf_hash);
     }
 
-    pub fn extend(&mut self, other: LeafSet) {
-        self.leaves.extend(other.leaves)
+    pub fn extend(&mut self, other: Self) {
+        self.leaves.extend(other.leaves);
     }
 
     pub fn iter(&self) -> impl Iterator<Item = &LeafHash> {
