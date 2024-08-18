@@ -6,7 +6,7 @@ use serde::Serialize;
 use walkdir::WalkDir;
 
 use crate::{
-    config::{BuildConfig, ImageConvert, PostConfig, SiteConfig},
+    config::{BuildConfig, ImageConvertFormat, PostConfig, SiteConfig},
     post::PostDetails,
 };
 
@@ -115,6 +115,7 @@ impl Site {
         ctx.depends_file(&config_path)?;
         let config_contents = std::fs::read_to_string(config_path)?;
         let cfg: SiteConfig = toml::from_str(&config_contents)?;
+        dbg!(&cfg);
         Ok(cfg)
     }
 
@@ -214,10 +215,11 @@ impl Site {
     fn convert_image(
         &self,
         ctx: &mut JobCtx<'_>,
-        ty: &ImageConvert,
+        ty: &ImageConvertFormat,
+        target_cover_size: (u32, u32),
         src: &Path,
         dst: &Path,
-    ) -> Result<()> {
+    ) -> Result<(u32, u32)> {
         let source = self.config.root_dir.join(src);
         let destination = self.config.output_dir.join(dst);
         ctx.depends_file(&source)?;
@@ -228,11 +230,18 @@ impl Site {
         }
         let mut out = std::fs::File::create(destination)?;
         let img_fmt = match ty {
-            ImageConvert::Webp => image::ImageFormat::WebP,
+            ImageConvertFormat::Webp => image::ImageFormat::WebP,
         };
         let img = image::ImageReader::open(source)?.decode()?;
-        img.write_to(&mut out, img_fmt)?;
-        Ok(())
+        let w = img.width();
+        let h = img.height();
+        let new_w = w.min(target_cover_size.0);
+        let new_h = new_w * h / w;
+        let new_new_h = h.min(target_cover_size.1);
+        let new_new_w = new_new_h * new_w / new_h;
+        img.resize_to_fill(new_new_w, new_new_h, image::imageops::FilterType::Lanczos3)
+            .write_to(&mut out, img_fmt)?;
+        Ok((new_new_w, new_new_h))
     }
 
     #[jobber::job]
@@ -291,7 +300,7 @@ impl Site {
         ctx: &mut JobCtx<'_>,
         img: &str,
         src: &Path,
-        convert: &Option<ImageConvert>,
+        convert: &Option<ImageConvertFormat>,
     ) -> Result<Option<String>> {
         self.copyfile(ctx, src, src)?;
         let Some(img_fmt) = convert else {
@@ -300,9 +309,29 @@ impl Site {
         if !img_fmt.is_supported_convert_extension(src.extension()) {
             return Ok(None);
         }
+        let class_regex = regex::Regex::new("class=\"([^\"]*)\"")?;
+        let mut target_cover_size = (800, 800);
+
+        if let Some(class) = class_regex
+            .captures(img)
+            .and_then(|c| c.get(1))
+            .map(|c| c.as_str())
+        {
+            target_cover_size = if class.contains("thumb") {
+                (240, 130)
+            } else {
+                (800, 800)
+            };
+        }
         let mut new_src = src.to_path_buf();
+        new_src.set_file_name(format!(
+            "{}_{}x{}",
+            new_src.file_stem().unwrap().to_str().unwrap(),
+            target_cover_size.0,
+            target_cover_size.1
+        ));
         new_src.set_extension(img_fmt.extension());
-        self.convert_image(ctx, img_fmt, src, &new_src)?;
+        self.convert_image(ctx, img_fmt, target_cover_size, src, &new_src)?;
         let mime_type = img_fmt.mime_type();
         let new_path_str = new_src.display();
         Ok(Some(format!(

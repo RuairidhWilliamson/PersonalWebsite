@@ -44,7 +44,7 @@ pub struct ServerConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SiteConfig {
-    pub convert_images: Option<ImageConvert>,
+    pub convert_images: Option<ImageConvertFormat>,
     pub details: Details,
     pub pages: PagesConfig,
 }
@@ -70,17 +70,17 @@ pub struct Details {
 }
 
 #[derive(Debug, Hash, Clone, Serialize, Deserialize)]
-pub enum ImageConvert {
+pub enum ImageConvertFormat {
     Webp,
 }
 
-impl ImageConvert {
+impl ImageConvertFormat {
     pub fn is_supported_convert_extension(&self, ext: Option<&OsStr>) -> bool {
         let Some(ext) = ext else {
             return false;
         };
         let exts = match self {
-            ImageConvert::Webp => &["png", "jpeg"],
+            ImageConvertFormat::Webp => &["png", "jpeg"],
         };
         exts.iter()
             .any(|e| ext.to_string_lossy().eq_ignore_ascii_case(e))
@@ -88,13 +88,13 @@ impl ImageConvert {
 
     pub fn extension(&self) -> &str {
         match self {
-            ImageConvert::Webp => "webp",
+            ImageConvertFormat::Webp => "webp",
         }
     }
 
     pub fn mime_type(&self) -> &str {
         match self {
-            ImageConvert::Webp => "image/webp",
+            ImageConvertFormat::Webp => "image/webp",
         }
     }
 }
