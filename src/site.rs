@@ -230,7 +230,7 @@ impl Site {
         let img_fmt = match ty {
             ImageConvert::Webp => image::ImageFormat::WebP,
         };
-        let img = image::io::Reader::open(source)?.decode()?;
+        let img = image::ImageReader::open(source)?.decode()?;
         img.write_to(&mut out, img_fmt)?;
         Ok(())
     }
