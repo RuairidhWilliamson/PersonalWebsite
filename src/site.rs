@@ -325,11 +325,9 @@ impl Site {
             .and_then(|c| c.get(1))
             .map(|c| c.as_str())
         {
-            target_cover_size = if class.contains("thumb") {
-                (240, 130)
-            } else {
-                (800, 800)
-            };
+            if class.contains("thumb") {
+                target_cover_size = (240, 130);
+            }
         }
         let mut new_src = src.to_path_buf();
         new_src.set_file_name(format!(
@@ -339,11 +337,12 @@ impl Site {
             target_cover_size.1
         ));
         new_src.set_extension(img_fmt.extension());
-        self.convert_image(ctx, img_fmt, target_cover_size, src, &new_src)?;
+        let (width, height) = self.convert_image(ctx, img_fmt, target_cover_size, src, &new_src)?;
         let mime_type = img_fmt.mime_type();
         let new_path_str = new_src.display();
         Ok(Some(format!(
-            "<picture><source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>{img}</picture>"
+            "<picture><source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>{} width={width} height={height}></picture>",
+            img.strip_suffix(">").unwrap(),
         )))
     }
 
