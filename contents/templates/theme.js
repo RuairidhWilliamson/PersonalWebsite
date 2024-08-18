@@ -1,44 +1,40 @@
-const toggle = document.querySelector("#theme-toggle");
+const root = document.documentElement;
+const themePrefKey = "theme_pref";
 
-const getTheme = () => {
-  const theme = window.localStorage.getItem("theme");
-  if (theme === "dark" || theme === "light") {
-    return theme;
-  }
-  if (!window.matchMedia) {
-    // If we can't get os color scheme default to light
-    return "light";
-  }
-  // Use os prefered color scheme
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return "dark";
-  }
-  if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-    return "light";
-  }
-};
+const themePreference = window.localStorage.getItem(themePrefKey);
+if (themePreference === "theme-dark") {
+  root.classList.add("theme-dark");
+} else if (themePreference === "theme-light") {
+  root.classList.add("theme-light");
+}
 
-const updateTheme = () => {
-  const theme = getTheme();
-  if (theme === "dark") {
-    document.body.classList.add("theme-dark");
-    document.body.classList.remove("theme-light");
-  } else if (theme === "light") {
-    document.body.classList.remove("theme-dark");
-    document.body.classList.add("theme-light");
+function toggleTheme() {
+  if (root.classList.contains("theme-dark")) {
+    root.classList.remove("theme-dark");
+    setTheme("theme-light");
+  } else if (root.classList.contains("theme-light")) {
+    root.classList.remove("theme-light");
+    setTheme("theme-dark");
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    setTheme("theme-light");
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    setTheme("theme-dark");
   } else {
-    console.log("unknown theme:", theme);
+    setTheme("theme-dark");
   }
-};
+}
 
-toggle.addEventListener("click", () => {
-  const theme = getTheme();
-  window.localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
-  updateTheme();
-});
-updateTheme();
+function setTheme(theme) {
+  root.classList.add(theme);
+  window.localStorage.setItem(themePrefKey, theme);
+}
 
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
-  updateTheme();
-});
+function keyboardSelect(event, f) {
+  switch (event.which) {
+    case 13: // KEY_ENTER
+    case 32: // KEY_SPACE
+      f();
+      break;
+    default:
+  }
+}

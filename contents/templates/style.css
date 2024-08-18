@@ -5,7 +5,7 @@ body {
   text-align: center;
 }
 
-body.theme-light {
+html.theme-light {
   --theme-bg-color: #fff;
   --theme-bg-hover-color: #ddd;
   --theme-fg-color: #333;
@@ -14,13 +14,35 @@ body.theme-light {
   --theme-nav-fg-color: #222;
 }
 
-body.theme-dark {
+@media (prefers-color-scheme: light) {
+  html {
+    --theme-bg-color: #fff;
+    --theme-bg-hover-color: #ddd;
+    --theme-fg-color: #333;
+    --theme-accent-color: rgb(255, 62, 0);
+    --theme-nav-bg-color: #fff;
+    --theme-nav-fg-color: #222;
+  }
+}
+
+html.theme-dark {
   --theme-bg-color: #2e2e2e;
   --theme-bg-hover-color: #3e3e3e;
   --theme-fg-color: #fff;
   --theme-accent-color: #ff3e00;
   --theme-nav-bg-color: #1e1e1e;
   --theme-nav-fg-color: #aaa;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    --theme-bg-color: #2e2e2e;
+    --theme-bg-hover-color: #3e3e3e;
+    --theme-fg-color: #fff;
+    --theme-accent-color: #ff3e00;
+    --theme-nav-bg-color: #1e1e1e;
+    --theme-nav-fg-color: #aaa;
+  }
 }
 
 img {
