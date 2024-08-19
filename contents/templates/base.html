@@ -33,6 +33,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
+  <script src="/theme.js"></script>
 
   {% if hot_reload %}
   <!-- Hot Reload -->
@@ -52,9 +53,8 @@
     </div>
     <btn class="btn fa-solid fa-moon theme-toggle" id="theme-toggle" tabindex=0></btn>
   </div>
-  {% block content %}{% endblock content %}
-  <script src="/theme.js"></script>
   <script src="/navbar.js"></script>
+  {% block content %}{% endblock content %}
 
   <!-- Font Awseome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
@@ -67,8 +67,8 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script>hljs.highlightAll();</script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script defer src="/hl_all.js"></script>
 </body>
 
 </html>

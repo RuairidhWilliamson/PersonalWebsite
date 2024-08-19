@@ -101,6 +101,7 @@ impl Site {
         self.render_template_css(ctx, "style.css", Path::new("style.css"))?;
         self.render_template_js(ctx, "theme.js", Path::new("theme.js"))?;
         self.render_template_js(ctx, "navbar.js", Path::new("navbar.js"))?;
+        self.render_template_js(ctx, "hl_all.js", Path::new("hl_all.js"))?;
         self.render_all_posts(ctx)?;
         self.render_template_html(ctx, "index.html", Path::new("index.html"))?;
         self.render_template_html(ctx, "404.html", Path::new("404.html"))?;
@@ -235,7 +236,7 @@ impl Site {
         let h = img.height();
         let new_w = w.min(target_cover_size.0);
         let new_h = new_w * h / w;
-        let new_new_h = h.min(target_cover_size.1);
+        let new_new_h = h.min(new_h);
         let new_new_w = new_new_h * new_w / new_h;
         img.resize_to_fill(new_new_w, new_new_h, image::imageops::FilterType::Lanczos3)
             .write_to(&mut out, img_fmt)?;
