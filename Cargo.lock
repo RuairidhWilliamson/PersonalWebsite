@@ -1818,6 +1818,7 @@ dependencies = [
  "humantime",
  "image",
  "jobber",
+ "lazy_static",
  "markdown",
  "minify-html",
  "minify-js 0.6.0",

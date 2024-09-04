@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use lazy_static::lazy_static;
 use markdown::mdast::{Heading, Image, Node, Text};
 use serde::Serialize;
 
@@ -191,8 +192,10 @@ fn extract_headings(node: &Node) -> Vec<PostHeading> {
 }
 
 fn add_heading_ids(contents: &str) -> String {
-    // TODO: Build this regex once
-    let header_pattern = regex::Regex::new("<h([1-6])>([^<]+)</h").unwrap();
+    lazy_static! {
+        static ref header_pattern: regex::Regex =
+            regex::Regex::new("<h([1-6])>([^<]+)</h").unwrap();
+    };
     header_pattern
         .replace_all(contents, |cap: &regex::Captures<'_>| {
             let rank = cap.get(1).unwrap().as_str();
