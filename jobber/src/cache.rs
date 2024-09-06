@@ -154,9 +154,8 @@ impl JobStore {
     pub fn calc_is_dirty(&self, hasher: &RandomState, stats: &mut LeafStats) -> bool {
         self.leaf_deps
             .iter()
-            .map(|l| {
+            .inspect(|_| {
                 stats.leaves_checked += 1;
-                l
             })
             .any(|l| !matches!(l.is_dirty(hasher), Ok(false)))
     }

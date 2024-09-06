@@ -1,7 +1,7 @@
 use proc_macro::TokenStream;
 use quote::quote;
 
-#[allow(clippy::missing_panics_doc)]
+#[expect(clippy::missing_panics_doc)]
 #[proc_macro_attribute]
 pub fn job(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let ast: syn::ItemFn = syn::parse(item).expect("fn item");
