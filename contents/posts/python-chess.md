@@ -8,7 +8,7 @@ Python, Chess
 
 ![](/assets/images/fallback.png)
 
-Min max algorithm implemented in python with lichess API.
+Min max algorithm implemented in python with Lichess API.
 
 The program waits for a challenge from a player on Lichess and then plays using a Min Max algorithm looking 3 moves ahead which takes about 30 seconds to compute.
 

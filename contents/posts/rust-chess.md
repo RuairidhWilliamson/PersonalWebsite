@@ -10,7 +10,7 @@ Rust, Chess
 
 A min max chess engine written in rust.
 
-This engine is similar to the python chess engine except rewritten in rust and it uses the python program to communicate with the lichess API.
+This engine is similar to the python chess engine except rewritten in rust and it uses the python program to communicate with the Lichess API.
 
 Min max is a great algorithm for turn based games like chess but it takes exponentially long for the number of turns to look ahead.
 

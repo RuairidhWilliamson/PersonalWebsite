@@ -18,7 +18,7 @@ When I am programming I like to put in quick comments to remind myself to come b
 
 This is very useful since it allows me to focus on the bigger picture and not to get hyper focused on a small detail because I can mark it as something that I should look at later.
 
-The disadvantage is that my code always has some number of todo comments littered about in it with varying importance. They can be as harmless as a suggestion that a part of the code should be refactored or switched to a different api when it is released or that the code is unsound and there is an important bug that needs fixing.
+The disadvantage is that my code always has some number of TODO comments littered about in it with varying importance. They can be as harmless as a suggestion, that a part of the code should be refactored or switched to a different api when it is released or that the code is unsound and there is an important bug that needs fixing.
 
 In order to address these issues I wanted a command line tool that would quickly list all the todo comments in my code and help me find what I need to work on.
 
@@ -43,20 +43,20 @@ If you are unfamiliar with rust's todo macro: `todo!("I will fix this later")`. 
 
 But since we are telling the compiler to shut up when we use `todo!()` we better remove them later.
 
-Once we have the list of comment tags we fetch git information about when they were added and who added them. This is then output to the user in a colourful table. To aid in finding comment tags the user cares about, the kind of comment tags are categorized into fix, improvement, information and custom. Todl takes into account gitignore unless specified otherwise and can sort the output by when the comment tag was last changed.
+Once we have the list of comment tags we fetch git information about when they were added and who added them. This is then output to the user in a colourful table. To aid in finding comment tags the user cares about, the kind of comment tags are categorized into fix, improvement, information and custom. TODL takes into account gitignore unless specified otherwise and can sort the output by when the comment tag was last changed.
 
-Not only does todl have a cli interface it also has a documented api that allows other tools to build on it.
+Not only does TODL have a CLI interface it also has a documented API that allows other tools to build on it.
 
-Using cargo you can install todl using `cargo install todl`.
+Using cargo you can install TODL using `cargo install todl`.
 
 [![asciicast](https://asciinema.org/a/617576.svg)](https://asciinema.org/a/617576)
 
 ## Thoughts
-I am very pleased with todl and I use it regularly.
+I am very pleased with TODL and I use it regularly.
 
 In terms of performance I did some benchmarking on large repos and found it doesn't take more than a few seconds. Most of the time is spent fetching the git information about the matches.
 
-If I was to rewrite it I would change the search method to not be so specific to the source code type but instead match more based on heuristics of what it can determine comments probably look like in the supplied language. This would avoid the problem of todl only working for a small set of languages.
+If I was to rewrite it I would change the search method to not be so specific to the source code type but instead match more based on heuristics of what it can determine comments probably look like in the supplied language. This would avoid the problem of TODL only working for a small set of languages.
 
 [![](https://img.shields.io/crates/v/todl)](https://crates.io/crates/todl)
 [![](https://img.shields.io/docsrs/todl)](https://docs.rs/todl)
