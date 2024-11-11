@@ -86,7 +86,7 @@ async fn sse_script_handler(State(rx): State<Receiver<u64>>) -> impl IntoRespons
 async fn sse_handler(
     State(rx): State<Receiver<u64>>,
 ) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
-    use tokio_stream::StreamExt;
+    use tokio_stream::StreamExt as _;
     let stream = tokio_stream::wrappers::WatchStream::new(rx)
         .map(|i| Ok(Event::default().data(format!("{i}"))));
     Sse::new(stream)

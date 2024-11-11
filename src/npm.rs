@@ -1,5 +1,5 @@
 use std::{
-    io::{Read, Write},
+    io::Write as _,
     process::{Command, Stdio},
     sync::LazyLock,
 };
@@ -22,12 +22,12 @@ static PACKAGE_MANAGER: LazyLock<PackageManager> = LazyLock::new(|| {
 impl PackageManager {
     fn exists(&self) -> bool {
         match self {
-            PackageManager::Npm => Command::new("npm")
+            Self::Npm => Command::new("npm")
                 .arg("--version")
                 .status()
                 .unwrap()
                 .success(),
-            PackageManager::Pnpm => Command::new("pnpm")
+            Self::Pnpm => Command::new("pnpm")
                 .arg("--version")
                 .status()
                 .unwrap()
@@ -39,11 +39,11 @@ impl PackageManager {
         println!("Install {self:?}");
         let mut command: Command;
         match self {
-            PackageManager::Npm => {
+            Self::Npm => {
                 command = Command::new("npm");
                 command.arg("install");
             }
-            PackageManager::Pnpm => {
+            Self::Pnpm => {
                 command = Command::new("pnpm");
                 command.arg("install");
             }
@@ -64,12 +64,9 @@ pub fn minify_js(source: &str) -> Vec<u8> {
     std::thread::scope(|s| {
         let mut stdin = cmd.stdin.take().unwrap();
         s.spawn(move || {
-            write!(stdin, "{}", source).unwrap();
+            write!(stdin, "{source}").unwrap();
         });
-        let mut stdout = cmd.stdout.take().unwrap();
-        let mut v = Vec::new();
-        stdout.read_to_end(&mut v).unwrap();
-        v
+        cmd.wait_with_output().unwrap().stdout
     })
 }
 
@@ -92,12 +89,9 @@ pub fn minify_html(source: &str) -> Vec<u8> {
     std::thread::scope(|s| {
         let mut stdin = cmd.stdin.take().unwrap();
         s.spawn(move || {
-            write!(stdin, "{}", source).unwrap();
+            write!(stdin, "{source}").unwrap();
         });
-        let mut stdout = cmd.stdout.take().unwrap();
-        let mut v = Vec::new();
-        stdout.read_to_end(&mut v).unwrap();
-        v
+        cmd.wait_with_output().unwrap().stdout
     })
 }
 
@@ -112,11 +106,8 @@ pub fn minify_css(source: &str) -> Vec<u8> {
     std::thread::scope(|s| {
         let mut stdin = cmd.stdin.take().unwrap();
         s.spawn(move || {
-            write!(stdin, "{}", source).unwrap();
+            write!(stdin, "{source}").unwrap();
         });
-        let mut stdout = cmd.stdout.take().unwrap();
-        let mut v = Vec::new();
-        stdout.read_to_end(&mut v).unwrap();
-        v
+        cmd.wait_with_output().unwrap().stdout
     })
 }

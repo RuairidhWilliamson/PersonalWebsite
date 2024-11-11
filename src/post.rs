@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{Context as _, Result};
 use lazy_static::lazy_static;
 use markdown::mdast::{Heading, Image, Node, Text};
 use serde::Serialize;

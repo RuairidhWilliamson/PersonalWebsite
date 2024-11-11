@@ -1,6 +1,6 @@
 use std::{
     collections::hash_map::RandomState,
-    hash::{BuildHasher, Hash},
+    hash::{BuildHasher as _, Hash},
     path::PathBuf,
 };
 
@@ -22,7 +22,7 @@ impl Leaf {
             }
             #[cfg(feature = "glob")]
             Self::Glob(pattern) => {
-                use std::hash::Hasher;
+                use std::hash::Hasher as _;
                 let mut hasher = hasher.build_hasher();
                 for entry in glob::glob(pattern)? {
                     let p = entry?;

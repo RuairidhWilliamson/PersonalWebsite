@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use anyhow::{Context, Result};
+use anyhow::{Context as _, Result};
 use jobber::{Cache, JobCtx, JobIdBuilder, Progress, ProgressReport, RootJobOutput};
 use serde::Serialize;
 use walkdir::WalkDir;
@@ -288,10 +288,10 @@ impl Site {
                 path.strip_prefix('/')
                     .map(Path::new)
                     .and_then(|src| {
-                        self.replace_img(ctx, &img, src, &site_config.convert_images)
+                        self.replace_img(ctx, &img, src, site_config.convert_images.as_ref())
                             .unwrap()
                     })
-                    .unwrap_or_else(|| img.to_owned())
+                    .unwrap_or_else(|| img.clone())
             })
             .to_string();
         let rendered_bytes = if self.config.minify {
@@ -317,7 +317,7 @@ impl Site {
         ctx: &mut JobCtx<'_>,
         img: &str,
         src: &Path,
-        convert: &Option<ImageConvertFormat>,
+        convert: Option<&ImageConvertFormat>,
     ) -> Result<Option<String>> {
         self.copyfile(ctx, src, src)?;
         let Some(img_fmt) = convert else {

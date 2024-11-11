@@ -48,7 +48,7 @@ impl Cache {
         }
     }
 
-    pub fn root_ctx<'a, P: Progress>(&'a self, generation: usize, progress: &'a P) -> JobCtx {
+    pub fn root_ctx<'a, P: Progress>(&'a self, generation: usize, progress: &'a P) -> JobCtx<'a> {
         JobCtx::root(self, generation, progress)
     }
 

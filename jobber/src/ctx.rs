@@ -1,6 +1,6 @@
 use std::{
     collections::HashSet,
-    hash::{BuildHasher, Hash},
+    hash::{BuildHasher as _, Hash},
     path::Path,
     sync::{Arc, Mutex},
     time::{Duration, Instant},
@@ -139,7 +139,7 @@ impl JobCtx<'_> {
     }
 
     pub fn leaf_hash(&self) -> u64 {
-        use std::hash::Hasher;
+        use std::hash::Hasher as _;
         let mut h = self.cache.hasher.build_hasher();
         for leaf in &self.leaves {
             h.write_u64(leaf.hash);
