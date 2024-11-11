@@ -14,7 +14,7 @@ static PACKAGE_MANAGER: LazyLock<PackageManager> = LazyLock::new(|| {
     let pm = [PackageManager::Pnpm, PackageManager::Npm]
         .into_iter()
         .find(PackageManager::exists)
-        .unwrap();
+        .expect("npm / pnpm not found");
     pm.install();
     pm
 });
@@ -25,13 +25,11 @@ impl PackageManager {
             Self::Npm => Command::new("npm")
                 .arg("--version")
                 .status()
-                .unwrap()
-                .success(),
+                .is_ok_and(|s| s.success()),
             Self::Pnpm => Command::new("pnpm")
                 .arg("--version")
                 .status()
-                .unwrap()
-                .success(),
+                .is_ok_and(|s| s.success()),
         }
     }
 
