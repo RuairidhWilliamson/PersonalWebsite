@@ -3,6 +3,7 @@ use clap::{Parser, Subcommand};
 use site::Site;
 
 mod config;
+mod npm;
 mod post;
 mod site;
 

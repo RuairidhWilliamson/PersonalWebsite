@@ -20,6 +20,7 @@ struct Info {
 pub struct SiteBuildProgress;
 
 impl SiteBuildProgress {
+    #[cfg(feature = "progress")]
     fn report_built(
         RootJobOutput {
             generation,
@@ -42,9 +43,13 @@ impl SiteBuildProgress {
         );
         println!(" ⏱️  {elapsed:.1?}");
     }
+
+    #[cfg(not(feature = "progress"))]
+    fn report_built(_: &RootJobOutput<()>) {}
 }
 
 impl Progress for SiteBuildProgress {
+    #[cfg(feature = "progress")]
     fn report(
         &self,
         ProgressReport {
@@ -62,6 +67,9 @@ impl Progress for SiteBuildProgress {
             stats.jobs_cache_percent()
         );
     }
+
+    #[cfg(not(feature = "progress"))]
+    fn report(&self, _: ProgressReport) {}
 }
 
 #[derive(Debug)]
@@ -275,19 +283,19 @@ impl Site {
         let img_regex = self.img_tag_regex(ctx)?;
         rendered = img_regex
             .replace_all(&rendered, |cap: &regex::Captures<'_>| {
-                let img = cap.get(0).unwrap().as_str();
+                let img = cap.get(0).unwrap().as_str().replace("&#x2F;", "/");
                 let path = cap.get(1).unwrap().as_str().replace("&#x2F;", "/");
                 path.strip_prefix('/')
                     .map(Path::new)
                     .and_then(|src| {
-                        self.replace_img(ctx, img, src, &site_config.convert_images)
+                        self.replace_img(ctx, &img, src, &site_config.convert_images)
                             .unwrap()
                     })
                     .unwrap_or_else(|| img.to_owned())
             })
             .to_string();
         let rendered_bytes = if self.config.minify {
-            minify_html::minify(rendered.as_bytes(), &minify_html::Cfg::spec_compliant())
+            super::npm::minify_html(&rendered)
         } else {
             rendered.as_bytes().to_owned()
         };
@@ -343,7 +351,7 @@ impl Site {
         let new_path_str = new_src.display();
         Ok(Some(format!(
             "<picture><source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>{} width={width} height={height}></picture>",
-            img.strip_suffix(">").unwrap(),
+            img.strip_suffix(">").unwrap().trim_end_matches('/').trim(),
         )))
     }
 
@@ -404,15 +412,7 @@ impl Site {
         render_ctx.insert("hot_reload", &self.include_hot_reload);
         let rendered = templates.render(src, &render_ctx)?;
         let rendered_bytes = if self.config.minify {
-            let mut buf = Vec::new();
-            minify_js::minify(
-                &minify_js::Session::new(),
-                minify_js::TopLevelMode::Global,
-                rendered.as_bytes(),
-                &mut buf,
-            )
-            .unwrap();
-            buf
+            super::npm::minify_js(&rendered)
         } else {
             rendered.as_bytes().to_owned()
         };
@@ -434,10 +434,7 @@ impl Site {
         render_ctx.insert("hot_reload", &self.include_hot_reload);
         let rendered = templates.render(src, &render_ctx)?;
         let rendered_bytes = if self.config.minify {
-            css_minify::optimizations::Minifier::default()
-                .minify(&rendered, css_minify::optimizations::Level::Three)
-                .unwrap()
-                .into_bytes()
+            super::npm::minify_css(&rendered)
         } else {
             rendered.as_bytes().to_owned()
         };

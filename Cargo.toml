@@ -58,6 +58,7 @@ server = [
   "dep:futures-util",
   "dep:tokio-stream",
 ]
+progress = []
 
 [lints]
 workspace = true
@@ -70,12 +71,9 @@ regex = "1.10.2"
 serde = { version = "1.0.189", features = ["derive"] }
 toml = "0.8.4"
 
-css-minify = "0.5.2"
 humantime = "2.1.0"
 image = "0.25.1"
-markdown = "1.0.0-alpha.16"
-minify-html = "0.15.0"
-minify-js = { git = "https://github.com/RuairidhWilliamson/minify-js.git", rev = "bbd1fc43c8aec6e16cfd17cca276f411de23f67c" }
+markdown = "1.0.0-alpha.21"
 tera = "1.19.1"
 walkdir = "2.4.0"
 
