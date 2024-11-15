@@ -123,6 +123,7 @@ impl Site {
         ctx.depends_file(&config_path)?;
         let config_contents = std::fs::read_to_string(config_path)?;
         let cfg: SiteConfig = toml::from_str(&config_contents)?;
+        cfg.validate()?;
         Ok(cfg)
     }
 

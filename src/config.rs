@@ -49,6 +49,12 @@ pub struct SiteConfig {
     pub pages: PagesConfig,
 }
 
+impl SiteConfig {
+    pub fn validate(&self) -> anyhow::Result<()> {
+        self.pages.validate()
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PagesConfig {
     pub featured: Vec<String>,
@@ -56,10 +62,32 @@ pub struct PagesConfig {
     pub posts: Vec<PostConfig>,
 }
 
+impl PagesConfig {
+    pub fn validate(&self) -> anyhow::Result<()> {
+        self.posts.iter().try_for_each(PostConfig::validate)
+    }
+}
+
 #[derive(Debug, Hash, Clone, Serialize, Deserialize)]
 pub struct PostConfig {
     pub slug: String,
     pub image: Option<String>,
+}
+
+impl PostConfig {
+    pub fn validate(&self) -> anyhow::Result<()> {
+        if !self
+            .slug
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-')
+        {
+            return Err(anyhow::anyhow!(
+                "{} contains invalid character, must be alphabetic or dash",
+                self.slug
+            ));
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
