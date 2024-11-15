@@ -14,7 +14,7 @@ pub struct PostDetails {
     pub tags: Vec<String>,
     pub description: String,
     pub headings: Vec<PostHeading>,
-    pub contents: String,
+    pub html_contents: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -34,7 +34,7 @@ impl PostDetails {
         let date = extract_date(&node).context("extract date")?;
         let tags = extract_tags(&node).context("extract tags")?;
         let headings = extract_headings(&node);
-        let contents = add_heading_ids(
+        let html = add_heading_ids(
             &markdown::to_html_with_options(contents, &markdown::Options::gfm()).map_err(
                 |err| MarkdownToHtmlError {
                     msg: err.to_string(),
@@ -50,7 +50,7 @@ impl PostDetails {
             // TODO: Extract description
             description: String::default(),
             headings,
-            contents,
+            html_contents: html,
         })
     }
 }

@@ -28,7 +28,7 @@ The player has a fixed number of lives while the bosses have a shared health bar
 
 The implementation of this game was fun because we had to implement some relatively complex systems quickly. These included each bosses abilities, the boss swapping mechanic, AI for all the bosses, AI for the slimes, player movement and damage systems.
 
-One area that was troublesome was the leaping boss. I originally implemented this by calculating the required velocity for each frame to move to follow the curve from start to destination, however this technique would often miss the destination because the frame inaccuracies would compound. This wasn't too much of an issue however because the boss was leaping to where the player was, when the player was near the edge of the arena, there was a chance for the boss to jump out of the arena. To solve this I reimplemented it to simply linearly interpolate along the curve over the leap time. This way the boss always landed in the correct destination.
+One area that was troublesome was the leaping boss. I originally implemented this by calculating the required velocity for each frame to move to follow the curve from start to destination, however this technique would often miss the destination because the frame inaccuracies would compound. This wasn't too much of an issue however because the boss was leaping to where the player was. When the player was near the edge of the arena, there was a chance for the boss to jump out of the arena. To solve this I reimplemented it to simply linearly interpolate along the curve over the leap time. This way the boss always landed in the correct destination.
 
 ![Boss Swap](/assets/images/boss_swap3.png)
 

@@ -49,7 +49,7 @@ Level four introduces gaps that the player can cross firstly with a simple gap t
 
 Level five introduces the security robots. It first has an easy section that is designed such that the player can see the robot moving and hopefully realise the robot only moves when they move.
 
-Level six introduces security cameras. The level is very simple in terms of puzzle but requires the player to wait for the cameras to do wasted moves in order for the cameras to move into positions where they can move past. In hindsight, it would have been better to swap level five and six as in play testing level five presented more trouble for players than level six and introducing the concept of vision cones is more gently done in level six. The end of level six has some more traditional position puzzles.
+Level six introduces security cameras. The level is very simple in terms of puzzle but requires the player to wait for the cameras to do wasted moves in order for the cameras to move into positions where they can move past. In hindsight, it would have been better to swap level five and six. In play testing level five presented more trouble for players than level six and introducing the concept of vision cones is more gently done in level six. The end of level six has some more traditional position puzzles.
 
 ![Parcel Purgatory Level 6](/assets/images/parcelpurgatory4.png)
 

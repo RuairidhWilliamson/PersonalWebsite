@@ -1,8 +1,12 @@
-use std::path::Path;
+use std::{path::Path, str};
 
 use anyhow::{Context as _, Result};
+use harper_core::{
+    linting::{LintGroup, LintGroupConfig, Linter as _},
+    Document, FullDictionary, Span, WordMetadata,
+};
 use jobber::{Cache, JobCtx, JobIdBuilder, Progress, ProgressReport, RootJobOutput};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
 
 use crate::{
@@ -72,6 +76,17 @@ impl Progress for SiteBuildProgress {
     fn report(&self, _: ProgressReport) {}
 }
 
+#[derive(Deserialize)]
+pub struct AdditionalDictionary {
+    pub words: Vec<AdditionalWord>,
+}
+
+#[derive(Deserialize)]
+pub struct AdditionalWord {
+    pub word: String,
+    pub metadata: WordMetadata,
+}
+
 #[derive(Debug)]
 pub struct Site {
     config: BuildConfig,
@@ -128,7 +143,7 @@ impl Site {
     }
 
     #[jobber::job]
-    fn post_loader(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<PostDetails> {
+    fn post_markdown(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<String> {
         let site_config = self.site_config_loader(ctx)?;
         let src = self.config.root_dir.join("posts");
         site_config
@@ -140,6 +155,12 @@ impl Site {
         let path = src.join(format!("{}.md", post_config.slug));
         ctx.depends_file(&path)?;
         let contents = std::fs::read_to_string(&path).context(format!("read {path:?}"))?;
+        Ok(contents)
+    }
+
+    #[jobber::job]
+    fn post_loader(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<PostDetails> {
+        let contents = self.post_markdown(ctx, post_config)?;
         let post = PostDetails::extract(post_config, &contents)
             .context(format!("extract post {:?}", post_config.slug))?;
         Ok(post)
@@ -385,6 +406,7 @@ impl Site {
     fn render_all_posts(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
         let site_config = self.site_config_loader(ctx)?;
         for post_config in &site_config.pages.posts {
+            self.spell_check_post(ctx, post_config)?;
             self.render_post(ctx, post_config)?;
         }
         Ok(())
@@ -445,5 +467,74 @@ impl Site {
         }
         std::fs::write(destination, rendered_bytes)?;
         Ok(())
+    }
+
+    #[jobber::job]
+    fn dictionary(&self, ctx: &mut JobCtx<'_>) -> Result<harper_core::FullDictionary> {
+        let dictionary_path = self.config.root_dir.join("dictionary.toml");
+        ctx.depends_file(&dictionary_path)?;
+        let dictionary_contents = std::fs::read_to_string(dictionary_path)?;
+        let additional_dict: AdditionalDictionary = toml::from_str(&dictionary_contents)?;
+
+        let simple_dictionary_path = self.config.root_dir.join("dictionary.txt");
+        ctx.depends_file(&simple_dictionary_path)?;
+        let simple_dictionary_contents = std::fs::read_to_string(simple_dictionary_path)?;
+
+        let mut dict: FullDictionary = std::rc::Rc::unwrap_or_clone(FullDictionary::curated());
+        dict.extend_words(
+            additional_dict
+                .words
+                .into_iter()
+                .map(|w| (w.word.chars().collect::<Vec<char>>(), w.metadata)),
+        );
+        dict.extend_words(
+            simple_dictionary_contents
+                .lines()
+                .map(|l| (l.chars().collect::<Vec<char>>(), WordMetadata::default())),
+        );
+        Ok(dict)
+    }
+
+    #[jobber::job]
+    fn spell_ignore_list(&self, ctx: &mut JobCtx<'_>) -> Result<Vec<String>> {
+        let spell_ignore_path = self.config.root_dir.join("spell_ignore.txt");
+        ctx.depends_file(&spell_ignore_path)?;
+        let spell_ignore_list = std::fs::read_to_string(spell_ignore_path)?;
+        Ok(spell_ignore_list
+            .lines()
+            .map(str::to_owned)
+            .collect::<Vec<String>>())
+    }
+
+    #[jobber::job]
+    fn spell_check_post(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<()> {
+        let dict = self.dictionary(ctx)?;
+        let spell_ignore_list = self.spell_ignore_list(ctx)?;
+        let contents = self.post_markdown(ctx, post_config)?;
+        let document = Document::new_markdown(&contents, &dict);
+
+        let mut linter = LintGroup::new(LintGroupConfig::default(), dict);
+        let lints = linter.lint(&document);
+        if lints.is_empty() {
+            return Ok(());
+        }
+        let mut count = 0;
+        for l in lints {
+            let expanded_span = Span {
+                start: l.span.start.saturating_sub(10),
+                end: (l.span.end + 10).min(document.get_source().len() - 1),
+            };
+            let target = document.get_span_content_str(expanded_span);
+            if spell_ignore_list.iter().any(|s| target.contains(s)) {
+                continue;
+            }
+            eprintln!("{}\n {target}", l.message);
+            count += 1;
+        }
+        if count == 0 {
+            return Ok(());
+        }
+        let slug = &post_config.slug;
+        return Err(anyhow::anyhow!("post {slug} has spelling errors"));
     }
 }

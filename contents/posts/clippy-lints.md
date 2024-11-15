@@ -11,7 +11,7 @@ Rust
 ## Introduction
 Rust has many tools that make up its ecosystem.
 The main components are [rustc](https://github.com/rust-lang/rust) and [cargo](https://github.com/rust-lang/cargo) but [rustfmt](https://github.com/rust-lang/rustfmt), [clippy](https://github.com/rust-lang/rust-clippy) and [rust-analyzer](https://github.com/rust-lang/rust-analyzer) are often used too.
-Clippy, not to be confused with the the Windows help mascot, is a linter.
+Clippy, not to be confused with the Windows help mascot, is a linter.
 Rustc also performs linting but clippy's lints are more extensive and more opinionated.
 Clippy is distributed with [rustup](https://rustup.rs) along with the other rust components.
 It also follows the same release cycle where a new stable version is released every 6 weeks.
@@ -37,12 +37,12 @@ I have also provided 3 commented out that if your project suits would be good to
 Specifically `unwrap_used` can be very helpful to ensure your error handling is sound.
 If you really want to panic you can use `.expect()`.
 
-`nursery` is for lints that are unreliable or have known issues.
+The lint group `nursery` is for lints that are unreliable or have known issues.
 It is a bad idea to enable this whole group.
 It would be better to pick out specific lints that are useful and just enable them.
 However enabling this entire group hasn't caused me too many problems and there are only a few lints that I have had issues with.
 
-`pedantic` is for lints that are very opinionated and is used against clippy's own source code.
+The lint group `pedantic` is for lints that are very opinionated and is used against clippy's own source code.
 Enabling this adds some lints that I find are too restrictive.
 This is why some of these lints are set to allow.
 

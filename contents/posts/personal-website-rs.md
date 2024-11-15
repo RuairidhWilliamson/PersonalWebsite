@@ -156,7 +156,7 @@ There are HTTP headers that can be used to determine cache behavior without down
 
 - Jobber could persist its cache between program invocations.
 There would be value in writing the cache to disk and reusing after the program has exited.
-Currently jobber just uses an in memory cache which is not persisted.
+Currently jobber just uses an in-memory cache which is not persisted.
 There is also a potential issue that would need to be addressed with the hashing algorithm not being stable between computers or rust versions.
 Maybe a trade off could be made with a slower hashing algorithm like sha256 so that the cache could be shared across computers.
 

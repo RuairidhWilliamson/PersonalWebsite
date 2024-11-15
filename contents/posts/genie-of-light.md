@@ -14,7 +14,7 @@ The theme was announced as Keep it alive. Sam and I designed and programmed the 
 
 The goal of the game is to traverse cave levels avoiding traps while keeping alive the light in the genie.
 
-The player can control the brightness of the light however the brighter the light the faster it will deplete if the light depletes completely the game becomes nearly impossible and so the player must optimise their usage of the light to get through the levels.
+The player can control the brightness of the light. The brighter the light the faster it will deplete. If the light depletes completely the game becomes nearly impossible. So the player must optimise their usage of the light to get through the levels.
 
 We used Unity game engine and made 10 levels of increasing difficulty.
 

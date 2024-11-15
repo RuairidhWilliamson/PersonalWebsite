@@ -7,7 +7,6 @@ _default:
 check:
 	cargo fmt --check
 	cargo clippy
-	cat ./contents/posts/*.md | aspell list --mode=markdown
 
 build:
 	cargo r --release -F progress -- build -r contents --minify
