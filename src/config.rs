@@ -21,6 +21,10 @@ pub struct BuildConfig {
 
     #[arg(long, default_value = "1024")]
     pub build_cache_size: NonZeroUsize,
+
+    /// Hide the screen clearing progress report
+    #[arg(long)]
+    pub no_progress: bool,
 }
 
 #[derive(Debug, Clone, Parser)]

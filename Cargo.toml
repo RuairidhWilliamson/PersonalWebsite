@@ -64,7 +64,6 @@ server = [
   "dep:futures-util",
   "dep:tokio-stream",
 ]
-progress = []
 
 [lints]
 workspace = true

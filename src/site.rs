@@ -5,13 +5,14 @@ use harper_core::{
     linting::{LintGroup, LintGroupConfig, Linter as _},
     Document, FullDictionary, Span, WordMetadata,
 };
-use jobber::{Cache, JobCtx, JobIdBuilder, Progress, ProgressReport, RootJobOutput};
+use jobber::{Cache, JobCtx, JobIdBuilder};
 use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
 
 use crate::{
     config::{BuildConfig, ImageConvertFormat, PostConfig, SiteConfig},
     post::PostDetails,
+    progress::{DefaultSiteBuildProgress, NoSiteBuildProgress, SiteBuildProgress},
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -19,61 +20,6 @@ struct Info {
     details: crate::config::Details,
     posts: Vec<PostDetails>,
     featured: Vec<PostDetails>,
-}
-
-pub struct SiteBuildProgress;
-
-impl SiteBuildProgress {
-    #[cfg(feature = "progress")]
-    fn report_built(
-        RootJobOutput {
-            generation,
-            hash,
-            stats,
-            completed_stats,
-            ..
-        }: &RootJobOutput<()>,
-    ) {
-        let elapsed = completed_stats.total_time;
-        print!("{}c", 27 as char);
-        println!();
-        println!(" 🚀 Built {hash:x} ");
-        println!(" Generation = {generation}");
-        println!(
-            " Jobs = {} / {} = {:.1}%",
-            stats.jobs_run(),
-            stats.total_jobs(),
-            stats.jobs_cache_percent()
-        );
-        println!(" ⏱️  {elapsed:.1?}");
-    }
-
-    #[cfg(not(feature = "progress"))]
-    fn report_built(_: &RootJobOutput<()>) {}
-}
-
-impl Progress for SiteBuildProgress {
-    #[cfg(feature = "progress")]
-    fn report(
-        &self,
-        ProgressReport {
-            generation, stats, ..
-        }: ProgressReport,
-    ) {
-        print!("{}c", 27 as char);
-        println!();
-        println!(" 🔨 Building...");
-        println!(" Generation = {generation}");
-        println!(
-            " Jobs = {} / {} = {:.1}%",
-            stats.jobs_run(),
-            stats.total_jobs(),
-            stats.jobs_cache_percent()
-        );
-    }
-
-    #[cfg(not(feature = "progress"))]
-    fn report(&self, _: ProgressReport) {}
 }
 
 #[derive(Deserialize)]
@@ -87,7 +33,6 @@ pub struct AdditionalWord {
     pub metadata: WordMetadata,
 }
 
-#[derive(Debug)]
 pub struct Site {
     config: BuildConfig,
     include_hot_reload: bool,
@@ -100,15 +45,25 @@ impl Site {
             include_hot_reload,
         }
     }
-
     pub fn build_site_with_cache(&self, cache: &Cache) -> Result<u64> {
-        let progress = SiteBuildProgress;
+        if self.config.no_progress {
+            self.build_site_with_cache_with_progress(cache, &NoSiteBuildProgress)
+        } else {
+            self.build_site_with_cache_with_progress(cache, &DefaultSiteBuildProgress)
+        }
+    }
+
+    fn build_site_with_cache_with_progress<P: SiteBuildProgress>(
+        &self,
+        cache: &Cache,
+        progress: &P,
+    ) -> Result<u64> {
         let output = cache.root_job_with_progress(
             JobIdBuilder::new("build_site").build(),
-            &progress,
+            progress,
             |ctx| self.build_site(ctx),
         )?;
-        SiteBuildProgress::report_built(&output);
+        progress.report_built(&output);
 
         Ok(output.hash)
     }
@@ -516,9 +471,6 @@ impl Site {
 
         let mut linter = LintGroup::new(LintGroupConfig::default(), dict);
         let lints = linter.lint(&document);
-        if lints.is_empty() {
-            return Ok(());
-        }
         let mut count = 0;
         for l in lints {
             let expanded_span = Span {

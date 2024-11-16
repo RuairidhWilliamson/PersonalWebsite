@@ -5,6 +5,7 @@ use site::Site;
 mod config;
 mod npm;
 mod post;
+mod progress;
 mod site;
 
 #[cfg(feature = "server")]
@@ -27,8 +28,9 @@ fn main() -> Result<()> {
     match cli.command {
         Command::Build(config) => {
             let cache = jobber::Cache::new(config.build_cache_size);
-            let s = Site::new(config, false);
-            s.build_site_with_cache(&cache).unwrap();
+            Site::new(config, false)
+                .build_site_with_cache(&cache)
+                .unwrap();
         }
         Command::Serve(config) => {
             #[cfg(feature = "server")]
