@@ -114,7 +114,6 @@ impl Site {
     }
 
     fn build_site(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
-        // self.copy_all_assets(ctx)?;
         self.copyfile(
             ctx,
             Path::new("assets/favicon.ico"),
@@ -406,7 +405,9 @@ impl Site {
     fn render_all_posts(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
         let site_config = self.site_config_loader(ctx)?;
         for post_config in &site_config.pages.posts {
-            self.spell_check_post(ctx, post_config)?;
+            if self.config.grammar_check {
+                self.spell_check_post(ctx, post_config)?;
+            }
             self.render_post(ctx, post_config)?;
         }
         Ok(())

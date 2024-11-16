@@ -34,7 +34,7 @@ impl PostDetails {
         let date = extract_date(&node).context("extract date")?;
         let tags = extract_tags(&node).context("extract tags")?;
         let headings = extract_headings(&node);
-        let html = add_heading_ids(
+        let html_contents = add_heading_ids(
             &markdown::to_html_with_options(contents, &markdown::Options::gfm()).map_err(
                 |err| MarkdownToHtmlError {
                     msg: err.to_string(),
@@ -50,7 +50,7 @@ impl PostDetails {
             // TODO: Extract description
             description: String::default(),
             headings,
-            html_contents: html,
+            html_contents,
         })
     }
 }

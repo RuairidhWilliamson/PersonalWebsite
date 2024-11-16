@@ -40,7 +40,7 @@ pub fn serve(config: ServerConfig) -> Result<()> {
     // Watch for file changes
     let (tx, rx) = tokio::sync::watch::channel(h);
     let mut debouncer = notify_debouncer_mini::new_debouncer(
-        std::time::Duration::from_millis(250),
+        config.debounce_time,
         move |_res: notify_debouncer_mini::DebounceEventResult| match site
             .build_site_with_cache(&cache)
         {

@@ -93,3 +93,6 @@ tower-http = { version = "0.5.1", features = ["fs"], optional = true }
 tower = { version = "0.5.0", optional = true }
 
 jobber = { path = "./jobber" }
+
+[profile.dev.package.image]
+opt-level = 3

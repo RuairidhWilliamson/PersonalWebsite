@@ -15,7 +15,7 @@ zip: build
 	ouch compress dist/* rtaw.zip
 
 serve:
-	cargo r --release -F server -F progress -- serve -r contents --minify --hot-reload
+	cargo r --release -F server -F progress -- serve -r contents --minify --hot-reload --grammar-check
 
 clean:
 	rm -r dist
