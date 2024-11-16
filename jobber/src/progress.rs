@@ -19,6 +19,7 @@ impl Progress for () {
 pub struct DebugPrintProgress;
 
 impl Progress for DebugPrintProgress {
+    #[expect(clippy::print_stdout)]
     fn report(&self, report: ProgressReport) {
         println!("{report:?}");
     }

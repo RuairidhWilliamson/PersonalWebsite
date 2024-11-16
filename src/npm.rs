@@ -34,7 +34,7 @@ impl PackageManager {
     }
 
     fn install(&self) -> bool {
-        println!("Install {self:?}");
+        log::info!("Install {self:?}");
         let mut command: Command;
         match self {
             Self::Npm => {

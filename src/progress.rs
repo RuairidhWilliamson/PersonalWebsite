@@ -6,6 +6,7 @@ pub trait SiteBuildProgress: Progress + Send {
 
 pub struct DefaultSiteBuildProgress;
 
+#[expect(clippy::print_stdout)]
 impl SiteBuildProgress for DefaultSiteBuildProgress {
     fn report_built(
         &self,
@@ -32,6 +33,7 @@ impl SiteBuildProgress for DefaultSiteBuildProgress {
     }
 }
 
+#[expect(clippy::print_stdout)]
 impl Progress for DefaultSiteBuildProgress {
     fn report(
         &self,

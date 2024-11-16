@@ -182,8 +182,7 @@ impl Site {
 
     #[jobber::job]
     fn copyfile(&self, ctx: &mut JobCtx<'_>, src: &Path, dst: &Path) -> Result<()> {
-        #[cfg(feature = "job_print")]
-        eprintln!("Copyfile {src:?} -> {dst:?}");
+        log::info!("Copyfile {src:?} -> {dst:?}");
         let source = self.config.root_dir.join(src);
         let destination = self.config.output_dir.join(dst);
         ctx.depends_file(&source)?;
@@ -206,8 +205,7 @@ impl Site {
         let source = self.config.root_dir.join(src);
         let destination = self.config.output_dir.join(dst);
         ctx.depends_file(&source)?;
-        #[cfg(feature = "job_print")]
-        eprintln!("Convert image {ty:?} {src:?} -> {dst:?}");
+        log::info!("Convert image {ty:?} {src:?} -> {dst:?}");
         if let Some(dir) = destination.parent() {
             std::fs::create_dir_all(dir)?;
         }
@@ -333,8 +331,7 @@ impl Site {
 
     #[jobber::job]
     fn render_template_html(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        #[cfg(feature = "job_print")]
-        eprintln!("Render {src}");
+        log::info!("Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
@@ -344,8 +341,7 @@ impl Site {
 
     #[jobber::job]
     fn render_post(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<()> {
-        #[cfg(feature = "job_print")]
-        eprintln!("Render post {}", post_config.slug);
+        log::info!("Render post {}", post_config.slug);
         let post = self.post_loader(ctx, post_config)?;
         let templates = self.template_loader(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(post)?;
@@ -383,8 +379,7 @@ impl Site {
 
     #[jobber::job]
     fn render_template_js(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        #[cfg(feature = "job_print")]
-        eprintln!("Render {src}");
+        log::info!("Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
@@ -405,8 +400,7 @@ impl Site {
 
     #[jobber::job]
     fn render_template_css(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
-        #[cfg(feature = "job_print")]
-        eprintln!("Render {src}");
+        log::info!("Render {src}");
         let templates = self.template_loader(ctx)?;
         let info = self.all_info(ctx)?;
         let mut render_ctx = tera::Context::from_serialize(info)?;
@@ -481,7 +475,7 @@ impl Site {
             if spell_ignore_list.iter().any(|s| target.contains(s)) {
                 continue;
             }
-            eprintln!("{}\n {target}", l.message);
+            log::error!("{}\n {target}", l.message);
             count += 1;
         }
         if count == 0 {

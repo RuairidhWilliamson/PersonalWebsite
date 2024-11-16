@@ -13,7 +13,7 @@ jobs:
       - name: Build rust
         run: cargo build -q --release --no-default-features
       - name: Build site
-        run: target/release/personal_website build -r contents --minify
+        run: target/release/personal_website build -r contents --minify --no-progress
       - name: Auth
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}

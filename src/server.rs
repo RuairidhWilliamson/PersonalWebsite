@@ -32,7 +32,7 @@ pub fn serve(config: ServerConfig) -> Result<()> {
     let h = match site.build_site_with_cache(&cache) {
         Ok(h) => h,
         Err(err) => {
-            println!("Error building: {err:#}");
+            log::error!("Error building: {err:#}");
             0
         }
     };
@@ -47,7 +47,7 @@ pub fn serve(config: ServerConfig) -> Result<()> {
             Ok(h) => {
                 tx.send(h).unwrap();
             }
-            Err(err) => println!("Error rebuilding: {err:#}"),
+            Err(err) => log::error!("Error rebuilding: {err:#}"),
         },
     )?;
     debouncer.watcher().watch(
