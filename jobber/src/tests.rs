@@ -20,7 +20,7 @@ impl CallCounter {
     }
 
     fn count(&self, name: &'static str) -> usize {
-        self.call_count.get(name).cloned().unwrap_or_default()
+        self.call_count.get(name).copied().unwrap_or_default()
     }
 }
 

@@ -3,6 +3,7 @@ members = [
   ".",
   "jobber",
   "jobber/jobber_derive",
+  "panic_lock",
 ]
 
 [workspace.package]
@@ -28,7 +29,7 @@ string_to_string = "warn"
 undocumented_unsafe_blocks = "warn"
 unused_result_ok = "warn"
 unused_trait_names = "warn"
-# unwrap_used = "warn"
+unwrap_used = "warn"
 print_stderr = "warn"
 print_stdout = "warn"
 
@@ -49,7 +50,7 @@ must_use_candidate = "allow"
 
 [package]
 name = "personal_website"
-version = "0.1.0"
+version.workspace = true
 edition.workspace = true
 
 [features]
@@ -71,7 +72,6 @@ workspace = true
 anyhow = { version = "1.0.75", features = ["backtrace"] }
 clap = { version = "4.4.6", features = ["derive"] }
 env_logger = "0.11.5"
-lazy_static = "1.5.0"
 log = "0.4.22"
 regex = "1.10.2"
 serde = { version = "1.0.189", features = ["derive"] }

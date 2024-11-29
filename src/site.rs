@@ -255,21 +255,35 @@ impl Site {
         let site_config = self.site_config_loader(ctx)?;
         let mut rendered = templates.render(src, render_ctx)?;
         let img_regex = self.img_tag_regex(ctx)?;
+        let mut result = Result::Ok(());
         rendered = img_regex
             .replace_all(&rendered, |cap: &regex::Captures<'_>| {
-                let img = cap.get(0).unwrap().as_str().replace("&#x2F;", "/");
-                let path = cap.get(1).unwrap().as_str().replace("&#x2F;", "/");
+                let img = cap
+                    .get(0)
+                    .expect("regex capture")
+                    .as_str()
+                    .replace("&#x2F;", "/");
+                let path = cap
+                    .get(1)
+                    .expect("regex capture")
+                    .as_str()
+                    .replace("&#x2F;", "/");
                 path.strip_prefix('/')
                     .map(Path::new)
                     .and_then(|src| {
                         self.replace_img(ctx, &img, src, site_config.convert_images.as_ref())
-                            .unwrap()
+                            .unwrap_or_else(|err| {
+                                if result.is_ok() {
+                                    result = Err(err);
+                                }
+                                None
+                            })
                     })
                     .unwrap_or_else(|| img.clone())
             })
             .to_string();
         let rendered_bytes = if self.config.minify {
-            super::npm::minify_html(&rendered)
+            super::npm::minify_html(&rendered)?
         } else {
             rendered.as_bytes().to_owned()
         };
@@ -315,7 +329,7 @@ impl Site {
         let mut new_src = src.to_path_buf();
         new_src.set_file_name(format!(
             "{}_{}x{}",
-            new_src.file_stem().unwrap().to_str().unwrap(),
+            new_src.file_stem().context("file stem")?.to_string_lossy(),
             target_cover_size.0,
             target_cover_size.1
         ));
@@ -325,7 +339,7 @@ impl Site {
         let new_path_str = new_src.display();
         Ok(Some(format!(
             "<picture><source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>{} width={width} height={height}></picture>",
-            img.strip_suffix(">").unwrap().trim_end_matches('/').trim(),
+            img.strip_suffix(">").context("strip suffx >")?.trim_end_matches('/').trim(),
         )))
     }
 
@@ -386,7 +400,7 @@ impl Site {
         render_ctx.insert("hot_reload", &self.include_hot_reload);
         let rendered = templates.render(src, &render_ctx)?;
         let rendered_bytes = if self.config.minify {
-            super::npm::minify_js(&rendered)
+            super::npm::minify_js(&rendered)?
         } else {
             rendered.as_bytes().to_owned()
         };
@@ -407,7 +421,7 @@ impl Site {
         render_ctx.insert("hot_reload", &self.include_hot_reload);
         let rendered = templates.render(src, &render_ctx)?;
         let rendered_bytes = if self.config.minify {
-            super::npm::minify_css(&rendered)
+            super::npm::minify_css(&rendered)?
         } else {
             rendered.as_bytes().to_owned()
         };

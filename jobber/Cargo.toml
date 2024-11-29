@@ -15,3 +15,4 @@ anyhow = "1.0.75"
 lru = "0.12.0"
 jobber_derive = { path = "./jobber_derive" }
 glob = { version = "0.3.1", optional = true }
+panic_lock = { path = "../panic_lock" }

@@ -1,0 +1,11 @@
+[package]
+name = "panic_lock"
+version.workspace = true
+edition.workspace = true
+
+[features]
+
+[dependencies]
+
+[lints]
+workspace = true

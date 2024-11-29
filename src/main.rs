@@ -29,9 +29,7 @@ fn main() -> Result<()> {
     match cli.command {
         Command::Build(config) => {
             let cache = jobber::Cache::new(config.build_cache_size);
-            Site::new(config, false)
-                .build_site_with_cache(&cache)
-                .unwrap();
+            Site::new(config, false).build_site_with_cache(&cache)?;
         }
         Command::Serve(config) => {
             #[cfg(feature = "server")]
@@ -39,7 +37,7 @@ fn main() -> Result<()> {
             #[cfg(not(feature = "server"))]
             {
                 _ = config;
-                panic!("server feature not available, add -F server when building")
+                panic!("server feature not available, add '-F server' when building")
             }
         }
     }

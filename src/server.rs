@@ -45,7 +45,7 @@ pub fn serve(config: ServerConfig) -> Result<()> {
             .build_site_with_cache(&cache)
         {
             Ok(h) => {
-                tx.send(h).unwrap();
+                tx.send(h).expect("send on channel");
             }
             Err(err) => log::error!("Error rebuilding: {err:#}"),
         },
@@ -69,8 +69,7 @@ pub fn serve(config: ServerConfig) -> Result<()> {
     let app = service.with_state(rx);
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
-        .build()
-        .unwrap()
+        .build()?
         .block_on(async {
             let listener = tokio::net::TcpListener::bind(&config.addr).await?;
             axum::serve(listener, app).await?;

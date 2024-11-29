@@ -7,6 +7,7 @@ use std::{
 };
 
 use anyhow::Result;
+use panic_lock::MutexExt as _;
 
 use crate::{
     ctx::JobCtx,
@@ -33,12 +34,12 @@ impl Cache {
     /// # Panics
     /// Can panic if the internal lock is poisoned
     pub fn get_generation(&self) -> Option<usize> {
-        let guard = self.internal.lock().unwrap();
+        let guard = self.internal.plock();
         guard.generation
     }
 
     fn increment_generation(&self) -> usize {
-        let generation = &mut self.internal.lock().unwrap().generation;
+        let generation = &mut self.internal.plock().generation;
         if let Some(gen) = generation {
             *gen += 1;
             *gen

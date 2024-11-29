@@ -7,6 +7,7 @@ use std::{
 };
 
 use anyhow::Result;
+use panic_lock::MutexExt as _;
 
 use crate::{
     cache::{JobCacheOutput, JobStore},
@@ -80,8 +81,8 @@ impl JobCtx<'_> {
     {
         let runtime_start_time = Instant::now();
         {
-            let mut cache_guard = self.cache.internal.lock().unwrap();
-            let mut stats_guard = self.stats.lock().unwrap();
+            let mut cache_guard = self.cache.internal.plock();
+            let mut stats_guard = self.stats.plock();
             match cache_guard.get(&id, &self.cache.hasher, &mut stats_guard.leaf_stats) {
                 JobCacheOutput::Cached(store) => {
                     stats_guard.jobs_cache_hit += 1;
@@ -113,7 +114,7 @@ impl JobCtx<'_> {
 
         let leaf_deps = ctx.leaves;
         if let Ok(result) = result.as_ref() {
-            let mut guard = self.cache.internal.lock().unwrap();
+            let mut guard = self.cache.internal.plock();
             let job_store = JobStore {
                 leaf_deps: leaf_deps.clone(),
                 output: Box::new(result.clone()),
@@ -135,7 +136,7 @@ impl JobCtx<'_> {
     /// # Panics
     /// Can panic if the stats lock is poisoned
     pub fn stats(&self) -> Stats {
-        self.stats.lock().unwrap().clone()
+        self.stats.plock().clone()
     }
 
     pub fn leaf_hash(&self) -> u64 {

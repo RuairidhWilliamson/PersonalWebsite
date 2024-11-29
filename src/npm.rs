@@ -4,6 +4,8 @@ use std::{
     sync::LazyLock,
 };
 
+use anyhow::{Context as _, Result};
+
 #[derive(Debug)]
 enum PackageManager {
     Npm,
@@ -46,66 +48,55 @@ impl PackageManager {
                 command.arg("install");
             }
         }
-        command.status().unwrap().success()
+        command.status().is_ok_and(|x| x.success())
     }
 }
 
-pub fn minify_js(source: &str) -> Vec<u8> {
+pub fn minify_js(source: &str) -> Result<Vec<u8>> {
     let _ = &*PACKAGE_MANAGER;
-    let mut cmd = Command::new("node_modules/terser/bin/terser")
-        .arg("--compress")
-        .arg("--mangle")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
-        .unwrap();
-    std::thread::scope(|s| {
-        let mut stdin = cmd.stdin.take().unwrap();
-        s.spawn(move || {
-            write!(stdin, "{source}").unwrap();
-        });
-        cmd.wait_with_output().unwrap().stdout
-    })
+    pipe_cmd(
+        Command::new("node_modules/terser/bin/terser")
+            .arg("--compress")
+            .arg("--mangle"),
+        source,
+    )
 }
 
-pub fn minify_html(source: &str) -> Vec<u8> {
+pub fn minify_html(source: &str) -> Result<Vec<u8>> {
     let _ = &*PACKAGE_MANAGER;
-    let mut cmd = Command::new("node_modules/html-minifier/cli.js")
-        .arg("--collapse-whitespace")
-        .arg("--remove-comments")
-        .arg("--remove-optional-tags")
-        .arg("--remove-redundant-attributes")
-        .arg("--remove-script-type-attributes")
-        .arg("--remove-tag-whitespace")
-        .arg("--use-short-doctype")
-        .arg("--minify-css")
-        .arg("--minify-js")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
-        .unwrap();
-    std::thread::scope(|s| {
-        let mut stdin = cmd.stdin.take().unwrap();
-        s.spawn(move || {
-            write!(stdin, "{source}").unwrap();
-        });
-        cmd.wait_with_output().unwrap().stdout
-    })
+    pipe_cmd(
+        Command::new("node_modules/html-minifier/cli.js")
+            .arg("--collapse-whitespace")
+            .arg("--remove-comments")
+            .arg("--remove-optional-tags")
+            .arg("--remove-redundant-attributes")
+            .arg("--remove-script-type-attributes")
+            .arg("--remove-tag-whitespace")
+            .arg("--use-short-doctype")
+            .arg("--minify-css")
+            .arg("--minify-js"),
+        source,
+    )
 }
 
-pub fn minify_css(source: &str) -> Vec<u8> {
+pub fn minify_css(source: &str) -> Result<Vec<u8>> {
     let _ = &*PACKAGE_MANAGER;
-    let mut cmd = Command::new("node_modules/clean-css-cli/bin/cleancss")
-        .arg("-O2")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()
-        .unwrap();
+    pipe_cmd(
+        Command::new("node_modules/clean-css-cli/bin/cleancss").arg("-O2"),
+        source,
+    )
+}
+
+fn pipe_cmd(cmd: &mut Command, input: &str) -> Result<Vec<u8>> {
+    let mut cmd = cmd.stdin(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
     std::thread::scope(|s| {
-        let mut stdin = cmd.stdin.take().unwrap();
-        s.spawn(move || {
-            write!(stdin, "{source}").unwrap();
+        let mut stdin = cmd.stdin.take().context("take stdin")?;
+        let handle = s.spawn(move || -> Result<(), std::io::Error> {
+            write!(stdin, "{input}")?;
+            Ok(())
         });
-        cmd.wait_with_output().unwrap().stdout
+        let out = cmd.wait_with_output()?.stdout;
+        handle.join().expect("thread panicked")?;
+        Result::Ok(out)
     })
 }

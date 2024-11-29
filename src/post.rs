@@ -1,5 +1,6 @@
+use std::sync::LazyLock;
+
 use anyhow::{Context as _, Result};
-use lazy_static::lazy_static;
 use markdown::mdast::{Heading, Image, Node, Text};
 use serde::Serialize;
 
@@ -192,14 +193,12 @@ fn extract_headings(node: &Node) -> Vec<PostHeading> {
 }
 
 fn add_heading_ids(contents: &str) -> String {
-    lazy_static! {
-        static ref header_pattern: regex::Regex =
-            regex::Regex::new("<h([1-6])>([^<]+)</h").unwrap();
-    };
-    header_pattern
+    static HEADER_PATTERN: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new("<h([1-6])>([^<]+)</h").expect("compile regex"));
+    HEADER_PATTERN
         .replace_all(contents, |cap: &regex::Captures<'_>| {
-            let rank = cap.get(1).unwrap().as_str();
-            let inner = cap.get(2).unwrap().as_str();
+            let rank = cap.get(1).expect("regex capture").as_str();
+            let inner = cap.get(2).expect("regex capture").as_str();
             let kebab_inner = kebab(inner);
             format!("<h{rank} id=\"{kebab_inner}\">{inner}</h")
         })
