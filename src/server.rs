@@ -60,12 +60,10 @@ pub fn serve(config: ServerConfig) -> Result<()> {
     if !config.http_cache {
         service = service.layer(NoCacheLayer);
     }
-    service = service.nest_service("/", dir_service);
-    if config.hot_reload {
-        service = service
-            .route("/hr.js", axum::routing::get(sse_script_handler))
-            .route("/hr", axum::routing::get(sse_handler));
-    }
+    service = service
+        .nest_service("/", dir_service)
+        .route("/hr.js", axum::routing::get(sse_script_handler))
+        .route("/hr", axum::routing::get(sse_handler));
     let app = service.with_state(rx);
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
