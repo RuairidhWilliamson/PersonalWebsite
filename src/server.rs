@@ -33,6 +33,7 @@ pub fn serve(config: ServerConfig) -> Result<()> {
         Ok(h) => h,
         Err(err) => {
             log::error!("Error building: {err:#}");
+            log::error!("{:#}", err.backtrace());
             0
         }
     };

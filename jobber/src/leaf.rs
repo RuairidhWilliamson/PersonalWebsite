@@ -26,6 +26,9 @@ impl Leaf {
                 let mut hasher = hasher.build_hasher();
                 for entry in glob::glob(pattern)? {
                     let p = entry?;
+                    if !p.is_file() {
+                        continue;
+                    }
                     p.hash(&mut hasher);
                     std::fs::read(&p)?.hash(&mut hasher);
                 }
