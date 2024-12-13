@@ -47,6 +47,7 @@ html.theme-dark {
 
 img {
   max-width: 100%;
+  height: auto;
   margin: auto;
 }
 
@@ -191,6 +192,7 @@ h6 {
 
 .post-contents {
   max-width: 800px;
+  width: 100vw;
 }
 
 .post-overview {
