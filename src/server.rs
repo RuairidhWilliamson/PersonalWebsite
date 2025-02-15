@@ -62,7 +62,7 @@ pub fn serve(config: ServerConfig) -> Result<()> {
         service = service.layer(NoCacheLayer);
     }
     service = service
-        .nest_service("/", dir_service)
+        .fallback_service(dir_service)
         .route("/hr.js", axum::routing::get(sse_script_handler))
         .route("/hr", axum::routing::get(sse_handler));
     let app = service.with_state(rx);
