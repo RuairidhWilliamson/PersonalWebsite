@@ -17,6 +17,7 @@ use axum::{
     },
 };
 use futures_util::{future::BoxFuture, Stream};
+use notify_debouncer_full::notify::EventKind;
 use tokio::sync::watch::Receiver;
 use tower::{Layer, Service};
 
@@ -40,20 +41,30 @@ pub fn serve(config: ServerConfig) -> Result<()> {
 
     // Watch for file changes
     let (tx, rx) = tokio::sync::watch::channel(h);
-    let mut debouncer = notify_debouncer_mini::new_debouncer(
+    let mut debouncer = notify_debouncer_full::new_debouncer(
         config.debounce_time,
-        move |_res: notify_debouncer_mini::DebounceEventResult| match site
-            .build_site_with_cache(&cache)
-        {
-            Ok(h) => {
-                tx.send(h).expect("send on channel");
+        None,
+        move |res: notify_debouncer_full::DebounceEventResult| {
+            log::trace!("{res:?}");
+            let Ok(events) = res else {
+                return;
+            };
+            if events.iter().any(|ev| match &ev.kind {
+                EventKind::Any | EventKind::Other | EventKind::Access(_) => false,
+                EventKind::Create(_) | EventKind::Modify(_) | EventKind::Remove(_) => true,
+            }) {
+                match site.build_site_with_cache(&cache) {
+                    Ok(h) => {
+                        tx.send(h).expect("send on channel");
+                    }
+                    Err(err) => log::error!("Error rebuilding: {err:#}"),
+                }
             }
-            Err(err) => log::error!("Error rebuilding: {err:#}"),
         },
     )?;
-    debouncer.watcher().watch(
+    debouncer.watch(
         &watch_dir,
-        notify_debouncer_mini::notify::RecursiveMode::Recursive,
+        notify_debouncer_full::notify::RecursiveMode::Recursive,
     )?;
 
     let dir_service = tower_http::services::ServeDir::new(serve_dir);
