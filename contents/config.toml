@@ -12,9 +12,9 @@ pages = [
 ]
 
 featured = [
+  "recgit",
   "clippy-lints",
   "personal-website-rs",
-  "space-inserters",
 ]
 
 [[pages.posts]]
