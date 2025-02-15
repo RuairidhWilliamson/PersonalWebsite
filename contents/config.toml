@@ -18,6 +18,8 @@ featured = [
 ]
 
 [[pages.posts]]
+slug = "recgit"
+[[pages.posts]]
 slug = "clippy-lints"
 [[pages.posts]]
 slug = "personal-website-rs"

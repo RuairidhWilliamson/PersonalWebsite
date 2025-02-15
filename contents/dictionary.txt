@@ -49,3 +49,8 @@ VR
 haptics
 optimise
 SCSS
+recgit
+unsynced
+gitoxide
+libgit
+gix
