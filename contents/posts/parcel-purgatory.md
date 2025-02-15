@@ -10,7 +10,7 @@ C#, Unity, GameJam
 As in the past, me and a friend participated in Ludum dare 53 this time the theme was `Delivery`.
 
 Our puzzle game is inspired by a web game called bloxorz or as we later found another game called [cuboid](https://en.wikipedia.org/wiki/Cuboid_(video_game)).
-The simple concept of the game is that the player controls a cuboid with dimensions 2x1x1. They can move the cuboid in any of 4 directions rotating about the edge. The game is a challenging puzzle game because the player is on a grid with a limited number of tiles. If the player moves off the tiles they will fall and be reset.
+The simple concept of the game is that the player controls a cuboid with dimensions `2x1x1`. They can move the cuboid in any of 4 directions rotating about the edge. The game is a challenging puzzle game because the player is on a grid with a limited number of tiles. If the player moves off the tiles they will fall and be reset.
 
 ![Parcel Purgatory](/assets/images/parcelpurgatory.png)
 
@@ -26,9 +26,9 @@ Towards the end of the game we also introduce some more puzzle concepts such as 
 ## Implementation
 The implementation of the player movement was the most complicated part. Correctly rotating about the player and detecting when they should fall took some iteration.
 
-We also had a level building system where we created a lower resolution pixel image of the level where each pixel represents a tile in one of several states (floor tile, empty, obstacle, start, end). This image is then processed and used to place objects in the level. But we also added decorations separately inside a prefab for each level. The level manager script would then animate all these objects individually to fly in and out as the player entered the level. The tiles of the level fly in from below and the decorations fly in from above. They are all offset slightly in timing so that it looks more interesting. One problem we had with the tiles flying from below is that the camera is pointing downwards, so the tiles are visible for quite a while from very far below which is visually distracting. So instead we added a shader on the tiles that fades them out based on their y position.
+We also had a level building system where we created a lower resolution pixel image of the level where each pixel represents a tile in one of several states (floor tile, empty, obstacle, start, end). This image is then processed and used to place objects in the level. But we also added decorations separately inside a prefab for each level. The level manager script would then animate all these objects individually to fly in and out as the player entered the level. The tiles of the level fly in from below and the decorations fly in from above. They are all offset slightly in timing so that it looks more interesting. One problem we had with the tiles flying from below is that the camera is pointing downwards, so the tiles are visible for quite a while from very far below which is visually distracting. So instead we added a shader on the tiles that fades them out based on their `y` position.
 
-One tricky part of the level system is that the start of a level must connect to the end of the previous level. We build a short walk way between levels but the direction of the walkway still had to match the start and end.
+One tricky part of the level system is that the start of a level must connect to the end of the previous level. We build a short walkway between levels but the direction of the walkway still had to match the start and end.
 
 The robots and cameras were originally implemented to move irrespective of whether the player moved, but it wasn't too difficult to make this change. The robots and cameras also show a red warning graphic where their vision cone is. However in play testing we noticed that players were not sure where the cameras and robots would move next, making it very difficult to play without studying their full cycle. To address this we created a gray warning indicator to show where the robots and cameras vision would be on the next movement.
 

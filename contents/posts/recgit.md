@@ -22,7 +22,7 @@ Git is quite complicated so my first pass at this was to run the git cli and par
 The most obvious command is `git status`.
 This lists files that are changed in the working directory compared to HEAD and if the checked out branch is in sync with the tracking branch.
 Git status by default is not very easy to parse but using `git status --porcelain=v2` gives a more verbose but well defined output.
-(V2 here represents the format version so we can rely on this not breaking in future git versions).
+(`v2` here represents the format version so we can rely on this not breaking in future git versions).
 See [https://git-scm.com/docs/git-status#_porcelain_format_version_2](https://git-scm.com/docs/git-status#_porcelain_format_version_2) for the documentation of this format.
 
 We parse this format but it doesn't give us all the information we want.

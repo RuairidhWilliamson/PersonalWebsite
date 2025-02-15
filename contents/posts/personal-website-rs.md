@@ -16,22 +16,22 @@ The website builder has many features:
 - Advanced caching site builder
 - Hot reload server mode
 - HTML templating
-- Posts written in markdown
+- Posts written in Markdown
 - Optimizes, resizes and converts images to webp (with fallback if webp not supported)
 - Minified HTML, CSS and JavaScript
 - Minimal JavaScript (used for theme switching and hot reloading)
 - Minimal CSS
 
-The website is split into pages that are templated HTML using a templating library called [tera](https://keats.github.io/tera/) and posts that are written in Markdown and converted to HTML using a library called [markdown](https://github.com/wooorm/markdown-rs).
+The website is split into pages that are templated HTML using a templating library called [tera](https://keats.github.io/tera/) and posts that are written in Markdown and converted to HTML using a library called [markdown-rs](https://github.com/wooorm/markdown-rs).
 The rust program has two modes: a build and a server mode.
 ## Build mode
 The build mode builds the website into static HTML, JavaScript and CSS ready to be hosted on any standard static web host.
-This is what is used by the continuous integration GitHub actions to build the site and upload it to a google cloud storage bucket.
+This is what is used by the continuous integration GitHub actions to build the site and upload it to a Google Cloud Storage bucket.
 
 ## Server mode
 The server mode is similar when run builds the website and hosts it on a local web server.
 It also watches the source directories for any file changes.
-When a file change is detected it rebuilds the website and reloads any connected web pages.
+When a file change is detected it rebuilds the website and reloads any connected webpages.
 
 This server mode is designed for fast iteration so that changes can be made and previewed very quickly.
 A common workflow is to have the website preview open in a browser alongside the code.
@@ -48,16 +48,16 @@ When in server mode information is logged to the terminal about how long a gener
 Hot reloading is very important for the server mode.
 It must build the website quickly and reload any web browsers viewing the page.
 
-## File System notifications
-Firstly the server must watch the file system for file changes in the source directories.
+## FileSystem notifications
+Firstly the server must watch the filesystem for file changes in the source directories.
 The library [notify-debouncer-mini](https://crates.io/crates/notify-debouncer-mini) is perfect for this purpose.
 It is a wrapper around the library [notify](https://crates.io/crates/notify) that only notifies once over a time period.
-This is useful because upon saving a file to the file system, many file events may be emitted.
+This is useful because upon saving a file to the filesystem, many file events may be emitted.
 To avoid doing extra work the server should only reload once over a time period.
-[Notify-debouncer-mini](https://crates.io/crates/notify-debouncer-mini) upon receiving a notify event will start a timer and ignore other file system notifications until that timer expires when it emits a single notify event.
+[Notify-debouncer-mini](https://crates.io/crates/notify-debouncer-mini) upon receiving a notify event will start a timer and ignore other filesystem notifications until that timer expires when it emits a single notify event.
 
 ## Rebuilding
-Once the server receives a file system notification that a source file has changes, the server needs to rebuild the website.
+Once the server receives a filesystem notification that a source file has changes, the server needs to rebuild the website.
 This is straight forward but in order to improve performance we use a cache to cache work that doesn't need to be re computed.
 See [Jobber](#jobber) about how the caching works.
 Once the website has been rebuilt the files are updating on disk and the browser needs to be triggered to reload the page.
@@ -70,14 +70,14 @@ Fundamentally this involves sending an event from the server to the browser.
 Older browsers won't support the other options so this might be better if you care about old browsers.
 
 - WebSockets are a good way to have two way communication between a server and browser.
-They allow the client side JavaScript to connect to the server using HTTP and then upgrade the connection to Web Socket.
+They allow the client side JavaScript to connect to the server using HTTP and then upgrade the connection to WebSocket.
 The client and server can then send messages at any time.
 
 - Server sent events (SSE) are similar to websockets except only the server can send messages.
 In this case we only want the server to send events since we just want the client to be able to react to reload triggers.
-Just like websockets SSE are connected to using JavaScript on the web page and an HTTP connection is upgraded.
+Just like websockets SSE are connected to using JavaScript on the webpage and an HTTP connection is upgraded.
 
-I chose to use server sent events because they are more efficient than polling and I don't need the extra features of web sockets.
+I chose to use server sent events because they are more efficient than polling and I don't need the extra features of websockets.
 
 The way it works is every time the website is rebuilt a generation number is incremented.
 A small piece of JavaScript is injected into the website with the current generation number it was built with.
@@ -150,7 +150,7 @@ To correctly track all dependencies without the possibility of error would requi
 
 Jobber could be improved in the following areas:
 
-- Jobber could also have dependencies on resources not on the local file system.
+- Jobber could also have dependencies on resources not on the local filesystem.
 It could be useful for jobber to be able to depend on an HTTP resource.
 There are HTTP headers that can be used to determine cache behavior without downloading the entire resource.
 
@@ -161,11 +161,11 @@ There is also a potential issue that would need to be addressed with the hashing
 Maybe a trade off could be made with a slower hashing algorithm like sha256 so that the cache could be shared across computers.
 
 - Jobber could use the modified time of files to check if they have changes without hashing the entire file.
-This is more complicated than it first seems as file modified times are not very reliable and vary based on the file system.
-Different file systems and OSes have different resolutions of modified time too.
+This is more complicated than it first seems as file modified times are not very reliable and vary based on the filesystem.
+Different filesystems and OSes have different resolutions of modified time too.
 
-- Jobber could use the file system events from notify to mark files as dirty.
-Since we are monitoring the file system for changes to the files we care about.
+- Jobber could use the filesystem events from notify to mark files as dirty.
+Since we are monitoring the filesystem for changes to the files we care about.
 It is wasteful to open all the files and check if their contents have changed since we already know exactly which files have changed.
 
 [View on GitHub](https://github.com/RuairidhWilliamson/PersonalWebsite)

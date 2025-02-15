@@ -55,7 +55,7 @@ The infinite puzzle mode and random generation algorithm was implemented by my f
 
 ### Daily Mode
 
-The daily puzzle mode was implemented by the game contacting a web server implemented in rust and hosted on google cloud run. I hand-made 5 puzzles for each day. My goal was to make the puzzles ramp up in difficulty so the first two are easy the third is average and the fourth and fifth are hard. When implementing this I realized I would have to premake most of the puzzles ahead of time so that I didn't have to make the puzzle on the day it was due.
+The daily puzzle mode was implemented by the game contacting a web server implemented in rust and hosted on Google Cloud Run. I hand-made 5 puzzles for each day. My goal was to make the puzzles ramp up in difficulty so the first two are easy the third is average and the fourth and fifth are hard. When implementing this I realized I would have to premake most of the puzzles ahead of time so that I didn't have to make the puzzle on the day it was due.
 
 I found that premaking a lot of puzzles was difficult to do by hand, so I developed some tools (all in rust) to help me. My tools included:
 - Random word of a specific size

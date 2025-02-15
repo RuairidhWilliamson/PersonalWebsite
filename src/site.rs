@@ -1,9 +1,10 @@
-use std::{path::Path, str};
+use std::{path::Path, str, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use harper_core::{
     linting::{LintGroup, LintGroupConfig, Linter as _},
-    Document, FullDictionary, Span, WordMetadata,
+    parsers::MarkdownOptions,
+    Document, FstDictionary, MergedDictionary, Span, WordMetadata,
 };
 use jobber::{Cache, JobCtx, JobIdBuilder};
 use serde::{Deserialize, Serialize};
@@ -434,7 +435,7 @@ impl Site {
     }
 
     #[jobber::job]
-    fn dictionary(&self, ctx: &mut JobCtx<'_>) -> Result<harper_core::FullDictionary> {
+    fn dictionary(&self, ctx: &mut JobCtx<'_>) -> Result<MergedDictionary> {
         let dictionary_path = self.config.root_dir.join("dictionary.toml");
         ctx.depends_file(&dictionary_path)?;
         let dictionary_contents = std::fs::read_to_string(dictionary_path)?;
@@ -444,18 +445,21 @@ impl Site {
         ctx.depends_file(&simple_dictionary_path)?;
         let simple_dictionary_contents = std::fs::read_to_string(simple_dictionary_path)?;
 
-        let mut dict: FullDictionary = std::rc::Rc::unwrap_or_clone(FullDictionary::curated());
-        dict.extend_words(
+        let mut dict: MergedDictionary = MergedDictionary::new();
+        dict.add_dictionary(FstDictionary::curated());
+        dict.add_dictionary(Arc::new(FstDictionary::new(
             additional_dict
                 .words
                 .into_iter()
-                .map(|w| (w.word.chars().collect::<Vec<char>>(), w.metadata)),
-        );
-        dict.extend_words(
+                .map(|w| (w.word.chars().collect::<_>(), w.metadata))
+                .collect(),
+        )));
+        dict.add_dictionary(Arc::new(FstDictionary::new(
             simple_dictionary_contents
                 .lines()
-                .map(|l| (l.chars().collect::<Vec<char>>(), WordMetadata::default())),
-        );
+                .map(|l| (l.chars().collect::<_>(), WordMetadata::default()))
+                .collect(),
+        )));
         Ok(dict)
     }
 
@@ -475,9 +479,19 @@ impl Site {
         let dict = self.dictionary(ctx)?;
         let spell_ignore_list = self.spell_ignore_list(ctx)?;
         let contents = self.post_markdown(ctx, post_config)?;
-        let document = Document::new_markdown(&contents, &dict);
+        let mut md_options = MarkdownOptions::default();
+        md_options.ignore_link_title = true;
+        let document = Document::new_markdown(&contents, md_options, &dict);
 
-        let mut linter = LintGroup::new(LintGroupConfig::default(), dict);
+        let mut linter = LintGroup::new(
+            LintGroupConfig {
+                oxford_comma: Some(false),
+                no_oxford_comma: Some(true),
+                compound_nouns: Some(false),
+                ..LintGroupConfig::default()
+            },
+            dict,
+        );
         let lints = linter.lint(&document);
         let mut count = 0;
         for l in lints {

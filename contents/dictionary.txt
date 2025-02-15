@@ -52,5 +52,7 @@ SCSS
 recgit
 unsynced
 gitoxide
-libgit
+libgit2
 gix
+git2
+sha256
