@@ -6,7 +6,7 @@ _default:
 
 check:
 	cargo fmt --check
-	cargo clippy
+	cargo clippy --workspace
 
 build:
 	RUST_LOG=info cargo r --release -- build -r contents --minify --grammar-check
