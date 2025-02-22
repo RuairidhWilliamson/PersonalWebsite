@@ -40,9 +40,9 @@ impl Cache {
 
     fn increment_generation(&self) -> usize {
         let generation = &mut self.internal.plock().generation;
-        if let Some(gen) = generation {
-            *gen += 1;
-            *gen
+        if let Some(generation) = generation {
+            *generation += 1;
+            *generation
         } else {
             *generation = Some(0);
             0
