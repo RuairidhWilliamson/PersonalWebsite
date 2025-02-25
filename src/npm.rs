@@ -52,16 +52,6 @@ impl PackageManager {
     }
 }
 
-pub fn minify_js(source: &str) -> Result<Vec<u8>> {
-    let _ = &*PACKAGE_MANAGER;
-    pipe_cmd(
-        Command::new("node_modules/terser/bin/terser")
-            .arg("--compress")
-            .arg("--mangle"),
-        source,
-    )
-}
-
 pub fn minify_html(source: &str) -> Result<Vec<u8>> {
     let _ = &*PACKAGE_MANAGER;
     pipe_cmd(

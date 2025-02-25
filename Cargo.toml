@@ -48,6 +48,10 @@ missing_errors_doc = "allow"
 module_name_repetitions = "allow"
 must_use_candidate = "allow"
 
+[workspace.dependencies]
+anyhow = { version = "1.0.75", features = ["backtrace"] }
+log = "0.4.22"
+
 [package]
 name = "personal_website"
 version.workspace = true
@@ -69,10 +73,10 @@ server = [
 workspace = true
 
 [dependencies]
-anyhow = { version = "1.0.75", features = ["backtrace"] }
+anyhow.workspace = true
 clap = { version = "4.4.6", features = ["derive"] }
 env_logger = "0.11.5"
-log = "0.4.22"
+log.workspace = true
 regex = "1.10.2"
 serde = { version = "1.0.189", features = ["derive"] }
 toml = "0.8.4"
@@ -81,6 +85,7 @@ harper-core = "0.21.1"
 humantime = "2.1.0"
 image = "0.25.1"
 markdown = "1.0.0-alpha.21"
+oxc = { version = "0.52.0", features = ["codegen", "minifier", "oxc_minifier"] }
 tera = "1.19.1"
 walkdir = "2.4.0"
 
