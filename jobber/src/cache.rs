@@ -14,7 +14,7 @@ use crate::{
     jobs::JobId,
     leaf_set::LeafSet,
     stats::{CompleteStats, LeafStats, Stats},
-    Progress,
+    LeafHash, Progress,
 };
 
 #[derive(Debug, Clone)]
@@ -124,12 +124,15 @@ impl InternalCache {
         stats: &mut LeafStats,
     ) -> JobCacheOutput {
         let Some(store) = self.cache.get(id) else {
+            log::debug!("{id:?} cache miss not present");
             return JobCacheOutput::NotCached;
         };
 
-        if store.calc_is_dirty(hasher, stats) {
+        if let Some(leaf) = store.calc_is_dirty(hasher, stats) {
+            log::debug!("{id:?} cache miss dirty {leaf:?}");
             JobCacheOutput::CacheDirty
         } else {
+            log::debug!("{id:?} cache hit");
             JobCacheOutput::Cached(store)
         }
     }
@@ -152,13 +155,13 @@ pub struct JobStore {
 }
 
 impl JobStore {
-    pub fn calc_is_dirty(&self, hasher: &RandomState, stats: &mut LeafStats) -> bool {
+    pub fn calc_is_dirty(&self, hasher: &RandomState, stats: &mut LeafStats) -> Option<&LeafHash> {
         self.leaf_deps
             .iter()
             .inspect(|_| {
                 stats.leaves_checked += 1;
             })
-            .any(|l| !matches!(l.is_dirty(hasher), Ok(false)))
+            .find(|l| !matches!(l.is_dirty(hasher), Ok(false)))
     }
 
     pub fn get_output<T: Clone + 'static>(&self) -> Option<T> {
