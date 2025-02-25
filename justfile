@@ -15,7 +15,7 @@ zip: build
 	ouch compress dist/* rtaw.zip
 
 serve:
-	RUST_LOG=info cargo r --release -F server -- serve -r contents --minify --hot-reload --grammar-check
+	RUST_LOG=info cargo r --release -F server -- serve -r contents --hot-reload --grammar-check
 
 clean:
 	rm -r dist
