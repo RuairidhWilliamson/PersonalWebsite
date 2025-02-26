@@ -18,6 +18,6 @@ serve:
 	RUST_LOG=info cargo r --release -F server -- serve -r contents --hot-reload --grammar-check
 
 clean:
-	rm -r dist
-	rm rtaw.zip
+	rm -rf dist
+	rm -f rtaw.zip
 	cargo clean
