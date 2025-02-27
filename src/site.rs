@@ -1,4 +1,4 @@
-use std::{path::Path, str, sync::Arc};
+use std::{io::Cursor, path::Path, str, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use harper_core::{
@@ -8,7 +8,6 @@ use harper_core::{
 };
 use jobber::{Cache, JobCtx, JobIdBuilder};
 use serde::{Deserialize, Serialize};
-use walkdir::WalkDir;
 
 use crate::{
     config::{BuildConfig, ImageConvertFormat, PostConfig, SiteConfig},
@@ -70,10 +69,45 @@ impl Site {
     }
 
     fn build_site(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
+        self.download_third_party_asset(
+            ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css",
+            Path::new("thirdparty/normalize.min.css"),
+        )?;
+        self.download_third_party_asset(
+            ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css.map",
+            Path::new("thirdparty/normalize.min.css.map"),
+        )?;
+        self.download_third_party_asset(
+            ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css",
+            Path::new("thirdparty/normalize.css"),
+        )?;
+        self.download_third_party_asset(
+            ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css",
+            Path::new("thirdparty/highlight.min.css"),
+        )?;
+        self.download_third_party_asset(
+            ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css",
+            Path::new("thirdparty/highlight-tokyo-night-dark.min.css"),
+        )?;
+        self.download_third_party_asset(
+            ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js",
+            Path::new("thirdparty/highlight.min.js"),
+        )?;
+        self.copyfile(
+            ctx,
+            Path::new("assets/thirdparty/rubik-variablefont.ttf"),
+            Path::new("thirdparty/rubik-variablefont.ttf"),
+        )?;
         self.copyfile(
             ctx,
             Path::new("assets/favicon.ico"),
-            Path::new("assets/favicon.ico"),
+            Path::new("favicon.ico"),
         )?;
         self.copyfile(ctx, Path::new("assets/robots.txt"), Path::new("robots.txt"))?;
         self.render_template_css(ctx, "style.css", Path::new("style.css"))?;
@@ -168,16 +202,21 @@ impl Site {
     }
 
     #[jobber::job]
-    fn copy_all_assets(&self, ctx: &mut JobCtx<'_>) -> Result<()> {
-        let path = self.config.root_dir.join("assets");
-        for res in WalkDir::new(path).min_depth(1) {
-            let e = res?;
-            if !e.file_type().is_file() {
-                continue;
-            }
-            let p = e.path().strip_prefix(&self.config.root_dir)?;
-            self.copyfile(ctx, p, p)?;
+    fn download_third_party_asset(
+        &self,
+        ctx: &mut JobCtx<'_>,
+        url: &str,
+        dst: &Path,
+    ) -> Result<()> {
+        let response = reqwest::blocking::get(url)?;
+        let mut bytes = Cursor::new(response.error_for_status()?.bytes()?);
+
+        let destination = self.config.output_dir.join(dst);
+        if let Some(dir) = destination.parent() {
+            std::fs::create_dir_all(dir)?;
         }
+        let mut destination = std::fs::File::create(destination)?;
+        std::io::copy(&mut bytes, &mut destination)?;
         Ok(())
     }
 

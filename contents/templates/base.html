@@ -11,35 +11,16 @@
   <meta name="color-scheme" content="light dark">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- Font -->
+  <link rel="preload" as="font" href="/thirdparty/rubik-variablefont.ttf" type="font/ttf" crossorigin />
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="/style.css" />
 
   <!-- Normalize css -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-    integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-
-  <!-- Font -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Rubik&display=swap"
-    rel="stylesheet"
-    integrity="sha512-K/McWskr6/BH9P0uSAAj4dDCExucCw/YxKOMAFtUbicvjngf3racfXRfz6XpX9rbjdFrZ7rQeXCzC8ySkINo4w=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-  <link
-    rel="preload"
-    as="font"
-    href="https://fonts.gstatic.com/s/rubik/v28/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-B4iFV0U1.woff2"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
+  <link rel="stylesheet" href="/thirdparty/normalize.min.css" />
 
   <!-- Dark/light theme -->
   <script src="/theme.js"></script>
@@ -70,21 +51,9 @@
   {% block content %}{% endblock content %}
 
   <!-- Highlight.js -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css"
-    integrity="sha512-hasIneQUHlh06VNBe7f6ZcHmeRTLIaQWFd43YriJ0UND19bvYRauxthDg8E4eVNPm9bRUhr5JGeqH7FRFXQu5g=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
-    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="/thirdparty/highlight.min.css" />
+  <link rel="stylesheet" href="/thirdparty/highlight-tokyo-night-dark.min.css" />
+  <script defer src="/thirdparty/highlight.min.js"></script>
   <script defer src="/hl_all.js"></script>
 </body>
 
