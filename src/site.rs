@@ -76,6 +76,16 @@ impl Site {
         )?;
         self.download_third_party_asset(
             ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css.map",
+            Path::new("thirdparty/normalize.min.css.map"),
+        )?;
+        self.download_third_party_asset(
+            ctx,
+            "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css",
+            Path::new("thirdparty/normalize.css"),
+        )?;
+        self.download_third_party_asset(
+            ctx,
             "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css",
             Path::new("thirdparty/highlight.min.css"),
         )?;
