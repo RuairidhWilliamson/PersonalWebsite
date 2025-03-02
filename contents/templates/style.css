@@ -3,6 +3,7 @@
   src: url(/thirdparty/rubik-variablefont.ttf) format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 body {
@@ -240,4 +241,11 @@ h6 {
 
 .heading4 {
   margin-left: 30px;
+}
+
+code {
+  font-size: 0.8rem;
+  padding: 1px 4px;
+  background-color: var(--theme-bg-hover-color);
+  color: var(--theme-accent-color);
 }
