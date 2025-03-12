@@ -28,7 +28,7 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
             drop_console: false,
         }),
     });
-    let MinifierReturn { symbol_table } = minifier.build(&allocator, &mut program);
+    let MinifierReturn { scoping } = minifier.build(&allocator, &mut program);
     let js = Codegen::new()
         .with_options(CodegenOptions {
             minify: true,
@@ -36,7 +36,7 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
             comments: false,
             ..Default::default()
         })
-        .with_symbol_table(symbol_table)
+        .with_scoping(scoping)
         .build(&program);
     Ok(js.code)
 }
