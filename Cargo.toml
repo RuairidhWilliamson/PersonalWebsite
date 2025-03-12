@@ -85,7 +85,7 @@ harper-core = "0.21.1"
 humantime = "2.1.0"
 image = "0.25.1"
 markdown = "1.0.0-alpha.21"
-oxc = { version = "0.52.0", features = ["codegen", "minifier", "oxc_minifier"] }
+oxc = { version = "0.57.0", features = ["codegen", "minifier", "oxc_minifier"] }
 reqwest = { version = "0.12.12", features = ["blocking"] }
 tera = "1.19.1"
 
