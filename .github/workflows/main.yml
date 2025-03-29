@@ -13,12 +13,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Formatting
+        run: cargo fmt --check --all
+      - name: Clippy
+        run: cargo clippy -q --workspace
+      - name: Tests
+        run: cargo test -q --workspace
+    
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Lints and Tests
-        run: cargo fmt --check --all && cargo clippy -q --workspace && cargo test -q --workspace
       - name: Build rust
         run: cargo build -q --release --no-default-features
       - name: Build site
@@ -27,8 +36,9 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'dist/'
+
   deploy:
-    needs: build
+    needs: [check, build]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     permissions:
