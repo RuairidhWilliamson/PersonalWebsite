@@ -69,14 +69,6 @@ pub fn minify_html(source: &str) -> Result<Vec<u8>> {
     )
 }
 
-pub fn minify_css(source: &str) -> Result<Vec<u8>> {
-    let _ = &*PACKAGE_MANAGER;
-    pipe_cmd(
-        Command::new("node_modules/clean-css-cli/bin/cleancss").arg("-O2"),
-        source,
-    )
-}
-
 fn pipe_cmd(cmd: &mut Command, input: &str) -> Result<Vec<u8>> {
     let mut cmd = cmd.stdin(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
     std::thread::scope(|s| {
