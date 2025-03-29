@@ -323,7 +323,7 @@ impl Site {
             })
             .to_string();
         let rendered_bytes = if self.config.minify {
-            super::npm::minify_html(&rendered)?
+            super::minify::html(&rendered)
         } else {
             rendered.as_bytes().to_owned()
         };

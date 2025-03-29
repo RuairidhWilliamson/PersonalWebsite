@@ -3,6 +3,7 @@ use lightningcss::{
     stylesheet::{ParserOptions, StyleSheet},
     traits::IntoOwned as _,
 };
+use minify_html::Cfg;
 use oxc::{
     allocator::Allocator,
     codegen::{Codegen, CodegenOptions},
@@ -58,4 +59,15 @@ pub fn css(source: &str) -> anyhow::Result<String> {
         ..Default::default()
     })?;
     Ok(result.code)
+}
+
+pub fn html(source: &str) -> Vec<u8> {
+    minify_html::minify(
+        source.as_bytes(),
+        &Cfg {
+            minify_css: false,
+            minify_js: false,
+            ..Cfg::new()
+        },
+    )
 }
