@@ -7,7 +7,10 @@ use minify_html::Cfg;
 use oxc::{
     allocator::Allocator,
     codegen::{Codegen, CodegenOptions},
-    minifier::{CompressOptions, MangleOptions, Minifier, MinifierOptions, MinifierReturn},
+    minifier::{
+        CompressOptions, CompressOptionsKeepNames, MangleOptions, MangleOptionsKeepNames, Minifier,
+        MinifierOptions, MinifierReturn,
+    },
     parser::Parser,
     span::SourceType,
 };
@@ -27,11 +30,13 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
         mangle: Some(MangleOptions {
             top_level: true,
             debug: false,
+            keep_names: MangleOptionsKeepNames::default(),
         }),
         compress: Some(CompressOptions {
             target: oxc::syntax::es_target::ESTarget::ES2022,
             drop_debugger: false,
             drop_console: false,
+            keep_names: CompressOptionsKeepNames::default(),
         }),
     });
     let MinifierReturn { scoping } = minifier.build(&allocator, &mut program);
