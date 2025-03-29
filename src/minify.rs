@@ -1,3 +1,8 @@
+use lightningcss::{
+    printer::PrinterOptions,
+    stylesheet::{ParserOptions, StyleSheet},
+    traits::IntoOwned as _,
+};
 use oxc::{
     allocator::Allocator,
     codegen::{Codegen, CodegenOptions},
@@ -39,4 +44,18 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
         .with_scoping(scoping)
         .build(&program);
     Ok(js.code)
+}
+
+pub fn css(source: &str) -> anyhow::Result<String> {
+    let stylesheet = StyleSheet::parse(source, ParserOptions::default()).map_err(|err| {
+        lightningcss::error::Error {
+            kind: err.kind.into_owned(),
+            loc: err.loc,
+        }
+    })?;
+    let result = stylesheet.to_css(PrinterOptions {
+        minify: true,
+        ..Default::default()
+    })?;
+    Ok(result.code)
 }

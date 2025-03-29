@@ -462,9 +462,9 @@ impl Site {
         render_ctx.insert("hot_reload", &self.include_hot_reload);
         let rendered = templates.render(src, &render_ctx)?;
         let rendered_bytes = if self.config.minify {
-            super::npm::minify_css(&rendered)?
+            super::minify::css(&rendered)?
         } else {
-            rendered.as_bytes().to_owned()
+            rendered
         };
         let destination = self.config.output_dir.join(dst);
         if let Some(dir) = destination.parent() {
