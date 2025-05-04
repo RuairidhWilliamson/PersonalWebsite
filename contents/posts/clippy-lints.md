@@ -55,12 +55,12 @@ Here is the list. You can put this in your `Cargo.toml` and it will just work.
 ```TOML
 [lints.rust]
 unsafe_code = "warn"
-unused_crate_dependencies = "warn"
+# unused_crate_dependencies = "warn"
 
 [lints.clippy]
 # Cargo
-# cargo_common_metadata = "warn"
 wildcard_dependencies = "warn"
+# cargo_common_metadata = "warn"
 
 # Restriction
 allow_attributes = "warn"
@@ -90,6 +90,8 @@ default_trait_access = "allow"
 missing_errors_doc = "allow"
 module_name_repetitions = "allow"
 must_use_candidate = "allow"
+struct_excessive_bools = "allow"
+map_unwrap_or = "allow"
 ```
 
 Also a good idea to add a `clippy.toml` file with this.
