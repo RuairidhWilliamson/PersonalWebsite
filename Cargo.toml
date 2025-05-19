@@ -47,6 +47,7 @@ default_trait_access = "allow"
 missing_errors_doc = "allow"
 module_name_repetitions = "allow"
 must_use_candidate = "allow"
+unnecessary_debug_formatting = "allow"
 
 [workspace.dependencies]
 anyhow = { version = "1.0.75", features = ["backtrace"] }
