@@ -92,6 +92,7 @@ module_name_repetitions = "allow"
 must_use_candidate = "allow"
 struct_excessive_bools = "allow"
 map_unwrap_or = "allow"
+unnecessary_debug_formatting = "allow"
 ```
 
 Also a good idea to add a `clippy.toml` file with this.

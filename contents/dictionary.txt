@@ -56,3 +56,5 @@ libgit2
 gix
 git2
 sha256
+webpage
+webpages

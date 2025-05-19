@@ -15,5 +15,5 @@ anyhow.workspace = true
 glob = { version = "0.3.1", optional = true }
 jobber_derive = { path = "./jobber_derive" }
 log.workspace = true
-lru = "0.13.0"
+lru = "0.14.0"
 panic_lock = { path = "../panic_lock" }

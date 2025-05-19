@@ -30,7 +30,7 @@ We also had a level building system where we created a lower resolution pixel im
 
 One tricky part of the level system is that the start of a level must connect to the end of the previous level. We build a short walkway between levels but the direction of the walkway still had to match the start and end.
 
-The robots and cameras were originally implemented to move irrespective of whether the player moved, but it wasn't too difficult to make this change. The robots and cameras also show a red warning graphic where their vision cone is. However in play testing we noticed that players were not sure where the cameras and robots would move next, making it very difficult to play without studying their full cycle. To address this we created a gray warning indicator to show where the robots and cameras vision would be on the next movement.
+The robots and cameras were originally implemented to move irrespective of whether the player moved, but it wasn't too difficult to make this change. The robots and cameras also show a red warning graphic where their vision cone is. However in play testing we noticed that players were not sure where the cameras and robots would move next, making it very difficult to play without studying their full cycle. To address this we created a grey warning indicator to show where the robots and cameras vision would be on the next movement.
 
 ## Levels
 
