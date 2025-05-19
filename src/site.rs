@@ -2,7 +2,7 @@ use std::{io::Cursor, path::Path, str, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use harper_core::{
-    linting::{LintGroup, LintGroupConfig, Linter as _},
+    linting::{LintGroup, Linter as _},
     parsers::MarkdownOptions,
     Document, FstDictionary, MergedDictionary, Span, WordMetadata,
 };
@@ -523,15 +523,10 @@ impl Site {
         md_options.ignore_link_title = true;
         let document = Document::new_markdown(&contents, md_options, &dict);
 
-        let mut linter = LintGroup::new(
-            LintGroupConfig {
-                oxford_comma: Some(false),
-                no_oxford_comma: Some(true),
-                compound_nouns: Some(false),
-                ..LintGroupConfig::default()
-            },
-            dict,
-        );
+        let mut linter = LintGroup::new_curated(Arc::new(dict), harper_core::Dialect::British);
+        linter.config.set_rule_enabled("OxfordComma", false);
+        linter.config.set_rule_enabled("NoOxfordComma", true);
+        linter.config.set_rule_enabled("CompoundNouns", false);
         let lints = linter.lint(&document);
         let mut count = 0;
         for l in lints {
@@ -539,11 +534,22 @@ impl Site {
                 start: l.span.start.saturating_sub(10),
                 end: (l.span.end + 10).min(document.get_source().len() - 1),
             };
-            let target = document.get_span_content_str(expanded_span);
+            let target = document.get_span_content_str(&expanded_span);
             if spell_ignore_list.iter().any(|s| target.contains(s)) {
                 continue;
             }
-            log::error!("{}\n {target}", l.message);
+            if l.message.starts_with("Vocabulary enhancement") {
+                continue;
+            }
+            log::error!(
+                "{}\n {target}\nConsider one of\n{}",
+                l.message,
+                l.suggestions
+                    .iter()
+                    .map(|s| s.to_string())
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            );
             count += 1;
         }
         if count == 0 {
