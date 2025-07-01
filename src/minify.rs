@@ -36,6 +36,7 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
             target: oxc::syntax::es_target::ESTarget::ES2022,
             drop_debugger: false,
             drop_console: false,
+            treeshake: oxc::minifier::TreeShakeOptions::default(),
             keep_names: CompressOptionsKeepNames::default(),
         }),
     });

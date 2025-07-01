@@ -546,7 +546,7 @@ impl Site {
                 l.message,
                 l.suggestions
                     .iter()
-                    .map(|s| s.to_string())
+                    .map(ToString::to_string)
                     .collect::<Vec<String>>()
                     .join("\n")
             );
