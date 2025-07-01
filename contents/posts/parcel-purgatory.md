@@ -7,14 +7,15 @@ C#, Unity, GameJam
 ---
 
 ## Background
-As in the past, me and a friend participated in Ludum dare 53 this time the theme was `Delivery`.
 
-Our puzzle game is inspired by a web game called bloxorz or as we later found another game called [cuboid](https://en.wikipedia.org/wiki/Cuboid_(video_game)).
-The simple concept of the game is that the player controls a cuboid with dimensions `2x1x1`. They can move the cuboid in any of 4 directions rotating about the edge. The game is a challenging puzzle game because the player is on a grid with a limited number of tiles. If the player moves off the tiles they will fall and be reset.
+As in the past, a friend and I participated in Ludum dare 53 this time the theme was `Delivery`.
+
+Our puzzle game is inspired by a web game called bloxorz or as we later found another game called [cuboid](<https://en.wikipedia.org/wiki/Cuboid_(video_game)>). The simple concept of the game is that the player controls a cuboid with dimensions `2x1x1`. They can move the cuboid in any of 4 directions rotating about the edge. The game is a challenging puzzle game because the player is on a grid with a limited number of tiles. If the player moves off the tiles they will fall and be reset.
 
 ![Parcel Purgatory](/assets/images/parcelpurgatory.png)
 
 ## Mechanics
+
 Our game changes some rules from its inspiration. In bloxorz if the player moves their cuboid so that it is partially on a tile but partially not on a tile it will roll off. We decided to allow this situation which means that the player has more freedom to maneuver but as a side effect the levels have fewer tiles in order to constrain the puzzle.
 
 The backstory behind the cuboid is that a person is inside the parcel and is rolling about to escape a large warehouse. This meant we also created security cameras and security robots that if they spot the player will reset them. To increase the puzzle complexity and rely less on player reaction speed the robots and cameras only move when the player moves. This gives the player time to think through their decisions and forces them to be more tactical.
@@ -24,6 +25,7 @@ Towards the end of the game we also introduce some more puzzle concepts such as 
 ![Parcel Purgatory GIF](/assets/images/parcel.gif)
 
 ## Implementation
+
 The implementation of the player movement was the most complicated part. Correctly rotating about the player and detecting when they should fall took some iteration.
 
 We also had a level building system where we created a lower resolution pixel image of the level where each pixel represents a tile in one of several states (floor tile, empty, obstacle, start, end). This image is then processed and used to place objects in the level. But we also added decorations separately inside a prefab for each level. The level manager script would then animate all these objects individually to fly in and out as the player entered the level. The tiles of the level fly in from below and the decorations fly in from above. They are all offset slightly in timing so that it looks more interesting. One problem we had with the tiles flying from below is that the camera is pointing downwards, so the tiles are visible for quite a while from very far below which is visually distracting. So instead we added a shader on the tiles that fades them out based on their `y` position.
@@ -38,12 +40,11 @@ We made 9 levels with a slow increasing difficulty. The early level designs were
 
 The first level is extremely simple it has a lot of floor tiles and is designed for the player to try moving around and to learn a bit about the controls. Crucially the exit on the first level is not lined up such that taking the shortest or most obvious path will allow you to exit. This forces the player to learn that they will have to readjust their position to exit.
 
-
 The second level has far fewer floor tiles and at the start we have a gap that can only be crossed if the player realises that they can hang half of the box over the edge. Demonstrating this early is important as players may be familiar with other games where you cannot do this. The end of level two also has a learning opportunity where the exit requires the player to be in a correct state but the only place where the player has enough floor tiles to change their state is slightly backwards. This teaches the player that sometimes they will have to backtrack to get in the right orientation. Level three is similar to level two, but it asks the player to prove they understand these concepts.
 
 ![Parcel Purgatory Level 2](/assets/images/parcelpurgatory2.png)
 
-Level four introduces gaps that the player can cross firstly with a simple gap that has when traveling long ways has only one incorrect way of solving. The next gap is more complicated and has only one correct way to solve it. The player should have an understanding that they can cross gaps but may have to adjust their position. This will be important for level seven.
+Level four introduces gaps that the player can cross firstly with a simple gap that has when travelling long ways has only one incorrect way of solving. The next gap is more complicated and has only one correct way to solve it. The player should have an understanding that they can cross gaps but may have to adjust their position. This will be important for level seven.
 
 ![Parcel Purgatory Level 4](/assets/images/parcelpurgatory3.png)
 
@@ -60,6 +61,7 @@ Level seven is the first level that combines all the previously seen concepts in
 Level eight introduces growable and shrinkable boxes. The puzzles here are tricky but since they are not combining multiple concepts as before. The puzzle to get out the end of level eight is particularly tricky since there is only one way to solve it which in play testing players found difficulty to find. Level nine is a continuation of the growable and shrinkable boxes but with more difficult puzzles. Once the player leaves through the exit on level nine they complete game.
 
 ## Thoughts
+
 This game is actually quite fun to play. The puzzles are quite challenging and the difficulty progression from level to level is pretty good.
 
 The weak areas of this game is the graphics. They are very bland which you can argue is part of the aesthetic but adding some more decorations would go a long way. I would have liked to add plants and green vegetation to add contrast with the plain white walls, brown parcels and black background. The background should have maybe been a gradient colour instead of constant dark.

@@ -6,8 +6,7 @@ C#, Unity, Neural Network
 
 ---
 
-![](/assets/images/car.png)
-Simple neural network controlling car based on sensors.
+![](/assets/images/car.png) Simple neural network controlling car based on sensors.
 
 The car has 7 sensors: four proximity sensors, 2 velocity sensors (forward speed and sideways speed) and the angle between the car direction and the next goal.
 

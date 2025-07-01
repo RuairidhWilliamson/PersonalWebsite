@@ -6,7 +6,6 @@ C#, Unity, GameJam, Rust
 
 ---
 
-
 For Ludum Dare 54, we decided to take a different kind of game entirely. The theme was `Limited Space`. We interpreted this very literally as the character space and there are limited number of spaces. Our game is inspired by the wordle genre of games.
 
 ![](/assets/images/space_inserters.png)
@@ -15,25 +14,32 @@ The premise of the game is that the player is presented with a jumble of capital
 
 ## Examples
 
-For example the puzzle might be 
+For example the puzzle might be
+
 ```
 MONAACRI
 ```
-with at most one space allowed.
+
+With at most one space allowed.
 
 So one potential solution to this is
+
 ```
 MONArch ACRId
 ```
+
 Forming the words monarch and acrid.
 
 A few other puzzles are
+
 ```
 PONTOOCCUPA (1 space)
 ABSEHOTOO   (2 spaces)
 PACAICHAG   (2 spaces)
 ```
+
 and possible solutions are
+
 ```
 PONTOon OCCUPAtion
 ABSEnt HOme TOOth
@@ -47,6 +53,7 @@ The core of what makes this game satisfying to play is being able to solve the p
 The reason the last puzzle in the example above is harder than the others, is because it uses two unusual words aioli and chagrin. It combines them in places that make it ambiguous where the word boundaries lie and hence where the spaces should be inserted. But ambiguity alone is not enough as if a puzzle is too ambiguous it will have many solutions making it very easy. Striking this balance is where most of the work on this game went and is detailed by the two modes we made.
 
 ## Modes
+
 We had two different modes in the game. An infinite puzzle mode where puzzles are generated randomly and get harder over time. And a daily puzzle where five puzzles were hand picked everyday as a special challenge.
 
 ### Infinite Mode
@@ -55,9 +62,10 @@ The infinite puzzle mode and random generation algorithm was implemented by my f
 
 ### Daily Mode
 
-The daily puzzle mode was implemented by the game contacting a web server implemented in rust and hosted on Google Cloud Run. I hand-made 5 puzzles for each day. My goal was to make the puzzles ramp up in difficulty so the first two are easy the third is average and the fourth and fifth are hard. When implementing this I realized I would have to premake most of the puzzles ahead of time so that I didn't have to make the puzzle on the day it was due.
+The daily puzzle mode was implemented by the game contacting a web server implemented in rust and hosted on Google Cloud Run. I hand-made 5 puzzles for each day. My goal was to make the puzzles ramp up in difficulty so the first two are easy the third is average and the fourth and fifth are hard. When implementing this I realised I would have to premake most of the puzzles ahead of time so that I didn't have to make the puzzle on the day it was due.
 
 I found that premaking a lot of puzzles was difficult to do by hand, so I developed some tools (all in rust) to help me. My tools included:
+
 - Random word of a specific size
 - Solve puzzle takes a puzzle input and number of spaces and finds solutions
 - Generate puzzle using random numbers within parameters

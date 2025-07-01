@@ -330,6 +330,9 @@ name = "bitflags"
 version = "2.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b8e56985ec62d17e9c1001dc89c88ecd7dc08e47eba5ec7c29c7b5eeecde967"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "bitstream-io"
@@ -822,6 +825,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "derive_more"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4a9b99b9cbbe49445b21764dc0625032a89b145a2642e67603e1c936f5458d05"
+dependencies = [
+ "derive_more-impl",
+]
+
+[[package]]
+name = "derive_more-impl"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb7330aeadfbe296029522e6c40f315320aba36fc43a5b3632f3795348f3bd22"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
+ "unicode-xid",
+]
+
+[[package]]
 name = "deunicode"
 version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1251,22 +1275,37 @@ dependencies = [
 ]
 
 [[package]]
-name = "harper-core"
-version = "0.36.0"
+name = "harper-brill"
+version = "0.47.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81246d9ca486231e762d3133d18c5c3e75e650741453c4b0283838f52ef36445"
+checksum = "37a64a657efad25517de6bc3c9417370ff0acd520723e2e26839aa61b13ec04b"
+dependencies = [
+ "harper-pos-utils",
+ "lazy_static",
+ "rs-conllu",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "harper-core"
+version = "0.47.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "341521c7b7a9e86e113767cca788e3ce346ed0d31211d88c060b96b82c94f654"
 dependencies = [
  "ammonia",
+ "bitflags 2.9.1",
  "blanket",
  "cached",
  "foldhash",
  "fst",
+ "harper-brill",
  "hashbrown 0.15.4",
  "is-macro",
  "itertools 0.14.0",
  "lazy_static",
  "levenshtein_automata",
- "lru",
+ "lru 0.15.0",
  "ordered-float",
  "paste",
  "pulldown-cmark",
@@ -1279,6 +1318,20 @@ dependencies = [
  "unicode-blocks",
  "unicode-script",
  "unicode-width",
+]
+
+[[package]]
+name = "harper-pos-utils"
+version = "0.47.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0cb4ca120c912fc287821038efd813e2a05029101f491c5acdd3a3516558f1e8"
+dependencies = [
+ "hashbrown 0.15.4",
+ "is-macro",
+ "rs-conllu",
+ "serde",
+ "strum",
+ "strum_macros",
 ]
 
 [[package]]
@@ -1819,7 +1872,7 @@ dependencies = [
  "glob",
  "jobber_derive",
  "log",
- "lru",
+ "lru 0.14.0",
  "panic_lock",
 ]
 
@@ -2013,6 +2066,15 @@ name = "lru"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f8cc7106155f10bdf99a6f379688f543ad6596a415375b36a59a054ceda1198"
+dependencies = [
+ "hashbrown 0.15.4",
+]
+
+[[package]]
+name = "lru"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0281c2e25e62316a5c9d98f2d2e9e95a37841afdaf4383c177dbb5c1dfab0568"
 dependencies = [
  "hashbrown 0.15.4",
 ]
@@ -3435,6 +3497,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "rs-conllu"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d6de5aecf17f8fff1b35d59a12e2b8c908cad4d67208805166483655554f9169"
+dependencies = [
+ "clap",
+ "derive_more",
+ "thiserror 1.0.69",
+ "walkdir",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4359,6 +4433,12 @@ name = "unicode-width"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4a1a07cc7db3810833284e8d372ccdc6da29741639ecc70c9ec107df0fa6154c"
+
+[[package]]
+name = "unicode-xid"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ebc1c04c71510c7f702b52b7c350734c9ff1295c464a03335b00bb84fc54f853"
 
 [[package]]
 name = "untrusted"
