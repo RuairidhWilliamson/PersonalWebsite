@@ -6,6 +6,7 @@ use harper_core::{
     parsers::MarkdownOptions,
     Document, FstDictionary, MergedDictionary, Span, WordMetadata,
 };
+use image::{DynamicImage, GenericImageView as _};
 use jobber::{Cache, JobCtx, JobIdBuilder};
 use serde::{Deserialize, Serialize};
 
@@ -234,38 +235,6 @@ impl Site {
     }
 
     #[jobber::job]
-    fn convert_image(
-        &self,
-        ctx: &mut JobCtx<'_>,
-        ty: &ImageConvertFormat,
-        target_cover_size: (u32, u32),
-        src: &Path,
-        dst: &Path,
-    ) -> Result<(u32, u32)> {
-        let source = self.config.root_dir.join(src);
-        let destination = self.config.output_dir.join(dst);
-        ctx.depends_file(&source)?;
-        log::info!("Convert image {ty:?} {src:?} -> {dst:?}");
-        if let Some(dir) = destination.parent() {
-            std::fs::create_dir_all(dir)?;
-        }
-        let mut out = std::fs::File::create(destination)?;
-        let img_fmt = match ty {
-            ImageConvertFormat::Webp => image::ImageFormat::WebP,
-        };
-        let img = image::ImageReader::open(source)?.decode()?;
-        let w = img.width();
-        let h = img.height();
-        let new_w = w.min(target_cover_size.0);
-        let new_h = new_w * h / w;
-        let new_new_h = h.min(new_h);
-        let new_new_w = new_new_h * new_w / new_h;
-        img.resize_to_fill(new_new_w, new_new_h, image::imageops::FilterType::Lanczos3)
-            .write_to(&mut out, img_fmt)?;
-        Ok((new_new_w, new_new_h))
-    }
-
-    #[jobber::job]
     fn template_loader(&self, ctx: &mut JobCtx<'_>) -> Result<tera::Tera> {
         let path = self
             .config
@@ -311,7 +280,7 @@ impl Site {
                 path.strip_prefix('/')
                     .map(Path::new)
                     .and_then(|src| {
-                        self.replace_img(ctx, &img, src, site_config.convert_images.as_ref())
+                        self.replace_img(ctx, &img, src, &site_config.convert_images)
                             .unwrap_or_else(|err| {
                                 if result.is_ok() {
                                     result = Err(err);
@@ -340,25 +309,32 @@ impl Site {
         Ok(regex::Regex::new("class=\"([^\"]*)\"")?)
     }
 
+    fn calculate_img_size(img: &DynamicImage, target_cover_size: (u32, u32)) -> (u32, u32) {
+        let (w, h) = img.dimensions();
+        let new_w = w.min(target_cover_size.0);
+        let new_h = new_w * h / w;
+        let new_new_h = h.min(new_h);
+        let new_new_w = new_new_h * new_w / new_h;
+        (new_new_w, new_new_h)
+    }
+
+    #[jobber::job]
     fn replace_img(
         &self,
         ctx: &mut JobCtx<'_>,
-        img: &str,
+        img_html: &str,
         src: &Path,
-        convert: Option<&ImageConvertFormat>,
+        convert: &[ImageConvertFormat],
     ) -> Result<Option<String>> {
         self.copyfile(ctx, src, src)?;
-        let Some(img_fmt) = convert else {
-            return Ok(None);
-        };
-        if !img_fmt.is_supported_convert_extension(src.extension()) {
+        if convert.is_empty() {
             return Ok(None);
         }
         let class_regex = self.img_class_regex(ctx)?;
         let mut target_cover_size = (800, 800);
 
         if let Some(class) = class_regex
-            .captures(img)
+            .captures(img_html)
             .and_then(|c| c.get(1))
             .map(|c| c.as_str())
         {
@@ -366,21 +342,64 @@ impl Site {
                 target_cover_size = (240, 130);
             }
         }
-        let mut new_src = src.to_path_buf();
-        new_src.set_file_name(format!(
-            "{}_{}x{}",
-            new_src.file_stem().context("file stem")?.to_string_lossy(),
-            target_cover_size.0,
-            target_cover_size.1
-        ));
-        new_src.set_extension(img_fmt.extension());
-        let (width, height) = self.convert_image(ctx, img_fmt, target_cover_size, src, &new_src)?;
-        let mime_type = img_fmt.mime_type();
-        let new_path_str = new_src.display();
+        let source = self.config.root_dir.join(src);
+        ctx.depends_file(&source)?;
+        let img = image::ImageReader::open(&source)?.decode()?;
+        let (width, height) = Self::calculate_img_size(&img, target_cover_size);
+
+        let mut sources = Vec::new();
+        for img_fmt in convert {
+            if !img_fmt.is_supported_convert_extension(src.extension()) {
+                continue;
+            }
+            let mut new_src = src.to_path_buf();
+            new_src.set_file_name(format!(
+                "{}_{}x{}",
+                new_src.file_stem().context("file stem")?.to_string_lossy(),
+                target_cover_size.0,
+                target_cover_size.1
+            ));
+            new_src.set_extension(img_fmt.extension());
+            self.convert_image(&img, (width, height), img_fmt, &new_src)?;
+            let mime_type = img_fmt.mime_type();
+            let new_path_str = new_src.display();
+            sources.push(format!(
+                "<source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>"
+            ));
+        }
+        if sources.is_empty() {
+            return Ok(None);
+        }
         Ok(Some(format!(
-            "<picture><source srcset=\"/{new_path_str}\" type=\"{mime_type}\"/>{} width={width} height={height}></picture>",
-            img.strip_suffix(">").context("strip suffx >")?.trim_end_matches('/').trim(),
+            "<picture>{sources}{fallback} width={width} height={height}></picture>",
+            sources = sources.join(""),
+            fallback = img_html
+                .strip_suffix(">")
+                .context("strip suffx >")?
+                .trim_end_matches('/')
+                .trim(),
         )))
+    }
+
+    fn convert_image(
+        &self,
+        src: &DynamicImage,
+        size: (u32, u32),
+        ty: &ImageConvertFormat,
+        dst: &Path,
+    ) -> Result<()> {
+        let destination = self.config.output_dir.join(dst);
+        if let Some(dir) = destination.parent() {
+            std::fs::create_dir_all(dir)?;
+        }
+        let mut out = std::io::BufWriter::new(std::fs::File::create(destination)?);
+        let img_fmt = match ty {
+            ImageConvertFormat::Webp => image::ImageFormat::WebP,
+            ImageConvertFormat::Avif => image::ImageFormat::Avif,
+        };
+        src.resize_to_fill(size.0, size.1, image::imageops::FilterType::Lanczos3)
+            .write_to(&mut out, img_fmt)?;
+        Ok(())
     }
 
     #[jobber::job]

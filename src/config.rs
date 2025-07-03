@@ -48,7 +48,7 @@ pub struct ServerConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SiteConfig {
-    pub convert_images: Option<ImageConvertFormat>,
+    pub convert_images: Vec<ImageConvertFormat>,
     pub details: Details,
     pub pages: PagesConfig,
 }
@@ -104,6 +104,7 @@ pub struct Details {
 #[derive(Debug, Hash, Clone, Serialize, Deserialize)]
 pub enum ImageConvertFormat {
     Webp,
+    Avif,
 }
 
 impl ImageConvertFormat {
@@ -111,8 +112,8 @@ impl ImageConvertFormat {
         let Some(ext) = ext else {
             return false;
         };
-        let exts = match self {
-            Self::Webp => &["png", "jpeg"],
+        let exts: &[&str] = match self {
+            Self::Webp | Self::Avif => &["png", "jpeg"],
         };
         exts.iter()
             .any(|e| ext.to_string_lossy().eq_ignore_ascii_case(e))
@@ -121,12 +122,14 @@ impl ImageConvertFormat {
     pub fn extension(&self) -> &str {
         match self {
             Self::Webp => "webp",
+            Self::Avif => "avif",
         }
     }
 
     pub fn mime_type(&self) -> &str {
         match self {
             Self::Webp => "image/webp",
+            Self::Avif => "image/avif",
         }
     }
 }
