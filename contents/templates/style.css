@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Rubik';
-  src: url(/thirdparty/rubik-variablefont.ttf) format('truetype');
+  font-family: "Rubik";
+  src: url(/thirdparty/rubik-variablefont.ttf) format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9,7 +9,7 @@
 body {
   background-color: var(--theme-bg-color);
   color: var(--theme-fg-color);
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
   text-align: center;
 }
 
@@ -190,6 +190,14 @@ h6 {
   margin: 0.5em 0;
 }
 
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: 2em;
+}
+
 .post-container {
   display: flex;
   justify-content: center;
@@ -213,7 +221,7 @@ h6 {
   }
 }
 
-.post-overview>ul {
+.post-overview > ul {
   position: sticky;
   top: 20px;
   list-style-type: none;
@@ -223,7 +231,7 @@ h6 {
   margin: 10px 5px;
 }
 
-.heading-link>a {
+.heading-link > a {
   text-decoration: none;
 }
 
