@@ -10,9 +10,9 @@ use anyhow::Result;
 use panic_lock::MutexExt as _;
 
 use crate::{
+    Cache, JobId, Leaf, Progress, ProgressReport, Stats,
     cache::{JobCacheOutput, JobStore},
     leaf_set::LeafSet,
-    Cache, JobId, Leaf, Progress, ProgressReport, Stats,
 };
 
 pub struct JobCtx<'a> {

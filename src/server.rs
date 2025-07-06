@@ -8,15 +8,15 @@ use axum::{
     body::Body,
     extract::State,
     http::{
-        header::{CACHE_CONTROL, CONTENT_TYPE},
         HeaderValue, Request,
+        header::{CACHE_CONTROL, CONTENT_TYPE},
     },
     response::{
-        sse::{Event, Sse},
         IntoResponse, Response,
+        sse::{Event, Sse},
     },
 };
-use futures_util::{future::BoxFuture, Stream};
+use futures_util::{Stream, future::BoxFuture};
 use notify_debouncer_full::notify::EventKind;
 use tokio::sync::watch::Receiver;
 use tower::{Layer, Service};

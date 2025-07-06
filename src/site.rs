@@ -2,9 +2,9 @@ use std::{io::Cursor, path::Path, str, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use harper_core::{
+    Document, FstDictionary, MergedDictionary, Span, WordMetadata,
     linting::{LintGroup, Linter as _},
     parsers::MarkdownOptions,
-    Document, FstDictionary, MergedDictionary, Span, WordMetadata,
 };
 use image::{DynamicImage, GenericImageView as _};
 use jobber::{Cache, JobCtx, JobIdBuilder};
