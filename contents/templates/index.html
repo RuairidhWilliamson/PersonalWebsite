@@ -19,12 +19,9 @@ interested in.{% endblock description %}
     </a>
   </div>
   <div>
-    <div class="featured-banner">
-      <h2>Featured Posts</h2>
-      <a href="/posts/">View All</a>
-    </div>
+    <h2>Posts</h2>
     <div class="post-grid">
-      {% for post in featured -%}
+      {% for post in posts -%}
       <a class="small-post" href="/posts/{{ post.slug }}/">
         <img src="{{ post.image }}" alt="{{ post.title }}" class="thumb" />
         <div>

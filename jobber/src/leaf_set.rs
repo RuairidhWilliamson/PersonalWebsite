@@ -1,4 +1,4 @@
-use std::collections::{hash_set::Iter, HashSet};
+use std::collections::{HashSet, hash_set::Iter};
 
 use crate::LeafHash;
 

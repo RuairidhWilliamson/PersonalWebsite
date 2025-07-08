@@ -10,11 +10,11 @@ use anyhow::Result;
 use panic_lock::MutexExt as _;
 
 use crate::{
+    LeafHash, Progress,
     ctx::JobCtx,
     jobs::JobId,
     leaf_set::LeafSet,
     stats::{CompleteStats, LeafStats, Stats},
-    LeafHash, Progress,
 };
 
 #[derive(Debug, Clone)]
