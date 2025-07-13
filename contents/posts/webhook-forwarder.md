@@ -26,6 +26,8 @@ pub trait MessageHandler: Send + Sync {
 
 The client is generic over this trait but still uses `Box::pin` to call the async function. This callback didn't need to be async but seeing as most rust web servers make use of async it is beneficial to allow webhook forwarder to take part in that runtime and pass it on to the callback.
 
+The server uses a concurrent hash map using dashmap to maintain a mapping of channel id to the client. By not using a mutex in theory there should be less resource contention. We don't want to clean up channels immediately if they exit because the client may reconnect. Instead at regular intervals all the closed channels are cleaned up.
+
 I created a docker file to make it easy to host the server. I tried hosting this on Google Cloud's serverless cloud run platform, but the connections were ended after a timeout making it impractical to use for long periods of time.
 
 The implementation is not ideal, for example it encodes the webhook body as an array of bytes which in JSON is represented as an array of numbers, not very efficient. But for a development tool it is okay. If I run into issues I will improve it later.
