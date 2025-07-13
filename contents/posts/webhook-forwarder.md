@@ -16,6 +16,18 @@ In fact smee has added a field to pass the raw body along side the parsed body. 
 
 Instead of waiting around for that to be updated and instead of hosting the smee server myself. I decided to make my own webhook forwarder. Naturally I wrote this in Rust. It provides a CLI tool to forward the webhooks to a local address. It also provides a rust crate interface to integrate directly into services. It also uses a similar design to smee making use of SSE (server side events). It provides all the HTTP headers and the HTTP body to the client allowing the signature to be verified.
 
+I had to put some work into making the client library work with async callbacks. The interface that client consumers implement is
+
+```rust
+pub trait MessageHandler: Send + Sync {
+    async fn handle(&self, headers: HeaderMap, body: Vec<u8>) -> Result<()>;
+}
+```
+
+The client is generic over this trait but still uses `Box::pin` to call the async function. This callback didn't need to be async but seeing as most rust web servers make use of async it is beneficial to allow webhook forwarder to take part in that runtime and pass it on to the callback.
+
+I created a docker file to make it easy to host the server. I tried hosting this on Google Cloud's serverless cloud run platform, but the connections were ended after a timeout making it impractical to use for long periods of time.
+
 The implementation is not ideal, for example it encodes the webhook body as an array of bytes which in JSON is represented as an array of numbers, not very efficient. But for a development tool it is okay. If I run into issues I will improve it later.
 
 The code can be found here [https://github.com/RuairidhWilliamson/webhook-forwarder](https://github.com/RuairidhWilliamson/webhook-forwarder)
