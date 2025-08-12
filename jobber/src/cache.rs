@@ -118,11 +118,11 @@ impl InternalCache {
     }
 
     pub fn get(
-        &mut self,
+        &'_ mut self,
         id: &JobId,
         hasher: &RandomState,
         stats: &mut LeafStats,
-    ) -> JobCacheOutput {
+    ) -> JobCacheOutput<'_> {
         let Some(store) = self.cache.get(id) else {
             log::debug!("{id:?} cache miss not present");
             return JobCacheOutput::NotCached;
