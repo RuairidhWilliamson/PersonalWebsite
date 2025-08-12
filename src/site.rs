@@ -337,10 +337,9 @@ impl Site {
             .captures(img_html)
             .and_then(|c| c.get(1))
             .map(|c| c.as_str())
+            && class.contains("thumb")
         {
-            if class.contains("thumb") {
-                target_cover_size = (240, 130);
-            }
+            target_cover_size = (240, 130);
         }
         let source = self.config.root_dir.join(src);
         ctx.depends_file(&source)?;
