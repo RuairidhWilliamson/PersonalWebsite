@@ -2619,7 +2619,7 @@ dependencies = [
  "itertools 0.14.0",
  "lazy_static",
  "levenshtein_automata",
- "lru 0.16.0",
+ "lru",
  "ordered-float 5.0.0",
  "paste",
  "pulldown-cmark",
@@ -2645,7 +2645,7 @@ dependencies = [
  "hashbrown 0.15.5",
  "is-macro",
  "itertools 0.14.0",
- "lru 0.16.0",
+ "lru",
  "rs-conllu",
  "serde",
  "serde_json",
@@ -3217,7 +3217,7 @@ dependencies = [
  "glob",
  "jobber_derive",
  "log",
- "lru 0.15.0",
+ "lru",
  "panic_lock",
 ]
 
@@ -3436,15 +3436,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fae87c125b03c1d2c0150c90365d7d6bcc53fb73a9acaef207d2d065860f062"
 dependencies = [
  "imgref",
-]
-
-[[package]]
-name = "lru"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0281c2e25e62316a5c9d98f2d2e9e95a37841afdaf4383c177dbb5c1dfab0568"
-dependencies = [
- "hashbrown 0.15.5",
 ]
 
 [[package]]
