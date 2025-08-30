@@ -75,25 +75,25 @@ workspace = true
 
 [dependencies]
 anyhow.workspace = true
-clap = { version = "4.4.6", features = ["derive"] }
+clap = { version = "4.5.46", features = ["derive"] }
 env_logger = "0.11.5"
 log.workspace = true
-regex = "1.10.2"
+regex = "1.11.2"
 serde = { version = "1.0.189", features = ["derive"] }
-toml = "0.8.4"
+toml = "0.9.5"
 
-harper-core = "0.47.0"
+harper-core = "0.59.0"
 humantime = "2.1.0"
 image = "0.25.1"
 lightningcss = { version = "1.0.0-alpha.65", features = ["into_owned"] }
 markdown = "1.0.0-alpha.21"
-oxc = { version = "0.75.0", features = ["codegen", "minifier", "oxc_minifier"] }
+oxc = { version = "0.85.0", features = ["codegen", "minifier", "oxc_minifier"] }
 reqwest = { version = "0.12.12", features = ["blocking"] }
 tera = "1.19.1"
 
 axum = { version = "0.8.1", optional = true }
 futures-util = { version = "0.3", optional = true }
-notify-debouncer-full = { version = "0.5.0", default-features = false, optional = true }
+notify-debouncer-full = { version = "0.6.0", default-features = false, optional = true }
 tokio-stream = { version = "0.1.14", features = ["sync"], optional = true }
 tokio = { version = "1.44.2", features = ["rt", "net"], optional = true }
 tower-http = { version = "0.6.0", features = ["fs"], optional = true }

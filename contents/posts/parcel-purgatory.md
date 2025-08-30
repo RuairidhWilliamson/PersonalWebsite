@@ -16,7 +16,7 @@ Our puzzle game is inspired by a web game called bloxorz or as we later found an
 
 ## Mechanics
 
-Our game changes some rules from its inspiration. In bloxorz if the player moves their cuboid so that it is partially on a tile but partially not on a tile it will roll off. We decided to allow this situation which means that the player has more freedom to maneuver but as a side effect the levels have fewer tiles in order to constrain the puzzle.
+Our game changes some rules from its inspiration. In bloxorz if the player moves their cuboid so that it is partially on a tile but partially not on a tile it will roll off. We decided to allow this situation this means that the player is given more freedom to maneuver. As a side effect the levels have fewer tiles in order to constrain the puzzle.
 
 The backstory behind the cuboid is that a person is inside the parcel and is rolling about to escape a large warehouse. This meant we also created security cameras and security robots that if they spot the player will reset them. To increase the puzzle complexity and rely less on player reaction speed the robots and cameras only move when the player moves. This gives the player time to think through their decisions and forces them to be more tactical.
 
@@ -32,7 +32,7 @@ We also had a level building system where we created a lower resolution pixel im
 
 One tricky part of the level system is that the start of a level must connect to the end of the previous level. We build a short walkway between levels but the direction of the walkway still had to match the start and end.
 
-The robots and cameras were originally implemented to move irrespective of whether the player moved, but it wasn't too difficult to make this change. The robots and cameras also show a red warning graphic where their vision cone is. However in play testing we noticed that players were not sure where the cameras and robots would move next, making it very difficult to play without studying their full cycle. To address this we created a grey warning indicator to show where the robots and cameras vision would be on the next movement.
+The robots and cameras were originally implemented to move irrespective of whether the player moved, but it wasn't too difficult to make this change. The robots and cameras also show a red warning graphic where their vision cone is. However, in play testing we noticed that players were not sure where the cameras and robots would move next, making it very difficult to play without studying their full cycle. To address this we created a grey warning indicator to show where the robots and cameras vision would be on the next movement.
 
 ## Levels
 

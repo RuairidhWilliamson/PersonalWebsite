@@ -14,7 +14,7 @@ The premise of the game is that the player is presented with a jumble of capital
 
 ## Examples
 
-For example the puzzle might be
+For example, the puzzle might be
 
 ```
 MONAACRI

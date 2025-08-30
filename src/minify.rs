@@ -8,8 +8,8 @@ use oxc::{
     allocator::Allocator,
     codegen::{Codegen, CodegenOptions},
     minifier::{
-        CompressOptions, CompressOptionsKeepNames, MangleOptions, MangleOptionsKeepNames, Minifier,
-        MinifierOptions, MinifierReturn,
+        CompressOptions, MangleOptions, MangleOptionsKeepNames, Minifier, MinifierOptions,
+        MinifierReturn,
     },
     parser::Parser,
     span::SourceType,
@@ -36,16 +36,23 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
             target: oxc::syntax::es_target::ESTarget::ES2022,
             drop_debugger: false,
             drop_console: false,
-            treeshake: oxc::minifier::TreeShakeOptions::default(),
-            keep_names: CompressOptionsKeepNames::default(),
+            ..Default::default()
         }),
     });
-    let MinifierReturn { scoping } = minifier.build(&allocator, &mut program);
+    let MinifierReturn {
+        scoping,
+        iterations: _,
+    } = minifier.minify(&allocator, &mut program);
     let js = Codegen::new()
         .with_options(CodegenOptions {
             minify: true,
             single_quote: true,
-            comments: false,
+            comments: oxc::codegen::CommentOptions {
+                normal: false,
+                jsdoc: false,
+                annotation: false,
+                legal: oxc::codegen::LegalComment::None,
+            },
             ..Default::default()
         })
         .with_scoping(scoping)

@@ -58,7 +58,7 @@ I am very pleased with TODL and I use it regularly.
 
 In terms of performance I did some benchmarking on large repos and found it doesn't take more than a few seconds. Most of the time is spent fetching the git information about the matches.
 
-If I was to rewrite it, I would change the search method to not be so specific to the source code type. Instead match more based on heuristics of what it can determine comments probably look like in the supplied language. This would avoid the problem of TODL only working for a small set of languages.
+If I was to rewrite it, I would change the search method to not be so specific to the source code type. Instead, match more based on heuristics of what it can determine comments probably look like in the supplied language. This would avoid the problem of TODL only working for a small set of languages.
 
 [![](https://img.shields.io/crates/v/todl)](https://crates.io/crates/todl) [![](https://img.shields.io/docsrs/todl)](https://docs.rs/todl)
 
