@@ -2,9 +2,10 @@ use std::{io::Cursor, path::Path, str, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use harper_core::{
-    Document, FstDictionary, MergedDictionary, Span, WordMetadata,
+    Document, Span, WordMetadata,
     linting::{LintGroup, Linter as _},
     parsers::MarkdownOptions,
+    spell::{FstDictionary, MergedDictionary},
 };
 use image::{DynamicImage, GenericImageView as _};
 use jobber::{Cache, JobCtx, JobIdBuilder};
@@ -548,10 +549,10 @@ impl Site {
         let lints = linter.lint(&document);
         let mut count = 0;
         for l in lints {
-            let expanded_span = Span {
-                start: l.span.start.saturating_sub(10),
-                end: (l.span.end + 10).min(document.get_source().len() - 1),
-            };
+            let expanded_span = Span::new(
+                l.span.start.saturating_sub(10),
+                (l.span.end + 10).min(document.get_source().len() - 1),
+            );
             let target = document.get_span_content_str(&expanded_span);
             if spell_ignore_list.iter().any(|s| target.contains(s)) {
                 continue;
