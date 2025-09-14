@@ -6,7 +6,7 @@ Rust, Web
 
 ---
 
-![](/assets/images/fallback.png)
+![](/assets/images/webhook_forwarder.png)
 
 When developing services that rely on external webhooks it is difficult to test and run the service locally, because the external webhook provider cannot reach your local server sitting behind firewalls and NAT (network address translation). The common solution to this is to use a service similar to [smee.io](https://smee.io). Smee is a public server that forwards webhooks to clients using SSE (server side events). This works because the client opens the connection to the server and remains connected in order to receive events, allowing it to work behind NAT and most firewalls.
 
