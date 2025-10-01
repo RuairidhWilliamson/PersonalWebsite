@@ -33,7 +33,7 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
             keep_names: MangleOptionsKeepNames::default(),
         }),
         compress: Some(CompressOptions {
-            target: oxc::syntax::es_target::ESTarget::ES2022,
+            target: oxc::transformer::EngineTargets::from_target("es2022").unwrap(),
             drop_debugger: false,
             drop_console: false,
             ..Default::default()
