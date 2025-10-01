@@ -2,7 +2,7 @@ use std::{io::Cursor, path::Path, str, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use harper_core::{
-    Document, Span, WordMetadata,
+    DictWordMetadata, Document, Span,
     linting::{LintGroup, Linter as _},
     parsers::MarkdownOptions,
     spell::{FstDictionary, MergedDictionary},
@@ -32,7 +32,7 @@ pub struct AdditionalDictionary {
 #[derive(Deserialize)]
 pub struct AdditionalWord {
     pub word: String,
-    pub metadata: WordMetadata,
+    pub metadata: DictWordMetadata,
 }
 
 pub struct Site {
@@ -516,7 +516,7 @@ impl Site {
         dict.add_dictionary(Arc::new(FstDictionary::new(
             simple_dictionary_contents
                 .lines()
-                .map(|l| (l.chars().collect::<_>(), WordMetadata::default()))
+                .map(|l| (l.chars().collect::<_>(), DictWordMetadata::default()))
                 .collect(),
         )));
         Ok(dict)
