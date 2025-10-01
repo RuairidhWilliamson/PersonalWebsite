@@ -332,16 +332,17 @@ impl Site {
             return Ok(None);
         }
         let class_regex = self.img_class_regex(ctx)?;
-        let mut target_cover_size = (800, 800);
 
-        if let Some(class) = class_regex
+        let target_cover_size = if let Some(class) = class_regex
             .captures(img_html)
             .and_then(|c| c.get(1))
             .map(|c| c.as_str())
             && class.contains("thumb")
         {
-            target_cover_size = (240, 130);
-        }
+            (240, 130)
+        } else {
+            (800, 800)
+        };
         let source = self.config.root_dir.join(src);
         ctx.depends_file(&source)?;
         let img = image::ImageReader::open(&source)?.decode()?;
