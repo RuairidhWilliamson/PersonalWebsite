@@ -2641,9 +2641,9 @@ dependencies = [
 
 [[package]]
 name = "harper-brill"
-version = "0.65.0"
+version = "0.67.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ebc4df875c5ef5b547466ee990175d1404354b0e71027715662b8740ac9f7b65"
+checksum = "b0329b62b1ed96806f48524bb9b7c2852b4c8783ddc28a79dbc4c249151f3079"
 dependencies = [
  "harper-pos-utils",
  "lazy_static",
@@ -2654,9 +2654,9 @@ dependencies = [
 
 [[package]]
 name = "harper-core"
-version = "0.65.0"
+version = "0.67.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca706c23638af5c3f0f3ebec224635fe0b6a5540cc90939f6e39839fb82dd851"
+checksum = "8362f2a08817c59b43cfd745114e9161082d4196d96308aa81826e8a61c27284"
 dependencies = [
  "ammonia",
  "bitflags 2.9.4",
@@ -2687,9 +2687,9 @@ dependencies = [
 
 [[package]]
 name = "harper-pos-utils"
-version = "0.65.0"
+version = "0.67.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd2691aed7d52092bf21c27355f98dd2da31dcb41d5f97bf07622c9fa96bd5f1"
+checksum = "0aa3a745dcfa69735c810757178ed050586a7b81c4f05fa5df0c55765c787965"
 dependencies = [
  "burn",
  "burn-ndarray",
