@@ -2,7 +2,7 @@ use std::{io::Cursor, path::Path, str, sync::Arc};
 
 use anyhow::{Context as _, Result};
 use harper_core::{
-    Document, Span, WordMetadata,
+    DictWordMetadata, Document, Span,
     linting::{LintGroup, Linter as _},
     parsers::MarkdownOptions,
     spell::{FstDictionary, MergedDictionary},
@@ -32,7 +32,7 @@ pub struct AdditionalDictionary {
 #[derive(Deserialize)]
 pub struct AdditionalWord {
     pub word: String,
-    pub metadata: WordMetadata,
+    pub metadata: DictWordMetadata,
 }
 
 pub struct Site {
@@ -332,16 +332,17 @@ impl Site {
             return Ok(None);
         }
         let class_regex = self.img_class_regex(ctx)?;
-        let mut target_cover_size = (800, 800);
 
-        if let Some(class) = class_regex
+        let target_cover_size = if let Some(class) = class_regex
             .captures(img_html)
             .and_then(|c| c.get(1))
             .map(|c| c.as_str())
             && class.contains("thumb")
         {
-            target_cover_size = (240, 130);
-        }
+            (240, 130)
+        } else {
+            (800, 800)
+        };
         let source = self.config.root_dir.join(src);
         ctx.depends_file(&source)?;
         let img = image::ImageReader::open(&source)?.decode()?;
@@ -516,7 +517,7 @@ impl Site {
         dict.add_dictionary(Arc::new(FstDictionary::new(
             simple_dictionary_contents
                 .lines()
-                .map(|l| (l.chars().collect::<_>(), WordMetadata::default()))
+                .map(|l| (l.chars().collect::<_>(), DictWordMetadata::default()))
                 .collect(),
         )));
         Ok(dict)

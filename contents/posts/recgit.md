@@ -12,7 +12,7 @@ I use git for almost all my projects. Even if it is just me working on a project
 
 ## Recgit
 
-Recgit is a rust based CLI tool I made to solve this problem. Named recgit because of "recursive git". It has a very simple command line interface with only one command, `recgit status`.
+Recgit is a CLI tool written in Rust I made to solve this problem. Named recgit because of "recursive git". It has a very simple command line interface with only one command, `recgit status`.
 
 The status command walks the directory tree looking for git repositories. When it finds one it and checks if the repository has any unsynced changes. It then prints these results to standard output for the user, highlighting where code is not synchronized.
 

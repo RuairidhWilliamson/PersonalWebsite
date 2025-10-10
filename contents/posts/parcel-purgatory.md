@@ -16,7 +16,7 @@ Our puzzle game is inspired by a web game called bloxorz or as we later found an
 
 ## Mechanics
 
-Our game changes some rules from its inspiration. In bloxorz if the player moves their cuboid so that it is partially on a tile but partially not on a tile it will roll off. We decided to allow this situation this means that the player is given more freedom to maneuver. As a side effect the levels have fewer tiles in order to constrain the puzzle.
+Our game changes some rules from its inspiration. In bloxorz if the player moves their cuboid so that it is partially on a tile but partially not on a tile it will roll off. We decided to allow this situation this means that the player is given more freedom to maneuver. As a side-effect the levels have fewer tiles in order to constrain the puzzle.
 
 The backstory behind the cuboid is that a person is inside the parcel and is rolling about to escape a large warehouse. This meant we also created security cameras and security robots that if they spot the player will reset them. To increase the puzzle complexity and rely less on player reaction speed the robots and cameras only move when the player moves. This gives the player time to think through their decisions and forces them to be more tactical.
 
