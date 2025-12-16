@@ -73,6 +73,7 @@ must_use_candidate = "allow"
 struct_excessive_bools = "allow"
 map_unwrap_or = "allow"
 unnecessary_debug_formatting = "allow"
+missing_panics_doc = "allow"
 ```
 
 Also a good idea to add a `clippy.toml` file with this.
@@ -80,4 +81,5 @@ Also a good idea to add a `clippy.toml` file with this.
 ```TOML
 allow-print-in-tests = true
 allow-unwrap-in-tests = true
+allow-dbg-in-tests = true
 ```
