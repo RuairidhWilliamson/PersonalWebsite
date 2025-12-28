@@ -99,7 +99,7 @@ tower-http = { version = "0.6.0", features = ["fs"], optional = true }
 tower = { version = "0.5.0", optional = true }
 
 jobber = { path = "./jobber" }
-minify-html = "0.16.4"
+minify-html = "0.18.1"
 
 [profile.dev.package.image]
 opt-level = 3
