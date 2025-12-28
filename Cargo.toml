@@ -86,7 +86,7 @@ humantime = "2.1.0"
 image = "0.25.1"
 lightningcss = { version = "1.0.0-alpha.65", features = ["into_owned"] }
 markdown = "1.0.0-alpha.21"
-oxc = { version = "0.94.0", features = ["codegen", "minifier", "oxc_minifier", "transformer"] }
+oxc = { version = "0.105.0", features = ["codegen", "minifier", "oxc_minifier", "transformer"] }
 reqwest = { version = "0.12.12", features = ["blocking"] }
 tera = "1.19.1"
 
