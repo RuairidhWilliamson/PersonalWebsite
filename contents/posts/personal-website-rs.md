@@ -23,11 +23,11 @@ The website builder has many features:
 
 The website is split into pages that are templated HTML using a templating library called [tera](https://keats.github.io/tera/) and posts that are written in Markdown and converted to HTML using a library called [markdown-rs](https://github.com/wooorm/markdown-rs). The rust program has two modes: a build and a server mode.
 
-## Build mode
+## Build Mode
 
 The build mode builds the website into static HTML, JavaScript and CSS ready to be hosted on any standard static web host. This is what is used by the continuous integration GitHub actions to build the site and upload it to a Google Cloud Storage bucket.
 
-## Server mode
+## Server Mode
 
 The server mode is similar when run builds the website and hosts it on a local web server. It also watches the source directories for any file changes. When a file change is detected it rebuilds the website and reloads any connected webpages.
 
@@ -46,13 +46,13 @@ When in server mode information is logged to the terminal about how long a gener
 
 Hot reloading is very important for the server mode. It must build the website quickly and reload any web browsers viewing the page.
 
-## FileSystem notifications
+## Filesystem Notifications
 
-Firstly the server must watch the filesystem for file changes in the source directories. The library [notify-debouncer-mini](https://crates.io/crates/notify-debouncer-mini) is perfect for this purpose. It is a wrapper around the library [notify](https://crates.io/crates/notify) that only notifies once over a time period. This is useful because upon saving a file to the filesystem, many file events may be emitted. To avoid doing extra work the server should only reload once over a time period. [Notify-debouncer-mini](https://crates.io/crates/notify-debouncer-mini) upon receiving a notify event will start a timer and ignore other filesystem notifications until that timer expires when it emits a single notify event.
+Firstly the server must watch the filesystem for file changes in the source directories. The library [notify-debouncer-mini](https://crates.io/crates/notify-debouncer-mini) is perfect for this purpose. It is a wrapper around the library [notify](https://crates.io/crates/notify) that only notifies once over a time period. This is useful because upon saving a file to the filesystem, many file events may be emitted. To avoid doing extra work the server should only reload once over a time period. [Notify-debouncer-mini](https://crates.io/crates/notify-debouncer-mini), upon receiving a single notify event, it will start a timer and ignore other filesystem notifications until that timer expires when it emits a single notify event.
 
 ## Rebuilding
 
-Once the server receives a filesystem notification that a source file has changes, the server needs to rebuild the website. This is straight forward but in order to improve performance we use a cache to cache work that doesn't need to be re computed. See [Jobber](#jobber) about how the caching works. Once the website has been rebuilt the files are updating on disk and the browser needs to be triggered to reload the page.
+Once the server receives a filesystem notification that a source file has changes, the server needs to rebuild the website. This is straight forward but in order to improve performance we use a cache to cache work that doesn't need to be recomputed. See [Jobber](#jobber) about how the caching works. Once the website has been rebuilt the files are updating on disk and the browser needs to be triggered to reload the page.
 
 ## Reloading
 
@@ -62,9 +62,9 @@ There are a number of ways to trigger the browser to reload the page. Fundamenta
 
 - WebSockets are a good way to have two way communication between a server and browser. They allow the client side JavaScript to connect to the server using HTTP and then upgrade the connection to WebSocket. The client and server can then send messages at any time.
 
-- Server sent events (SSE) are similar to websockets except only the server can send messages. In this case we only want the server to send events since we just want the client to be able to react to reload triggers. Just like websockets SSE are connected to using JavaScript on the webpage and an HTTP connection is upgraded.
+- Server sent events (SSE) are similar to WebSockets except only the server can send messages. In this case we only want the server to send events since we just want the client to be able to react to reload triggers. Just like WebSockets SSE are connected to using JavaScript on the webpage and an HTTP connection is upgraded.
 
-I chose to use server sent events because they are more efficient than polling and I don't need the extra features of websockets.
+I chose to use server sent events because they are more efficient than polling and I don't need the extra features of WebSockets.
 
 The way it works is every time the website is rebuilt a generation number is incremented. A small piece of JavaScript is injected into the website with the current generation number it was built with. On load the JavaScript connects to the server sent events stream. When it receives an event, the event contains the new generation number. If the new generation number does not match the generation number injected into the JavaScript it will call `window.reload()`. The generation number is not strictly necessary but is useful in avoiding potential issues with infinite reloading.
 

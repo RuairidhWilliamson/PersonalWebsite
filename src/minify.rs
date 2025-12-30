@@ -40,10 +40,7 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
             ..Default::default()
         }),
     });
-    let MinifierReturn {
-        scoping,
-        iterations: _,
-    } = minifier.minify(&allocator, &mut program);
+    let MinifierReturn { scoping, .. } = minifier.minify(&allocator, &mut program);
     let js = Codegen::new()
         .with_options(CodegenOptions {
             minify: true,

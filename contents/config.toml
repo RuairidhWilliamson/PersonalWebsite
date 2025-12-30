@@ -12,11 +12,13 @@ pages = [
 ]
 
 featured = [
+  "advent-of-code-2025",
+  "webhook-forwarder",
   "recgit",
-  "clippy-lints",
-  "personal-website-rs",
 ]
 
+[[pages.posts]]
+slug = "advent-of-code-2025"
 [[pages.posts]]
 slug = "webhook-forwarder"
 [[pages.posts]]

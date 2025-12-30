@@ -20,7 +20,7 @@ This is very useful since it allows me to focus on the bigger picture and not to
 
 The disadvantage is that my code always has some number of TODO comments littered about in it with varying importance. They can be as harmless as a suggestion. That a part of the code should be refactored or switched to a different API when it is released or that the code is unsound and there is an important bug that needs fixing.
 
-In order to address these issues I wanted a command line tool that would quickly list all the TODO comments in my code and help me find what I need to work on.
+In order to address these issues I wanted a command line tool that would quickly list all the TODO comments in my code and help me find what I should be working on.
 
 The obvious solution to this is to right a grep command that returns matches that look like comment tags. This is okay, but I wanted something a bit more user friendly, with more descriptive information and more accuracy.
 
