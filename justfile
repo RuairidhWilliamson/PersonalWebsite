@@ -17,6 +17,9 @@ zip: build
 serve:
 	RUST_LOG=info cargo r --release -F server -- serve -r contents --hot-reload --grammar-check --minify
 
+serve-debug:
+	RUST_LOG=info cargo r --release -F server -- serve -r contents --hot-reload --grammar-check --minify --no-progress
+
 clean:
 	rm -rf dist
 	rm -f rtaw.zip

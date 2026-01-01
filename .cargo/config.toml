@@ -1,0 +1,2 @@
+[registries]
+rain-registry = { index = "sparse+https://storage.googleapis.com/rain-e870e063/crates/index/" }

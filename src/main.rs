@@ -8,6 +8,7 @@ mod post;
 mod progress;
 mod site;
 
+mod highlight;
 #[cfg(feature = "server")]
 mod server;
 

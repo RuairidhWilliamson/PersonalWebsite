@@ -15,7 +15,7 @@ pub struct PostDetails {
     pub tags: Vec<String>,
     pub description: String,
     pub headings: Vec<PostHeading>,
-    pub html_contents: String,
+    pub contents: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -26,8 +26,8 @@ pub struct PostHeading {
 }
 
 impl PostDetails {
-    pub fn extract(post_config: &PostConfig, contents: &str) -> Result<Self> {
-        let node = markdown::to_mdast(contents, &markdown::ParseOptions::default())
+    pub fn extract(post_config: &PostConfig, contents: String) -> Result<Self> {
+        let node = markdown::to_mdast(&contents, &markdown::ParseOptions::default())
             .expect("parse markdown");
         let slug = post_config.slug.clone();
         let title = extract_title(&node).context("extract title")?;
@@ -35,13 +35,6 @@ impl PostDetails {
         let date = extract_date(&node).context("extract date")?;
         let tags = extract_tags(&node).context("extract tags")?;
         let headings = extract_headings(&node);
-        let html_contents = add_heading_ids(
-            &markdown::to_html_with_options(contents, &markdown::Options::gfm()).map_err(
-                |err| MarkdownToHtmlError {
-                    msg: err.to_string(),
-                },
-            )?,
-        );
         Ok(Self {
             slug,
             title,
@@ -51,8 +44,27 @@ impl PostDetails {
             // TODO: Extract description
             description: String::default(),
             headings,
-            html_contents,
+            contents,
         })
+    }
+
+    pub fn html_contents(&self) -> String {
+        let md_contents = find_md_code_blocks(&self.contents);
+        let html = markdown::to_html_with_options(
+            &md_contents,
+            &markdown::Options {
+                parse: markdown::ParseOptions::gfm(),
+                compile: markdown::CompileOptions {
+                    allow_dangerous_html: true,
+                    ..markdown::CompileOptions::gfm()
+                },
+            },
+        )
+        .map_err(|err| MarkdownToHtmlError {
+            msg: err.to_string(),
+        })
+        .unwrap();
+        add_heading_ids(&html)
     }
 }
 
@@ -207,4 +219,23 @@ fn add_heading_ids(contents: &str) -> String {
 
 fn kebab(s: &str) -> String {
     s.to_lowercase().replace(' ', "-")
+}
+
+fn find_md_code_blocks(contents: &str) -> String {
+    static CODE_BLOCK_PATTERN: LazyLock<regex::Regex> = LazyLock::new(|| {
+        regex::Regex::new("(?s)```([a-zA-Z0-9_-]*)?(.*?)```").expect("compile regex")
+    });
+    CODE_BLOCK_PATTERN
+        .replace_all(contents, |cap: &regex::Captures<'_>| {
+            let language = cap.get(1).unwrap().as_str();
+            let Some(src) = cap.get(2) else {
+                return cap.get_match().as_str().to_string();
+            };
+            crate::highlight::src_to_highlight_html(
+                language,
+                src.as_str().trim_matches(&['\n', '\r']),
+            )
+            .unwrap_or_else(|| cap.get_match().as_str().to_string())
+        })
+        .to_string()
 }

@@ -18,6 +18,8 @@ featured = [
 ]
 
 [[pages.posts]]
+slug = "rain"
+[[pages.posts]]
 slug = "advent-of-code-2025"
 [[pages.posts]]
 slug = "webhook-forwarder"
