@@ -32,7 +32,7 @@ I recommend adding and removing lints to your taste but this should be a useful 
 
 Here is the list. You can put this in your `Cargo.toml` and it will just work.
 
-```TOML
+```toml
 [lints.rust]
 unsafe_code = "warn"
 # unused_crate_dependencies = "warn"
@@ -77,7 +77,7 @@ missing_panics_doc = "allow"
 
 Also a good idea to add a `clippy.toml` file with this.
 
-```TOML
+```toml
 allow-print-in-tests = true
 allow-unwrap-in-tests = true
 allow-dbg-in-tests = true

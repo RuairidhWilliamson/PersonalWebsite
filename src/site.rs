@@ -152,7 +152,7 @@ impl Site {
     #[jobber::job]
     fn post_loader(&self, ctx: &mut JobCtx<'_>, post_config: &PostConfig) -> Result<PostDetails> {
         let contents = self.post_markdown(ctx, post_config)?;
-        let post = PostDetails::extract(post_config, &contents)
+        let post = PostDetails::extract(post_config, contents)
             .context(format!("extract post {:?}", post_config.slug))?;
         Ok(post)
     }
@@ -262,12 +262,28 @@ impl Site {
         src: &str,
         dst: &Path,
     ) -> Result<()> {
+        let html = templates.render(src, render_ctx)?;
+        let rendered = self.replace_images(ctx, html)?;
+        let rendered_bytes = if self.config.minify {
+            super::minify::html(&rendered)
+        } else {
+            rendered.as_bytes().to_owned()
+        };
+        let destination = self.config.output_dir.join(dst);
+        if let Some(dir) = destination.parent() {
+            std::fs::create_dir_all(dir)?;
+        }
+        std::fs::write(destination, rendered_bytes)?;
+        Ok(())
+    }
+
+    #[jobber::job]
+    fn replace_images(&self, ctx: &mut JobCtx<'_>, html: String) -> Result<String> {
         let site_config = self.site_config_loader(ctx)?;
-        let mut rendered = templates.render(src, render_ctx)?;
         let img_regex = self.img_tag_regex(ctx)?;
         let mut result = Result::Ok(());
-        rendered = img_regex
-            .replace_all(&rendered, |cap: &regex::Captures<'_>| {
+        let rendered = img_regex
+            .replace_all(&html, |cap: &regex::Captures<'_>| {
                 let img = cap
                     .get(0)
                     .expect("regex capture")
@@ -292,17 +308,8 @@ impl Site {
                     .unwrap_or_else(|| img.clone())
             })
             .to_string();
-        let rendered_bytes = if self.config.minify {
-            super::minify::html(&rendered)
-        } else {
-            rendered.as_bytes().to_owned()
-        };
-        let destination = self.config.output_dir.join(dst);
-        if let Some(dir) = destination.parent() {
-            std::fs::create_dir_all(dir)?;
-        }
-        std::fs::write(destination, rendered_bytes)?;
-        Ok(())
+        result?;
+        Ok(rendered)
     }
 
     #[jobber::job]
@@ -404,6 +411,27 @@ impl Site {
     }
 
     #[jobber::job]
+    fn replace_code_blocks(&self, ctx: &mut JobCtx<'_>, html: &str) -> Result<String> {
+        let regex = self.code_block_tag_regex(ctx)?;
+        Ok(regex
+            .replace_all(html, |cap: &regex::Captures<'_>| {
+                let class = cap.get(1).unwrap().as_str();
+                let language = class.strip_prefix("language-").unwrap();
+                let src = cap.get(2).unwrap().as_str();
+                crate::highlight::src_to_highlight_html(language, src)
+                    .unwrap_or_else(|| cap.get_match().as_str().to_string())
+            })
+            .to_string())
+    }
+
+    #[jobber::job]
+    fn code_block_tag_regex(&self, ctx: &mut JobCtx<'_>) -> Result<regex::Regex> {
+        Ok(regex::Regex::new(
+            "(?s)<pre><code class=\"([^\"]*)\">(.*?)</code></pre>",
+        )?)
+    }
+
+    #[jobber::job]
     fn render_template_html(&self, ctx: &mut JobCtx<'_>, src: &str, dst: &Path) -> Result<()> {
         log::info!("Render {src}");
         let templates = self.template_loader(ctx)?;
@@ -418,8 +446,10 @@ impl Site {
         log::info!("Render post {}", post_config.slug);
         let post = self.post_loader(ctx, post_config)?;
         let templates = self.template_loader(ctx)?;
+        let html_contents = post.html_contents();
         let mut render_ctx = tera::Context::from_serialize(post)?;
         render_ctx.insert("hot_reload", &self.include_hot_reload);
+        render_ctx.insert("html_contents", &html_contents);
         let dst = Path::new("posts")
             .join(&post_config.slug)
             .join("index.html");

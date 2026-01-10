@@ -8,6 +8,6 @@
     navbar_id = "contact";
   }
   if (navbar_id !== "") {
-    document.querySelector("#" + navbar_id).classList.add("active");
+    document.querySelector("#" + navbar_id)?.classList.add("active");
   }
 })();

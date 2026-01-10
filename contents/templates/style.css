@@ -17,9 +17,10 @@ html.theme-light {
   --theme-bg-color: #fff;
   --theme-bg-hover-color: #ddd;
   --theme-fg-color: #333;
-  --theme-accent-color: rgb(255, 62, 0);
+  --theme-accent-color: #ff3e00;
   --theme-nav-bg-color: #fff;
   --theme-nav-fg-color: #222;
+  --theme-code-color: #ce5e36;
 }
 
 @media (prefers-color-scheme: light) {
@@ -27,9 +28,10 @@ html.theme-light {
     --theme-bg-color: #fff;
     --theme-bg-hover-color: #ddd;
     --theme-fg-color: #333;
-    --theme-accent-color: rgb(255, 62, 0);
+    --theme-accent-color: #ff3e00;
     --theme-nav-bg-color: #fff;
     --theme-nav-fg-color: #222;
+    --theme-code-color: #ce5e36;
   }
 }
 
@@ -37,9 +39,10 @@ html.theme-dark {
   --theme-bg-color: #2e2e2e;
   --theme-bg-hover-color: #3e3e3e;
   --theme-fg-color: #fff;
-  --theme-accent-color: #ff3e00;
+  --theme-accent-color: #cc6544;
   --theme-nav-bg-color: #1e1e1e;
   --theme-nav-fg-color: #aaa;
+  --theme-code-color: #ce5e36;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,9 +50,10 @@ html.theme-dark {
     --theme-bg-color: #2e2e2e;
     --theme-bg-hover-color: #3e3e3e;
     --theme-fg-color: #fff;
-    --theme-accent-color: #ff3e00;
+    --theme-accent-color: #cc6544;
     --theme-nav-bg-color: #1e1e1e;
     --theme-nav-fg-color: #aaa;
+    --theme-code-color: #ce5e36;
   }
 }
 
@@ -253,7 +257,103 @@ h2 {
 
 code {
   font-size: 0.8rem;
+  font-weight: bold;
   padding: 1px 4px;
   background-color: var(--theme-bg-hover-color);
-  color: var(--theme-accent-color);
+  color: var(--theme-code-color);
+}
+
+pre code.tree-sitter {
+  overflow-x: auto;
+  font-weight: normal;
+  display: block;
+  padding: 1em;
+  background: #1a1b26;
+  color: #9aa5ce;
+  tab-size: 2em;
+}
+
+/* Based on https://github.com/tokyo-night/tokyo-night-vscode-theme */
+pre code.tree-sitter .attribute {
+  color: #565f89;
+}
+pre code.tree-sitter .comment {
+  font-style: italic;
+  color: #565f89;
+}
+pre code.tree-sitter .constant {
+  color: #ff9e64;
+}
+pre code.tree-sitter .constant.builtin {
+  color: #e0af68;
+}
+pre code.tree-sitter .constructor {
+  color: #ff9e64;
+}
+pre code.tree-sitter .function {
+  color: #7dcfff;
+}
+pre code.tree-sitter .function.builtin {
+  font-weight: bold;
+  color: #e0af68;
+}
+pre code.tree-sitter .keyword {
+  color: #bb9af7;
+}
+pre code.tree-sitter .module {
+  color: #af8700;
+}
+pre code.tree-sitter .number {
+  font-weight: bold;
+  color: #ff9e64;
+}
+pre code.tree-sitter .operator {
+  font-weight: bold;
+  color: #bb9af7;
+}
+pre code.tree-sitter .property {
+  color: #7dcfff;
+}
+pre code.tree-sitter .property.builtin {
+  font-weight: bold;
+  color: #7dcfff;
+}
+pre code.tree-sitter .punctuation {
+  color: #c0caf5;
+}
+pre code.tree-sitter .punctuation.bracket {
+  color: #c0caf5;
+}
+pre code.tree-sitter .punctuation.delimiter {
+  color: #c0caf5;
+}
+pre code.tree-sitter .punctuation.special {
+  color: #c0caf5;
+}
+pre code.tree-sitter .string {
+  color: #9ece6a;
+}
+pre code.tree-sitter .string.special {
+  color: #9ece6a;
+}
+pre code.tree-sitter .tag {
+  color: #f7768e;
+}
+pre code.tree-sitter .type {
+  color: #ff9e64;
+}
+pre code.tree-sitter .type.builtin {
+  font-weight: bold;
+  color: #e0af68;
+}
+pre code.tree-sitter .variable {
+  color: #c0caf5;
+}
+pre code.tree-sitter .variable.builtin {
+  font-weight: bold;
+  color: #e0af68;
+}
+pre code.tree-sitter .variable.parameter {
+  text-decoration: underline;
+  color: #ff9e64;
 }
