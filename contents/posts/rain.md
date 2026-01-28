@@ -1,6 +1,6 @@
 # Building a Build System
 
-January 2025
+January 2026
 
 Rust, Rain
 
@@ -48,7 +48,7 @@ Rain tries to keep all functions pure and without side effects. So dealing with 
 
 A generated file area is created by Rain and considered read-only after it is created. This allows functions that use generated file areas to be cached based on the file area id since they cannot change.
 
-Local file areas are modelled as external files to Rain that can change between Rain invocations but are assumed to be stable within a given invocation. When running Rain in a checked out local git repository, this will automatically create a local area with the contents of the repository. Caching functions that depend on a local file area is more tricky as the file must be checked if it has changed.
+Local file areas are modelled as external files to Rain that can change between Rain invocations but are assumed to be stable within a given invocation. When running Rain in a checked out local git repository, this will automatically create a local area with the contents of the repository. Caching functions that depend on a local file area is trickier as the file must be checked if it has changed.
 
 ```rain
 let std = stdlib("0.9.1")
