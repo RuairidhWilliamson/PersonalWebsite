@@ -7,12 +7,12 @@ use harper_core::{
     parsers::MarkdownOptions,
     spell::{FstDictionary, MergedDictionary},
 };
-use image::{DynamicImage, GenericImageView as _};
 use jobber::{Cache, JobCtx, JobIdBuilder};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    config::{BuildConfig, ImageConvertFormat, PostConfig, SiteConfig},
+    config::{BuildConfig, PostConfig, SiteConfig},
+    img_conversion::{ImageConvertFormat, Quality},
     post::PostDetails,
     progress::{DefaultSiteBuildProgress, NoSiteBuildProgress, SiteBuildProgress},
 };
@@ -103,8 +103,8 @@ impl Site {
         )?;
         self.copyfile(
             ctx,
-            Path::new("assets/thirdparty/rubik-variablefont.ttf"),
-            Path::new("thirdparty/rubik-variablefont.ttf"),
+            Path::new("assets/thirdparty/rubik-regular.ttf"),
+            Path::new("thirdparty/rubik-regular.ttf"),
         )?;
         self.copyfile(
             ctx,
@@ -112,6 +112,16 @@ impl Site {
             Path::new("favicon.ico"),
         )?;
         self.copyfile(ctx, Path::new("assets/robots.txt"), Path::new("robots.txt"))?;
+        self.copyfile(
+            ctx,
+            Path::new("assets/security.txt"),
+            Path::new("security.txt"),
+        )?;
+        self.copyfile(
+            ctx,
+            Path::new("assets/security.txt"),
+            Path::new(".well-known/security.txt"),
+        )?;
         self.render_template_css(ctx, "style.css", Path::new("style.css"))?;
         self.render_template_js(ctx, "theme.js", Path::new("theme.js"))?;
         self.render_template_js(ctx, "navbar.js", Path::new("navbar.js"))?;
@@ -281,7 +291,7 @@ impl Site {
     fn replace_images(&self, ctx: &mut JobCtx<'_>, html: String) -> Result<String> {
         let site_config = self.site_config_loader(ctx)?;
         let img_regex = self.img_tag_regex(ctx)?;
-        let mut result = Result::Ok(());
+        let mut result = Ok(());
         let rendered = img_regex
             .replace_all(&html, |cap: &regex::Captures<'_>| {
                 let img = cap
@@ -317,15 +327,6 @@ impl Site {
         Ok(regex::Regex::new("class=\"([^\"]*)\"")?)
     }
 
-    fn calculate_img_size(img: &DynamicImage, target_cover_size: (u32, u32)) -> (u32, u32) {
-        let (w, h) = img.dimensions();
-        let new_w = w.min(target_cover_size.0);
-        let new_h = new_w * h / w;
-        let new_new_h = h.min(new_h);
-        let new_new_w = new_new_h * new_w / new_h;
-        (new_new_w, new_new_h)
-    }
-
     #[jobber::job]
     fn replace_img(
         &self,
@@ -340,24 +341,26 @@ impl Site {
         }
         let class_regex = self.img_class_regex(ctx)?;
 
-        let target_cover_size = if let Some(class) = class_regex
+        let (target_cover_size, quality) = if let Some(class) = class_regex
             .captures(img_html)
             .and_then(|c| c.get(1))
             .map(|c| c.as_str())
             && class.contains("thumb")
         {
-            (240, 130)
+            ((240, 130), Quality::Thumbnail)
         } else {
-            (800, 800)
+            ((800, 800), Quality::Hero)
         };
         let source = self.config.root_dir.join(src);
         ctx.depends_file(&source)?;
-        let img = image::ImageReader::open(&source)?.decode()?;
-        let (width, height) = Self::calculate_img_size(&img, target_cover_size);
 
         let mut sources = Vec::new();
-        for img_fmt in convert {
-            if !img_fmt.is_supported_convert_extension(src.extension()) {
+        let src_fmt =
+            ImageConvertFormat::from_ext(src.extension().context("no file extension for image")?)
+                .context("unrecognized image extension")?;
+        let (mut width, mut height) = target_cover_size;
+        for &img_fmt in convert {
+            if !src_fmt.can_convert(img_fmt) {
                 continue;
             }
             let mut new_src = src.to_path_buf();
@@ -368,7 +371,12 @@ impl Site {
                 target_cover_size.1
             ));
             new_src.set_extension(img_fmt.extension());
-            self.convert_image(&img, (width, height), img_fmt, &new_src)?;
+            (width, height) = img_fmt.convert(
+                &source,
+                target_cover_size,
+                quality,
+                &self.config.output_dir.join(&new_src),
+            )?;
             let mime_type = img_fmt.mime_type();
             let new_path_str = new_src.display();
             sources.push(format!(
@@ -389,36 +397,16 @@ impl Site {
         )))
     }
 
-    fn convert_image(
-        &self,
-        src: &DynamicImage,
-        size: (u32, u32),
-        ty: &ImageConvertFormat,
-        dst: &Path,
-    ) -> Result<()> {
-        let destination = self.config.output_dir.join(dst);
-        if let Some(dir) = destination.parent() {
-            std::fs::create_dir_all(dir)?;
-        }
-        let mut out = std::io::BufWriter::new(std::fs::File::create(destination)?);
-        let img_fmt = match ty {
-            ImageConvertFormat::Webp => image::ImageFormat::WebP,
-            ImageConvertFormat::Avif => image::ImageFormat::Avif,
-        };
-        src.resize_to_fill(size.0, size.1, image::imageops::FilterType::Lanczos3)
-            .write_to(&mut out, img_fmt)?;
-        Ok(())
-    }
-
     #[jobber::job]
     fn replace_code_blocks(&self, ctx: &mut JobCtx<'_>, html: &str) -> Result<String> {
         let regex = self.code_block_tag_regex(ctx)?;
         Ok(regex
             .replace_all(html, |cap: &regex::Captures<'_>| {
-                let class = cap.get(1).unwrap().as_str();
-                let language = class.strip_prefix("language-").unwrap();
-                let src = cap.get(2).unwrap().as_str();
+                let class = cap.get(1).expect("captures").as_str();
+                let language = class.strip_prefix("language-").expect("prefix");
+                let src = cap.get(2).expect("captures").as_str();
                 crate::highlight::src_to_highlight_html(language, src)
+                    .expect("highlight code block")
                     .unwrap_or_else(|| cap.get_match().as_str().to_string())
             })
             .to_string())
