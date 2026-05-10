@@ -20,7 +20,7 @@ jobs:
       - name: Check Formatting
         run: cargo fmt --check --all
       - name: Clippy
-        run: cargo clippy -q --workspace
+        run: cargo clippy -q --workspace --all-targets
       - name: Tests
         run: cargo test -q --workspace
     
