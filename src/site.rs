@@ -103,8 +103,8 @@ impl Site {
         )?;
         self.copyfile(
             ctx,
-            Path::new("assets/thirdparty/rubik-variablefont.ttf"),
-            Path::new("thirdparty/rubik-variablefont.ttf"),
+            Path::new("assets/thirdparty/rubik-regular.ttf"),
+            Path::new("thirdparty/rubik-regular.ttf"),
         )?;
         self.copyfile(
             ctx,
