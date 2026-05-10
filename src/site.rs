@@ -112,6 +112,16 @@ impl Site {
             Path::new("favicon.ico"),
         )?;
         self.copyfile(ctx, Path::new("assets/robots.txt"), Path::new("robots.txt"))?;
+        self.copyfile(
+            ctx,
+            Path::new("assets/security.txt"),
+            Path::new("security.txt"),
+        )?;
+        self.copyfile(
+            ctx,
+            Path::new("assets/security.txt"),
+            Path::new(".well-known/security.txt"),
+        )?;
         self.render_template_css(ctx, "style.css", Path::new("style.css"))?;
         self.render_template_js(ctx, "theme.js", Path::new("theme.js"))?;
         self.render_template_js(ctx, "navbar.js", Path::new("navbar.js"))?;
@@ -281,7 +291,7 @@ impl Site {
     fn replace_images(&self, ctx: &mut JobCtx<'_>, html: String) -> Result<String> {
         let site_config = self.site_config_loader(ctx)?;
         let img_regex = self.img_tag_regex(ctx)?;
-        let mut result = Result::Ok(());
+        let mut result = Ok(());
         let rendered = img_regex
             .replace_all(&html, |cap: &regex::Captures<'_>| {
                 let img = cap
