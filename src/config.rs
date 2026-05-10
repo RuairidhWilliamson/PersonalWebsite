@@ -103,6 +103,7 @@ pub struct Details {
 
 #[derive(Debug, Hash, Clone, Serialize, Deserialize)]
 pub enum ImageConvertFormat {
+    Jxl,
     Webp,
     Avif,
 }
@@ -113,7 +114,7 @@ impl ImageConvertFormat {
             return false;
         };
         let exts: &[&str] = match self {
-            Self::Webp | Self::Avif => &["png", "jpeg"],
+            Self::Jxl | Self::Webp | Self::Avif => &["png", "jpeg"],
         };
         exts.iter()
             .any(|e| ext.to_string_lossy().eq_ignore_ascii_case(e))
@@ -121,6 +122,7 @@ impl ImageConvertFormat {
 
     pub fn extension(&self) -> &str {
         match self {
+            Self::Jxl => "jxl",
             Self::Webp => "webp",
             Self::Avif => "avif",
         }
@@ -128,6 +130,7 @@ impl ImageConvertFormat {
 
     pub fn mime_type(&self) -> &str {
         match self {
+            Self::Jxl => "image/jxl",
             Self::Webp => "image/webp",
             Self::Avif => "image/avif",
         }

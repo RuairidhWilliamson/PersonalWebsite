@@ -104,6 +104,7 @@ minify-html = "0.18.1"
 tree-sitter-highlight = "0.26.3"
 tree-sitter-rain = { version = "0.9.1", registry = "rain-registry" }
 tree-sitter-rust = "0.24.0"
+jxl-encoder = "0.3.1"
 
 [profile.dev.package.image]
 opt-level = 3

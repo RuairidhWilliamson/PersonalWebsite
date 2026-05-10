@@ -411,12 +411,31 @@ impl Site {
             std::fs::create_dir_all(dir)?;
         }
         let mut out = std::io::BufWriter::new(std::fs::File::create(destination)?);
-        let img_fmt = match ty {
-            ImageConvertFormat::Webp => image::ImageFormat::WebP,
-            ImageConvertFormat::Avif => image::ImageFormat::Avif,
-        };
-        src.resize_to_fill(size.0, size.1, image::imageops::FilterType::Lanczos3)
-            .write_to(&mut out, img_fmt)?;
+        let resized = src.resize_to_fill(size.0, size.1, image::imageops::FilterType::Lanczos3);
+        match ty {
+            ImageConvertFormat::Jxl => {
+                let (pixels, layout) = if resized.has_alpha() {
+                    (resized.to_rgba8().to_vec(), jxl_encoder::PixelLayout::Rgba8)
+                } else {
+                    (resized.to_rgb8().to_vec(), jxl_encoder::PixelLayout::Rgb8)
+                };
+                let mut encoder = jxl_encoder::LossyConfig::new(2.0).with_effort(10).encoder(
+                    resized.width(),
+                    resized.height(),
+                    layout,
+                )?;
+                encoder.push_rows(&pixels, resized.height())?;
+                encoder.finish_to(&mut out)?;
+            }
+            ImageConvertFormat::Webp => {
+                let img_fmt = image::ImageFormat::WebP;
+                resized.write_to(&mut out, img_fmt)?;
+            }
+            ImageConvertFormat::Avif => {
+                let img_fmt = image::ImageFormat::Avif;
+                resized.write_to(&mut out, img_fmt)?;
+            }
+        }
         Ok(())
     }
 

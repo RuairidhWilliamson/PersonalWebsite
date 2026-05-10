@@ -1,4 +1,4 @@
-convert_images = ["Avif", "Webp"]
+convert_images = ["Jxl", "Avif", "Webp"]
 
 [details]
 name = "Ruairidh Williamson"
