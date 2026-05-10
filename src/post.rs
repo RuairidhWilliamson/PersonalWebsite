@@ -63,7 +63,7 @@ impl PostDetails {
         .map_err(|err| MarkdownToHtmlError {
             msg: err.to_string(),
         })
-        .unwrap();
+        .expect("markdown to html");
         add_heading_ids(&html)
     }
 }
@@ -227,14 +227,15 @@ fn find_md_code_blocks(contents: &str) -> String {
     });
     CODE_BLOCK_PATTERN
         .replace_all(contents, |cap: &regex::Captures<'_>| {
-            let language = cap.get(1).unwrap().as_str();
+            let language = cap.get(1).expect("captures").as_str();
             let Some(src) = cap.get(2) else {
                 return cap.get_match().as_str().to_string();
             };
             crate::highlight::src_to_highlight_html(
                 language,
-                src.as_str().trim_matches(&['\n', '\r']),
+                src.as_str().trim_matches(['\n', '\r']),
             )
+            .expect("highlight code block")
             .unwrap_or_else(|| cap.get_match().as_str().to_string())
         })
         .to_string()

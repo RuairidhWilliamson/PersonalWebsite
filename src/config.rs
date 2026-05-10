@@ -1,7 +1,9 @@
-use std::{ffi::OsStr, net::SocketAddr, num::NonZeroUsize, path::PathBuf, time::Duration};
+use std::{net::SocketAddr, num::NonZeroUsize, path::PathBuf, time::Duration};
 
 use clap::Parser;
 use serde::{Deserialize, Serialize};
+
+use crate::img_conversion::ImageConvertFormat;
 
 #[derive(Debug, Clone, Parser)]
 pub struct BuildConfig {
@@ -99,40 +101,4 @@ pub struct Details {
     pub name: String,
     pub email: String,
     pub summary: String,
-}
-
-#[derive(Debug, Hash, Clone, Serialize, Deserialize)]
-pub enum ImageConvertFormat {
-    Jxl,
-    Webp,
-    Avif,
-}
-
-impl ImageConvertFormat {
-    pub fn is_supported_convert_extension(&self, ext: Option<&OsStr>) -> bool {
-        let Some(ext) = ext else {
-            return false;
-        };
-        let exts: &[&str] = match self {
-            Self::Jxl | Self::Webp | Self::Avif => &["png", "jpeg"],
-        };
-        exts.iter()
-            .any(|e| ext.to_string_lossy().eq_ignore_ascii_case(e))
-    }
-
-    pub fn extension(&self) -> &str {
-        match self {
-            Self::Jxl => "jxl",
-            Self::Webp => "webp",
-            Self::Avif => "avif",
-        }
-    }
-
-    pub fn mime_type(&self) -> &str {
-        match self {
-            Self::Jxl => "image/jxl",
-            Self::Webp => "image/webp",
-            Self::Avif => "image/avif",
-        }
-    }
 }

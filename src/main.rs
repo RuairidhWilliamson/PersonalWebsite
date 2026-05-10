@@ -9,6 +9,7 @@ mod progress;
 mod site;
 
 mod highlight;
+mod img_conversion;
 #[cfg(feature = "server")]
 mod server;
 
