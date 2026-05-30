@@ -22,13 +22,13 @@ The status command walks the directory tree looking for git repositories. When i
 
 Git is quite complicated so my first pass at this was to run the git CLI and parse its output. The most obvious command is `git status`. This lists files that are changed in the working directory compared to HEAD and if the checked out branch is in sync with the tracking branch. Git status by default is not very easy to parse but using `git status --porcelain=v2` gives a more verbose but well defined output. (`v2` here represents the format version so we can rely on this not breaking in future git versions). See [https://git-scm.com/docs/git-status#\_porcelain_format_version_2](https://git-scm.com/docs/git-status#_porcelain_format_version_2) for the documentation of this format.
 
-We parse this format but it doesn't give us all the information we want. Adding `--branch` gives information about the checked out branch and its upstream tracking branch. Adding `--show-stash` gives information about the stash. Tracking if their are changes in the stash is important as these are easy to forget about.
+We parse this format but it doesn't give us all the information we want. Adding `--branch` gives information about the checked out branch and its upstream tracking branch. Adding `--show-stash` gives information about the stash. Tracking if there are changes in the stash is important as these are easy to forget about.
 
 All together this gives us `git status --branch --show-stash --porcelain=v2`. Parsing this into a struct is fairly simple. Code is available here [`src/simple_status.rs`](https://github.com/RuairidhWilliamson/recgit/blob/main/src/simple_status.rs).
 
-Writing tests for this was important. The tests creates a git repository in `/tmp` and slowly adds commits, files and branches. It runs recgit at each stage asserting the status is as we expect and the method `has_unsynced_changes` is correct. To mock a remote repository for the test it creates a second repository in `/tmp` and sets the remote of the first repository to the second using the `file://` protocol.
+Writing tests for this was important. The tests creates a git repository in `/tmp` and slowly adds commits, files, and branches. It runs recgit at each stage asserting the status is as we expect and the method `has_unsynced_changes` is correct. To mock a remote repository for the test it creates a second repository in `/tmp` and sets the remote of the first repository to the second using the `file://` protocol.
 
-This test makes an important discovery about this method though. Only the checked out branch is inspected. Any changes not synced on other branches are invisible to `git status`. This is maybe ok for some use cases but it is common to have multiple feature branches locally that are not synced. It is important recgit can handle this case.
+This test makes an important discovery about this method though. Only the checked out branch is inspected. Any changes not synced on other branches are invisible to `git status`. This is maybe okay for some use cases but it is common to have multiple feature branches locally that are not synced. It is important recgit can handle this case.
 
 ## Gitoxide Implementation
 

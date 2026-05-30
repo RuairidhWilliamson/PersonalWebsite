@@ -29,7 +29,7 @@ The build mode builds the website into static HTML, JavaScript and CSS ready to 
 
 ## Server Mode
 
-The server mode is similar when run builds the website and hosts it on a local web server. It also watches the source directories for any file changes. When a file change is detected it rebuilds the website and reloads any connected webpages.
+The server mode is similar when run builds the website and hosts it on a local web server. It also watches the source directories for any file changes. When a change is detected it rebuilds the website and reloads any connected webpages.
 
 This server mode is designed for fast iteration so that changes can be made and previewed very quickly. A common workflow is to have the website preview open in a browser alongside the code.
 
