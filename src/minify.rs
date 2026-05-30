@@ -28,7 +28,7 @@ pub fn javascript(source: &str) -> anyhow::Result<String> {
     let mut program = parsed.program;
     let minifier = Minifier::new(MinifierOptions {
         mangle: Some(MangleOptions {
-            top_level: true,
+            top_level: Some(true),
             debug: false,
             keep_names: MangleOptionsKeepNames::default(),
         }),
