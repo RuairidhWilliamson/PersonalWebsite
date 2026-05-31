@@ -57,28 +57,31 @@ unused_trait_names = "warn"
 
 # Nursery
 nursery = { level = "warn", priority = -1 }
+cognitive_complexity = "allow"
 missing_const_for_fn = "allow"
+non_send_fields_in_send_ty = "allow"
+option_if_let_else = "allow"
 significant_drop_tightening = "allow"
 suboptimal_flops = "allow"
-option_if_let_else = "allow"
+useless_let_if_seq = "allow"
 
 # Pedantic
 pedantic = { level = "warn", priority = -1 }
 cast_precision_loss = "allow"
 default_trait_access = "allow"
+map_unwrap_or = "allow"
 missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 module_name_repetitions = "allow"
 must_use_candidate = "allow"
 struct_excessive_bools = "allow"
-map_unwrap_or = "allow"
 unnecessary_debug_formatting = "allow"
-missing_panics_doc = "allow"
 ```
 
 Also a good idea to add a `clippy.toml` file with this.
 
 ```toml
+allow-dbg-in-tests = true
 allow-print-in-tests = true
 allow-unwrap-in-tests = true
-allow-dbg-in-tests = true
 ```

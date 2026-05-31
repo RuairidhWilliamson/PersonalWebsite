@@ -54,7 +54,7 @@ The reason the last puzzle in the example above is harder than the others, is be
 
 ## Modes
 
-We had two different modes in the game. An infinite puzzle mode where puzzles are generated randomly and get harder over time. And a daily puzzle where five puzzles were hand picked everyday as a special challenge.
+We had two different modes in the game. An infinite puzzle mode where puzzles are generated randomly and get harder over time. And a daily puzzle where five puzzles were hand picked every day as a special challenge.
 
 ### Infinite Mode
 

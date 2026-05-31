@@ -42,7 +42,7 @@ html.theme-dark {
   --theme-accent-color: #cc6544;
   --theme-nav-bg-color: #1e1e1e;
   --theme-nav-fg-color: #aaa;
-  --theme-code-color: #ce5e36;
+  --theme-code-color: #ff9d7a;
 }
 
 @media (prefers-color-scheme: dark) {

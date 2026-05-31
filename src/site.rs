@@ -3,7 +3,7 @@ use std::{io::Cursor, path::Path, str, sync::Arc};
 use anyhow::{Context as _, Result};
 use harper_core::{
     DictWordMetadata, Document, Span,
-    linting::{LintGroup, Linter as _},
+    linting::{LintGroup, LintKind, Linter as _},
     parsers::MarkdownOptions,
     spell::{FstDictionary, MergedDictionary},
 };
@@ -579,8 +579,12 @@ impl Site {
             if l.message.starts_with("Vocabulary enhancement") {
                 continue;
             }
+            if let LintKind::Style = l.lint_kind {
+                continue;
+            }
             log::error!(
-                "{}\n {target}\nConsider one of\n{}",
+                "{}: {}\n {target}\nConsider one of\n{}",
+                l.lint_kind,
                 l.message,
                 l.suggestions
                     .iter()
