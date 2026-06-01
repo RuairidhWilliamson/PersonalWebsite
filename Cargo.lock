@@ -2932,7 +2932,7 @@ dependencies = [
  "is-macro",
  "itertools 0.14.0",
  "levenshtein_automata",
- "lru",
+ "lru 0.16.4",
  "ordered-float 5.3.0",
  "paste",
  "pulldown-cmark",
@@ -2960,7 +2960,7 @@ dependencies = [
  "burn-ndarray",
  "hashbrown 0.16.1",
  "is-macro",
- "lru",
+ "lru 0.16.4",
  "rs-conllu",
  "serde",
  "serde_json",
@@ -3037,6 +3037,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 dependencies = [
  "allocator-api2",
+ "equivalent",
+ "foldhash 0.2.0",
 ]
 
 [[package]]
@@ -3577,7 +3579,7 @@ dependencies = [
  "glob",
  "jobber_derive",
  "log",
- "lru",
+ "lru 0.18.0",
  "panic_lock",
 ]
 
@@ -3871,6 +3873,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f66e8d5d03f609abc3a39e6f08e4164ebf1447a732906d39eb9b99b7919ef39"
 dependencies = [
  "hashbrown 0.16.1",
+]
+
+[[package]]
+name = "lru"
+version = "0.18.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8a860605968fce16869fd239cf4237a82f3ac470723415db603b0e8b6c8d4fb9"
+dependencies = [
+ "hashbrown 0.17.1",
 ]
 
 [[package]]
