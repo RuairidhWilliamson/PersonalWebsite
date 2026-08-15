@@ -48,12 +48,15 @@ clone_on_ref_ptr = "warn"
 create_dir = "warn"
 dbg_macro = "warn"
 exit = "warn"
+tests_outside_test_module = "warn"
 undocumented_unsafe_blocks = "warn"
 unused_result_ok = "warn"
 unused_trait_names = "warn"
-# unwrap_used = "warn"
+verbose_file_reads = "warn"
+# indexing_slicing = "warn"
 # print_stderr = "warn"
 # print_stdout = "warn"
+# unwrap_used = "warn"
 
 # Nursery
 nursery = { level = "warn", priority = -1 }
