@@ -1,0 +1,359 @@
+@font-face {
+  font-family: "Rubik";
+  src: url(/thirdparty/rubik-regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  background-color: var(--theme-bg-color);
+  color: var(--theme-fg-color);
+  font-family: "Rubik", sans-serif;
+  text-align: center;
+}
+
+html.theme-light {
+  --theme-bg-color: #fff;
+  --theme-bg-hover-color: #ddd;
+  --theme-fg-color: #333;
+  --theme-accent-color: #ff3e00;
+  --theme-nav-bg-color: #fff;
+  --theme-nav-fg-color: #222;
+  --theme-code-color: #ce5e36;
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    --theme-bg-color: #fff;
+    --theme-bg-hover-color: #ddd;
+    --theme-fg-color: #333;
+    --theme-accent-color: #ff3e00;
+    --theme-nav-bg-color: #fff;
+    --theme-nav-fg-color: #222;
+    --theme-code-color: #ce5e36;
+  }
+}
+
+html.theme-dark {
+  --theme-bg-color: #2e2e2e;
+  --theme-bg-hover-color: #3e3e3e;
+  --theme-fg-color: #fff;
+  --theme-accent-color: #cc6544;
+  --theme-nav-bg-color: #1e1e1e;
+  --theme-nav-fg-color: #aaa;
+  --theme-code-color: #ff9d7a;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    --theme-bg-color: #2e2e2e;
+    --theme-bg-hover-color: #3e3e3e;
+    --theme-fg-color: #fff;
+    --theme-accent-color: #cc6544;
+    --theme-nav-bg-color: #1e1e1e;
+    --theme-nav-fg-color: #aaa;
+    --theme-code-color: #ce5e36;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+}
+
+.thumb {
+  width: 250px;
+  height: 130px;
+  object-fit: cover;
+}
+
+a,
+a:visited {
+  color: var(--theme-fg-color);
+  text-decoration: underline;
+  display: inline-block;
+}
+
+a.icon,
+a.email {
+  text-decoration: none;
+}
+
+svg.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+}
+
+a:hover {
+  color: var(--theme-accent-color);
+}
+
+.btn {
+  cursor: pointer;
+  padding: 10px;
+  font-size: 32px;
+}
+
+.btn:hover {
+  color: var(--theme-accent-color);
+}
+
+.contents {
+  max-width: 800px;
+  text-align: left;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+.home-banner {
+  text-align: center;
+}
+
+.featured-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.navbar {
+  display: flex;
+  background-color: var(--theme-nav-bg-color);
+}
+
+.navbar-btns {
+  font-size: 16px;
+  margin: auto;
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  max-width: 400px;
+}
+
+a.navbar-btn {
+  margin: 0px 0px;
+  padding: 21px 20px;
+  color: var(--theme-nav-fg-color);
+  text-decoration: none;
+}
+
+.navbar-btn:hover {
+  background-color: var(--theme-bg-hover-color);
+  color: inherit;
+}
+
+.navbar-btn.active {
+  border-bottom: solid 1px var(--theme-accent-color);
+}
+
+.theme-toggle {
+  visibility: hidden;
+  margin: 10px;
+  font-size: 24px;
+}
+
+.theme-toggle#theme-toggle {
+  visibility: visible;
+}
+
+.post-grid {
+  gap: 10px;
+  /*display: grid;
+  grid-gap: 30px;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fill, minmax(250px, auto));
+  grid-auto-flow: row; */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.small-post {
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 240px;
+  height: 220px;
+  text-decoration: none;
+}
+
+.small-post:hover {
+  background-color: var(--theme-bg-hover-color);
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0.5em 0;
+}
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: 2em;
+}
+
+.post-container {
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+.post-contents {
+  max-width: 800px;
+  width: 100vw;
+}
+
+.post-overview {
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .post-overview {
+    display: none;
+  }
+}
+
+.post-overview > ul {
+  position: sticky;
+  top: 20px;
+  list-style-type: none;
+}
+
+.heading-link {
+  margin: 10px 5px;
+}
+
+.heading-link > a {
+  text-decoration: none;
+}
+
+.heading2 {
+  margin-left: 10px;
+}
+
+.heading3 {
+  margin-left: 20px;
+}
+
+.heading4 {
+  margin-left: 25px;
+}
+
+.heading4 {
+  margin-left: 30px;
+}
+
+code {
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 1px 4px;
+  background-color: var(--theme-bg-hover-color);
+  color: var(--theme-code-color);
+}
+
+pre code.tree-sitter {
+  overflow-x: auto;
+  font-weight: normal;
+  display: block;
+  padding: 1em;
+  background: #1a1b26;
+  color: #9aa5ce;
+  tab-size: 2em;
+}
+
+/* Based on https://github.com/tokyo-night/tokyo-night-vscode-theme */
+pre code.tree-sitter .attribute {
+  color: #565f89;
+}
+pre code.tree-sitter .comment {
+  font-style: italic;
+  color: #565f89;
+}
+pre code.tree-sitter .constant {
+  color: #ff9e64;
+}
+pre code.tree-sitter .constant.builtin {
+  color: #e0af68;
+}
+pre code.tree-sitter .constructor {
+  color: #ff9e64;
+}
+pre code.tree-sitter .function {
+  color: #7dcfff;
+}
+pre code.tree-sitter .function.builtin {
+  font-weight: bold;
+  color: #e0af68;
+}
+pre code.tree-sitter .keyword {
+  color: #bb9af7;
+}
+pre code.tree-sitter .module {
+  color: #af8700;
+}
+pre code.tree-sitter .number {
+  font-weight: bold;
+  color: #ff9e64;
+}
+pre code.tree-sitter .operator {
+  font-weight: bold;
+  color: #bb9af7;
+}
+pre code.tree-sitter .property {
+  color: #7dcfff;
+}
+pre code.tree-sitter .property.builtin {
+  font-weight: bold;
+  color: #7dcfff;
+}
+pre code.tree-sitter .punctuation {
+  color: #c0caf5;
+}
+pre code.tree-sitter .punctuation.bracket {
+  color: #c0caf5;
+}
+pre code.tree-sitter .punctuation.delimiter {
+  color: #c0caf5;
+}
+pre code.tree-sitter .punctuation.special {
+  color: #c0caf5;
+}
+pre code.tree-sitter .string {
+  color: #9ece6a;
+}
+pre code.tree-sitter .string.special {
+  color: #9ece6a;
+}
+pre code.tree-sitter .tag {
+  color: #f7768e;
+}
+pre code.tree-sitter .type {
+  color: #ff9e64;
+}
+pre code.tree-sitter .type.builtin {
+  font-weight: bold;
+  color: #e0af68;
+}
+pre code.tree-sitter .variable {
+  color: #c0caf5;
+}
+pre code.tree-sitter .variable.builtin {
+  font-weight: bold;
+  color: #e0af68;
+}
+pre code.tree-sitter .variable.parameter {
+  text-decoration: underline;
+  color: #ff9e64;
+}

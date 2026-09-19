@@ -1,0 +1,50 @@
+<!doctype html><html lang=en><meta charset=utf-8><title>Useful Clippy Lints</title><meta content="Ruairidh Williamson" name=author><meta name=description><meta content="width=device-width,initial-scale=1" name=viewport><meta content="light dark" name=color-scheme><link href=/favicon.ico rel=icon type=image/x-icon><link as=font crossorigin href=/thirdparty/rubik-regular.ttf rel=preload type=font/ttf><link href=/thirdparty/normalize.min.css rel=stylesheet><link href=/style.css rel=stylesheet><script src=/theme.js></script><body><div class=navbar><btn class="btn theme-toggle" tabindex=0> <svg viewbox="0 0 384 512" class=icon xmlns=http://www.w3.org/2000/svg><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z" fill=currentColor></path></svg> </btn><div class=navbar-btns><a class=navbar-btn href=/ id=home>home</a><a class=navbar-btn href=/contact/ id=contact>contact</a></div><a aria-label="toggle theme" class="btn theme-toggle" id=theme-toggle onclick=toggleTheme() tabindex=0> <svg viewbox="0 0 384 512" class=icon xmlns=http://www.w3.org/2000/svg><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z" fill=currentColor></path></svg> </a></div><script defer src=/navbar.js></script><div class=post-container><div class=post-contents><h1 id=useful-clippy-lints>Useful Clippy Lints</h1><p>November 2024<p>Rust<hr><p><picture><source srcset=/transformed/ferris_hero.jxl type=image/jxl><source srcset=/transformed/ferris_hero.avif type=image/avif><source srcset=/transformed/ferris_hero.webp type=image/webp><img alt src=/assets/images/ferris.png></picture><h2 id=introduction>Introduction</h2><p>Rust has many tools that make up its ecosystem. The main components are <a href=https://github.com/rust-lang/rust>rustc</a> and <a href=https://github.com/rust-lang/cargo>cargo</a> but <a href=https://github.com/rust-lang/rustfmt>rustfmt</a>, <a href=https://github.com/rust-lang/rust-clippy>clippy</a> and <a href=https://github.com/rust-lang/rust-analyzer>rust-analyzer</a> are often used too. Clippy, not to be confused with the Windows help mascot, is a linter. Rustc also performs linting but clippy's lints are more extensive and more opinionated. Clippy is distributed with <a href=https://rustup.rs>rustup</a> along with the other rust components. It also follows the same release cycle where a new stable version is released every 6 weeks.<h2 id=default-lints>Default Lints</h2><p>Clippy has a lot of lints, <a href=https://rust-lang.github.io/rust-clippy/stable/index.html>clippy-lints</a>. 736 at the time of writing. 445 of these are set to warn/deny by default. Leaving 291 which are allow by default. This is still a lot of lints that aren't being used. The question is which of them should a rust developer enable. I have made a list of what I have found to be useful and not overly strict lints that I use in my rust projects.<h2 id=lints>Lints</h2><p>Clippy divides its lints into groups. Lint groups allow the user to enable a lot of lints at once. In the lint list here I have enabled <code>pedantic</code> and <code>nursery</code> lint groups.<p><code>restriction</code> is for lints that impose restrictions and should not all be enabled. Some of them are only applicable in specific contexts and some are contradictory. I have chosen a few that I find useful. I have also provided 3 commented out that if your project suits would be good to enable. Specifically <code>unwrap_used</code> can be very helpful to ensure your error handling is sound. If you really want to panic you can use <code>.expect()</code>.<p>The lint group <code>nursery</code> is for lints that are unreliable or have known issues. It is a bad idea to enable this whole group. It would be better to pick out specific lints that are useful and just enable them. However, enabling this entire group hasn't caused me too many problems and there are only a few lints that I have had issues with.<p>The lint group <code>pedantic</code> is for lints that are very opinionated and is used against clippy's own source code. Enabling this adds some lints that I find are too restrictive. This is why some of these lints are set to allow.<p>The rust lints and cargo lints are self explanatory. <code>cargo_common_metadata</code> is useful if you are publishing a crate on <a href=https://crates.io/>crates.io</a>.<p>I recommend adding and removing lints to your taste but this should be a useful starting place or a way to discover lints.<p>Here is the list. You can put this in your <code>Cargo.toml</code> and it will just work.<pre><code class=language-toml>[lints.rust]
+unsafe_code = "warn"
+# unused_crate_dependencies = "warn"
+
+[lints.clippy]
+# Cargo
+wildcard_dependencies = "warn"
+# cargo_common_metadata = "warn"
+
+# Restriction
+allow_attributes = "warn"
+clone_on_ref_ptr = "warn"
+create_dir = "warn"
+dbg_macro = "warn"
+exit = "warn"
+tests_outside_test_module = "warn"
+undocumented_unsafe_blocks = "warn"
+unused_result_ok = "warn"
+unused_trait_names = "warn"
+verbose_file_reads = "warn"
+# indexing_slicing = "warn"
+# print_stderr = "warn"
+# print_stdout = "warn"
+# unwrap_used = "warn"
+
+# Nursery
+nursery = { level = "warn", priority = -1 }
+cognitive_complexity = "allow"
+missing_const_for_fn = "allow"
+non_send_fields_in_send_ty = "allow"
+option_if_let_else = "allow"
+significant_drop_tightening = "allow"
+suboptimal_flops = "allow"
+useless_let_if_seq = "allow"
+
+# Pedantic
+pedantic = { level = "warn", priority = -1 }
+cast_precision_loss = "allow"
+default_trait_access = "allow"
+map_unwrap_or = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+struct_excessive_bools = "allow"
+unnecessary_debug_formatting = "allow"
+</code></pre><p>Also a good idea to add a <code>clippy.toml</code> file with this.<pre><code class=language-toml>allow-dbg-in-tests = true
+allow-print-in-tests = true
+allow-unwrap-in-tests = true
+</code></pre></div><div class=post-overview><ul><li class="heading-link heading1"><a href=#useful-clippy-lints>Useful Clippy Lints</a><li class="heading-link heading2"><a href=#introduction>Introduction</a><li class="heading-link heading2"><a href=#default-lints>Default Lints</a><li class="heading-link heading2"><a href=#lints>Lints</a></ul></div></div><link href=/thirdparty/highlight.min.css rel=stylesheet><link href=/thirdparty/highlight-tokyo-night-dark.min.css rel=stylesheet><script defer src=/thirdparty/highlight.min.js></script><script defer src=/hl_all.js></script>
